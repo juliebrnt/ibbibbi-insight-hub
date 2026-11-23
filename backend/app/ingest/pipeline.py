@@ -84,6 +84,10 @@ def stage(file_name: str, data: bytes, ws: str) -> dict:
     except Exception:  # noqa: BLE001
         return {"upload_id": upload_id, "file_name": file_name, "tables": [],
                 "error": "Something in this file confused us. Try saving it as CSV or Excel and upload again."}
+    tables = [t for t in tables if t.kind_hint == "image" or len(t.df)]
+    if not tables:
+        return {"upload_id": upload_id, "file_name": file_name, "tables": [],
+                "error": "This file is empty. Try exporting it again, and check you picked a date range that has data."}
     staged = []
     for i, rt in enumerate(tables):
         staged.append(analyse_table(rt, i))

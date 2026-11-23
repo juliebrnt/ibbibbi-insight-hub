@@ -106,6 +106,9 @@ def grid_to_df(grid: list[list[str]]) -> pd.DataFrame:
     if len(df):
         mask = df.astype(str).apply(lambda r: sum(a == b for a, b in zip(r, df.columns)) > len(df.columns) / 2, axis=1)
         df = df[~mask]
+    if len(df):
+        first = df.iloc[:, 0].astype(str).str.strip().str.lower()
+        df = df[~first.isin({"total", "totales", "totals", "suma", "sum", "grand total", "total general"})]
     df.attrs["header_row"] = h
     df.attrs["first_data_row"] = h + 2  # 1-based line number of first data row
     return df.reset_index(drop=True)

@@ -1,0 +1,61 @@
+Order #;Fecha del pedido;Importe total;E-mail;Producto;Canal
+T5000;19.11.2026;68,00;test0@example.com;Gorrito Estrella bambú - Azul cielo;web
+T5001;30.10.2026;58,00;test1@example.com;Turbante Luna bambú - Arena;web
+T5002;15.09.2026;34,00;test2@example.com;Turbante Luna bambú - Arena;instagram
+T5003;09.11.2026;44,00;test3@example.com;Turbante Luna bambú - Arena;web
+T5004;28.09.2026;39,00;test4@example.com;Turbante Luna bambú - Arena;instagram
+T5005;21.09.2026;22,00;test5@example.com;Pañuelo Siena seda - Burdeos;instagram
+T5006;17.09.2026;29,00;test6@example.com;Turbante Luna bambú - Arena;web
+T5007;28.09.2026;29,00;test7@example.com;Gorrito Estrella bambú - Azul cielo;instagram
+T5008;26.09.2026;118,00;test8@example.com;Pañuelo Siena seda - Burdeos;web
+T5009;24.09.2026;64,00;test9@example.com;Gorrito Estrella bambú - Azul cielo;instagram
+T5010;03.09.2026;34,00;test10@example.com;Turbante Luna bambú - Arena;web
+T5011;04.10.2026;22,00;test11@example.com;Gorrito Estrella bambú - Azul cielo;web
+T5012;16.11.2026;128,00;test12@example.com;Gorrito Estrella bambú - Azul cielo;web
+T5013;10.10.2026;34,00;test13@example.com;Gorrito Estrella bambú - Azul cielo;instagram
+T5014;24.09.2026;39,00;test14@example.com;Pañuelo Siena seda - Burdeos;web
+T5015;08.09.2026;34,00;test15@example.com;Pañuelo Siena seda - Burdeos;instagram
+T5016;22.10.2026;44,00;test16@example.com;Gorrito Estrella bambú - Azul cielo;instagram
+T5017;19.10.2026;59,00;test17@example.com;Gorrito Estrella bambú - Azul cielo;web
+T5018;24.09.2026;59,00;test18@example.com;Turbante Luna bambú - Arena;web
+T5019;30.10.2026;68,00;test19@example.com;Gorrito Estrella bambú - Azul cielo;instagram
+T5020;30.10.2026;44,00;test20@example.com;Pañuelo Siena seda - Burdeos;instagram
+T5021;08.10.2026;22,00;test21@example.com;Turbante Luna bambú - Arena;web
+T5022;14.10.2026;118,00;test22@example.com;Gorrito Estrella bambú - Azul cielo;web
+T5023;14.10.2026;68,00;test23@example.com;Pañuelo Siena seda - Burdeos;web
+T5024;10.10.2026;64,00;test24@example.com;Gorrito Estrella bambú - Azul cielo;web
+T5025;11.09.2026;64,00;test25@example.com;Pañuelo Siena seda - Burdeos;instagram
+T5026;01.11.2026;58,00;test26@example.com;Turbante Luna bambú - Arena;web
+T5027;16.11.2026;59,00;test27@example.com;Turbante Luna bambú - Arena;web
+T5028;16.11.2026;34,00;test28@example.com;Gorrito Estrella bambú - Azul cielo;instagram
+T5029;19.09.2026;44,00;test29@example.com;Turbante Luna bambú - Arena;instagram
+T5030;13.10.2026;29,00;test30@example.com;Pañuelo Siena seda - Burdeos;web
+T5031;20.11.2026;39,00;test31@example.com;Turbante Luna bambú - Arena;instagram
+T5032;18.10.2026;29,00;test32@example.com;Gorrito Estrella bambú - Azul cielo;instagram
+T5033;19.09.2026;78,00;test33@example.com;Turbante Luna bambú - Arena;instagram
+T5034;02.11.2026;128,00;test34@example.com;Gorrito Estrella bambú - Azul cielo;instagram
+T5035;06.10.2026;34,00;test35@example.com;Gorrito Estrella bambú - Azul cielo;web
+T5036;15.09.2026;78,00;test36@example.com;Turbante Luna bambú - Arena;instagram
+T5037;14.10.2026;29,00;test37@example.com;Gorrito Estrella bambú - Azul cielo;instagram
+T5038;05.11.2026;118,00;test38@example.com;Gorrito Estrella bambú - Azul cielo;web
+T5039;16.10.2026;128,00;test39@example.com;Pañuelo Siena seda - Burdeos;web
+T5040;10.10.2026;68,00;test40@example.com;Pañuelo Siena seda - Burdeos;instagram
+T5041;02.11.2026;68,00;test41@example.com;Pañuelo Siena seda - Burdeos;instagram
+T5042;14.10.2026;64,00;test42@example.com;Pañuelo Siena seda - Burdeos;web
+T5043;31.10.2026;59,00;test43@example.com;Gorrito Estrella bambú - Azul cielo;instagram
+T5044;30.10.2026;68,00;test44@example.com;Pañuelo Siena seda - Burdeos;instagram
+T5045;15.10.2026;68,00;test45@example.com;Gorrito Estrella bambú - Azul cielo;instagram
+T5046;15.10.2026;58,00;test46@example.com;Gorrito Estrella bambú - Azul cielo;instagram
+T5047;13.10.2026;59,00;test47@example.com;Pañuelo Siena seda - Burdeos;web
+T5048;26.09.2026;34,00;test48@example.com;Gorrito Estrella bambú - Azul cielo;web
+T5049;24.10.2026;58,00;test49@example.com;Pañuelo Siena seda - Burdeos;instagram
+T5050;09.10.2026;118,00;test50@example.com;Pañuelo Siena seda - Burdeos;instagram
+T5051;04.09.2026;29,00;test51@example.com;Pañuelo Siena seda - Burdeos;instagram
+T5052;19.11.2026;64,00;test52@example.com;Turbante Luna bambú - Arena;web
+T5053;20.11.2026;64,00;test53@example.com;Gorrito Estrella bambú - Azul cielo;web
+T5054;22.09.2026;22,00;test54@example.com;Turbante Luna bambú - Arena;instagram
+T5055;24.09.2026;39,00;test55@example.com;Pañuelo Siena seda - Burdeos;web
+T5056;24.10.2026;39,00;test56@example.com;Gorrito Estrella bambú - Azul cielo;web
+T5057;15.11.2026;29,00;test57@example.com;Pañuelo Siena seda - Burdeos;instagram
+T5058;01.09.2026;34,00;test58@example.com;Gorrito Estrella bambú - Azul cielo;instagram
+T5059;15.09.2026;128,00;test59@example.com;Gorrito Estrella bambú - Azul cielo;web

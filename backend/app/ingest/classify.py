@@ -119,8 +119,11 @@ def classify(df: pd.DataFrame, file_name: str, kind_hint: str | None = None) -> 
         if t.key == "feedback":
             if long_text >= 25 and len(df.columns) <= 6:
                 conf += 0.15
-            if "text" in mapping and text_stats(df[mapping["text"]["column"]]) < 20 and kind_hint != "text":
-                conf -= 0.3
+            if "text" in mapping and kind_hint != "text":
+                avg = text_stats(df[mapping["text"]["column"]])
+                numeric_cols = sum(1 for c in df.columns if number_rate(df[c]) >= 0.8)
+                if avg < 20 or (avg < 35 and numeric_cols >= 2):
+                    conf -= 0.3
             if kind_hint == "text":
                 conf = 0.97
         if t.key == "reviews" and "rating" in mapping:

@@ -227,3 +227,21 @@ def test_ask_without_key(client):
 def test_briefing_exports(client):
     assert "<h1>" in client.get("/api/briefing?ws=demo&format=html").text
     assert client.get("/api/briefing?ws=demo&format=md").text.startswith("# Weekly briefing")
+
+
+# ---------------- test pack regressions ----------------
+def test_short_comments_with_numbers_are_not_feedback():
+    df = pd.DataFrame({"Fecha": ["01/03/2025", "08/03/2025", "15/03/2025"] * 5, "Piezas": ["4", "14", "9"] * 5,
+                       "Caja (€)": ["125,63", "396,38", "250,00"] * 5, "Comentario": ["Buen día", "Pidieron más colores", ""] * 5})
+    assert classify(df, "ventas.csv")[0].confidence < 0.6
+
+
+def test_empty_file_gets_friendly_message():
+    from app.ingest import pipeline
+    st = pipeline.stage("empty.csv", b"", "mine")
+    assert "empty" in st["error"].lower()
+
+
+def test_totals_row_is_dropped():
+    grid = [["Informe"], [], ["Fecha", "Unidades"], ["01/10/2026", "3"], ["02/10/2026", "4"], ["TOTAL", "7"]]
+    assert len(readers.grid_to_df(grid)) == 2

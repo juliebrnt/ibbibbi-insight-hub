@@ -40,7 +40,7 @@ export function Ask() {
       <div className="space-y-5">
         {msgs.map((m, i) => (
           <div key={i}>
-            <div className="ml-auto w-fit max-w-[85%] rounded-2xl rounded-br-md bg-primary px-4 py-2.5 text-primary-ink">{m.q}</div>
+            <div translate="no" className="ml-auto w-fit max-w-[85%] rounded-2xl rounded-br-md bg-primary px-4 py-2.5 text-primary-ink">{m.q}</div>
             <div className="mt-3">{m.loading ? <div className="flex items-center gap-2 text-sm text-ink-3"><Loader2 className="h-4 w-4 animate-spin" />Looking at your data…</div> : <Answer a={m.a} onAsk={ask} />}</div>
           </div>
         ))}

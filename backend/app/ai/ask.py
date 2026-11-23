@@ -139,8 +139,9 @@ def sales_change(ws, q=""):
     seasonal = ""
     if m_start.month in (1, 8):
         seasonal = f" {name} is usually a quieter month in your history, so part of this is seasonal."
-    if p_start.month == 10:
-        seasonal = " The month before was October, your awareness-month peak, so a drop afterwards is expected."
+    from .. import profile as prof
+    if prof.key_date(ws, p_start.month):
+        seasonal = f" The month before included {prof.key_date(ws, p_start.month)}, a seasonal peak, so a drop afterwards is expected."
     text = (f"Revenue {direction} {abs(ch):.0f}% in {name} {m_start.year} (€{cur['revenue']:,.0f}) compared with {pname} (€{prev['revenue']:,.0f}). "
             f"Orders changed by {order_ch:+.0f}% ({prev['orders']} to {cur['orders']}).{aov_part} "
             f"The biggest change came from {biggest['channel']} ({'+' if biggest['diff'] >= 0 else '-'}€{abs(biggest['diff']):,.0f}).{seasonal}")
@@ -323,7 +324,7 @@ social_comments(platform, post_id, date, text, author_id, language, sentiment, c
 web_sessions(date, source, medium, landing_page, device, sessions, users, conversions, revenue)
 email_campaigns(date, campaign, recipients, opens, clicks, orders, revenue)"""
 
-ASK_SYSTEM = """You help the founders of iBBIBBI (oncology headwear brand, Spain) answer questions from their own data.
+ASK_SYSTEM = """You help the owners of {business} ({industry}) answer questions from their own data.
 You never answer from general knowledge. Decide how to answer: either pick one function, or write one read-only DuckDB SELECT.
 Functions: {functions}
 {schema}
@@ -354,7 +355,10 @@ def ask(ws: str, question: str) -> dict:
 
 def _ask_ai(ws: str, question: str) -> dict | None:
     funcs = "; ".join(f"{k}: {v[1]}" for k, v in FUNCTIONS.items())
-    plan = client.complete_json(ASK_SYSTEM.format(functions=funcs, schema=SCHEMA_DOC), scrub(question), max_tokens=1200)
+    from .. import profile as prof
+    pr = prof.get(ws)
+    plan = client.complete_json(ASK_SYSTEM.format(functions=funcs, schema=SCHEMA_DOC, business=pr["name"], industry=pr["industry"] or "a small business"),
+                                scrub(question), max_tokens=1200)
     if not plan:
         return None
     if plan.get("cannot"):

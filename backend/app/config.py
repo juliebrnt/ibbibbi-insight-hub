@@ -3,11 +3,14 @@ from __future__ import annotations
 
 import os
 import secrets
+import sys
 from pathlib import Path
 
 from dotenv import load_dotenv
 
 ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))  # shared/ (translation catalogue) lives at the project root
 load_dotenv(ROOT / ".env")
 
 DATA_DIR = Path(os.getenv("DATA_DIR", ROOT / "data"))
@@ -37,3 +40,15 @@ def _salt() -> str:
 
 
 SALT = os.getenv("HASH_SALT", "") or _salt()
+
+
+def _secret(name: str) -> str:
+    path = DATA_DIR / f".{name}"
+    if not path.exists():
+        path.write_text(secrets.token_hex(32))
+        path.chmod(0o600)
+    return path.read_text().strip()
+
+
+SESSION_SECRET = os.getenv("SESSION_SECRET", "") or _secret("session_secret")
+CREDENTIALS_KEY = os.getenv("CREDENTIALS_KEY", "").strip()  # Fernet key for stored platform tokens (set on the host)

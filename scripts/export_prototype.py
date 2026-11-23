@@ -55,6 +55,9 @@ def record() -> dict:
             get(f"/{page}?ws={ws}")
         get(f"/voice?ws={ws}&limit=400")
         for rng in ("28d", "90d", "365d", "all"):
+            for plat in ("Instagram", "TikTok"):
+                get(f"/social?ws={ws}&range={rng}&platform={plat}")
+        for rng in ("28d", "90d", "365d", "all"):
             get(f"/alerts?ws={ws}&range={rng}")
     get("/ask/suggestions")
     get("/reviews/examples")

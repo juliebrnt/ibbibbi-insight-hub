@@ -14,6 +14,7 @@ from .. import db
 from ..analytics import cross, feedback, metrics, sales, social
 from ..analytics.common import Period, eur, has, pct_change
 from ..analytics.text import THEMES
+from .. import profile as prof
 
 GOALS = ["Feedback", "Marketing", "Product", "Efficiency", "Market growth"]
 
@@ -116,7 +117,8 @@ def r_mission(ws, p, ctx):
         "mission", f"Mission and community posts earn {ratio:.1f}x the saves of other posts",
         f"Mission-led posts averaged {m['saves']:.0f} saves and {m['shares']:.0f} shares, against {o_saves:.0f} saves and "
         f"{o_shares:.0f} shares for other posts. Only {share * 100:.0f}% of recent posts are mission-led.",
-        "Your vision is to normalise oncology headwear. This content does that and is also what your audience values most.",
+        (f"Your mission is to {prof.get(ws)['mission'][0].lower() + prof.get(ws)['mission'][1:].rstrip('.')}. This content serves it, and it is also what your audience values most."
+         if prof.get(ws)["mission"] else "Content about your community and purpose is what your audience values most, and it builds trust."),
         "Make one in three posts mission-led: community voices (only with written consent), myth-busting and everyday style. "
         "Keep selling posts separate from care posts.",
         "More saves and shares, which grow reach without paid ads", "Low", min(0.9, 0.5 + 0.04 * m["posts"]), "Marketing", 3,
@@ -204,7 +206,8 @@ def r_shipping(ws, p, ctx):
     return Insight(
         "shipping", "Shipping delays are a recurring complaint",
         f"{s['n']} pieces of feedback in the last 12 months mention delivery and {s['neg_share'] * 100:.0f}% of them are negative.",
-        "Many customers buy close to a treatment date; a late parcel matters more here than in most shops.",
+        ("Many customers buy for an important date or a difficult moment; a late parcel matters more here than in most shops."
+         if prof.get(ws)["sensitive"] else "Late deliveries are one of the most common reasons for poor reviews and lost repeat customers."),
         "Show a clear delivery date on the product page and offer an express option. Check the courier's late-delivery rate this month.",
         "Fewer one-star reviews and support messages", "Low", 0.7, "Feedback", 2,
         [ev("Shipping mentions", s["n"], "Last 12 months", "Reviews, surveys and messages"),
@@ -212,7 +215,7 @@ def r_shipping(ws, p, ctx):
         "avg_rating", "/feedback", "risk")
 
 
-def r_bamboo(ws, p, ctx):
+def r_attribute(ws, p, ctx):
     a = p.end - timedelta(days=364)
     rows = db.rows("""SELECT fabric, avg(rating) avg, count(*) n FROM feedback WHERE ws = ? AND rating IS NOT NULL AND fabric IS NOT NULL
         AND date BETWEEN ? AND ? GROUP BY 1 HAVING count(*) >= 10 ORDER BY avg DESC""", [ws, a, p.end])
@@ -287,20 +290,25 @@ def r_october(ws, p, ctx):
     if len(rows) < 10:
         return None
     avg = sum(r["orders"] for r in rows) / len(rows)
-    octo = next((r for r in rows if r["m"] == 10), None)
-    if not octo or octo["orders"] < avg * 1.3:
+    peak = max(rows, key=lambda r: r["orders"])
+    if peak["orders"] < avg * 1.3:
         return None
-    days_to = (p.end.replace(month=10, day=1) - p.end).days
+    m = peak["m"]
+    month = prof.MONTHS[m - 1]
+    days_to = (p.end.replace(month=m, day=1) - p.end).days
     if days_to < 0:
-        days_to = (p.end.replace(year=p.end.year + 1, month=10, day=1) - p.end).days
+        days_to = (p.end.replace(year=p.end.year + 1, month=m, day=1) - p.end).days
+    label = prof.key_date(ws, m)
+    prep = prof.MONTHS[(m - 3) % 12]
     return Insight(
-        "october", f"October brings {octo['orders'] / avg:.1f}x your usual orders",
-        f"In October you average {octo['orders']:.0f} orders against a monthly average of {avg:.0f}. The next October starts in {days_to} days.",
-        "Awareness month brings attention and demand. Stock-outs or rushed content waste it.",
-        "Plan October in August: stock bestsellers, line up a partner association and prepare community content in advance.",
+        "peak_month", f"{month} brings {peak['orders'] / avg:.1f}x your usual orders",
+        f"In {month} you average {peak['orders']:.0f} orders against a monthly average of {avg:.0f}. The next {month} starts in {days_to} days."
+        + (f" It coincides with {label}." if label else ""),
+        "Your busiest month brings attention and demand. Stock-outs or rushed content waste it.",
+        f"Plan {month} in {prep}: stock bestsellers, line up partners and prepare content in advance.",
         "Capture the peak without stock-outs", "Medium", 0.85, "Market growth", 2 if days_to > 120 else 3,
-        [ev("October orders (average)", round(octo["orders"]), "All years", "Shopify orders"),
-         ev("Average month", round(avg), "All years", "Shopify orders"), ev("Days until October", days_to, "Today", "Calendar")],
+        [ev(f"{month} orders (average)", round(peak["orders"]), "All years", "Shopify orders"),
+         ev("Average month", round(avg), "All years", "Shopify orders"), ev(f"Days until {month}", days_to, "Today", "Calendar")],
         "orders", "/sales", "opportunity")
 
 
@@ -370,9 +378,9 @@ def r_care(ws, p, ctx):
     return Insight(
         "care", f"{n} messages may need a personal reply",
         "Some customers wrote about having a very hard time. These are flagged for care, not for marketing.",
-        "Responding with warmth is part of the brand's mission. These words should never be used in campaigns.",
-        "Reply personally and gently; where appropriate, share contacts for support associations. Do not quote these messages.",
-        "Trust and care for people going through treatment", "Low", 0.9, "Feedback", 3,
+        "Responding with warmth builds trust. These words should never be used in campaigns.",
+        "Reply personally and gently; where appropriate, share contacts for support services. Do not quote these messages.",
+        "Trust and care for customers having a hard time", "Low", 0.9, "Feedback", 3,
         [ev("Messages flagged", n, "All time", "Feedback and comments")], None, "/feedback", "care")
 
 
@@ -435,6 +443,47 @@ def r_cross(ws, p, ctx):
         "sessions", "/social", "opportunity")
 
 
+def r_email(ws, p, ctx):
+    e = cross.email_effect(ws)
+    if not e.get("enough"):
+        return None
+    if e["lift"] >= 15:
+        return Insight(
+            "email_lift", f"Orders rise {e['lift']:.0f}% in the three days after an email",
+            f"Across {e['campaigns']} campaigns, the three days after sending averaged {e['after']} orders, against {e['baseline']} for any three days. "
+            "This is a pattern, not proof that every order came from the email.",
+            "Email reaches people who already like you, at almost no cost per message.",
+            "Keep a steady email rhythm (every two weeks) and send just before your busiest weekdays.",
+            "More repeat orders", "Low", 0.6 if e["campaigns"] < 15 else 0.7, "Marketing", 2,
+            [ev("Orders in 3 days after an email", e["after"], f"{e['campaigns']} campaigns", "Klaviyo and Shopify"),
+             ev("Orders in an average 3 days", e["baseline"], "All days", "Shopify orders"), ev("Difference (%)", e["lift"], "", "Klaviyo and Shopify")],
+            "orders", "/sales", "opportunity")
+    if e["lift"] <= 3:
+        return Insight(
+            "email_flat", "Emails are not followed by more orders",
+            f"Across {e['campaigns']} campaigns, the three days after sending averaged {e['after']} orders, close to the usual {e['baseline']}.",
+            "If email does not move sales, the time spent on it could go elsewhere, or the emails need a clearer reason to buy.",
+            "Test one email with a single product and a clear offer, and compare the next three days.",
+            "Clarity on whether email is worth the time", "Low", 0.55, "Efficiency", 1,
+            [ev("Orders in 3 days after an email", e["after"], f"{e['campaigns']} campaigns", "Klaviyo and Shopify"),
+             ev("Orders in an average 3 days", e["baseline"], "All days", "Shopify orders")], "orders", "/sales", "risk")
+    return None
+
+
+def r_complaints_conversion(ws, p, ctx):
+    c = cross.complaints_vs_conversion(ws)
+    if not c.get("enough") or c["corr"] > -0.3:
+        return None
+    return Insight(
+        "complaints_conversion", "Weeks with more complaints have lower website conversion",
+        f"Over {c['weeks']} weeks, the share of negative feedback and the website conversion rate moved in opposite directions (correlation {c['corr']}). "
+        "This is a correlation, not proof of cause.",
+        "Complaints may be visible to new visitors (reviews) or point to a problem that also stops people buying.",
+        "In weeks when complaints rise, reply to every negative review quickly and check the product pages they mention.",
+        "Protect conversion", "Low", 0.55, "Feedback", 2,
+        [ev("Correlation", c["corr"], f"{c['weeks']} weeks", "Feedback and Google Analytics")], "conversion", "/feedback", "risk")
+
+
 def r_gift(ws, p, ctx):
     s = ctx["sales"]
     if s.get("empty"):
@@ -470,8 +519,8 @@ def r_sales_change(ws, p, ctx):
         "revenue", "/sales", "win" if up else "risk")
 
 
-RULES = [r_care, r_reels, r_mission, r_consistency, r_colours, r_shipping, r_bamboo, r_missing, r_repeat, r_october, r_partnerships,
-         r_sizing, r_mobile, r_flex, r_cross, r_gift, r_sales_change]
+RULES = [r_care, r_reels, r_mission, r_consistency, r_colours, r_shipping, r_attribute, r_missing, r_repeat, r_october, r_partnerships,
+         r_sizing, r_mobile, r_flex, r_cross, r_email, r_complaints_conversion, r_gift, r_sales_change]
 
 
 def context(ws: str, p: Period) -> dict:

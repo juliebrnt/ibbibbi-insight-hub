@@ -46,3 +46,35 @@ def mission_effect(ws: str) -> dict:
     out["series"] = [{"week": i.isoformat() if hasattr(i, "isoformat") else str(i), "mission_posts": int(r["mission_posts"]),
                       "ig_visits": float(r["ig_visits"]), "orders": float(r["orders"])} for i, r in df.tail(52).iterrows()]
     return out
+
+
+def email_effect(ws: str) -> dict:
+    """Do orders rise in the three days after an email campaign? Compared with the average three-day window."""
+    camps = db.rows("SELECT date, campaign, recipients FROM email_campaigns WHERE ws = ? ORDER BY date", [ws])
+    if len(camps) < 6 or not db.one("SELECT count(*) FROM orders WHERE ws = ?", [ws]):
+        return {"enough": False, "reason": "Needs at least 6 email campaigns and your orders."}
+    daily = db.q("SELECT date, count(*) n FROM orders WHERE ws = ? GROUP BY 1", [ws])
+    daily["date"] = pd.to_datetime(daily["date"])
+    s = daily.set_index("date")["n"].asfreq("D", fill_value=0)
+    window = s.rolling(3).sum().shift(-2)  # orders on day d, d+1, d+2
+    after = [float(window.get(pd.Timestamp(c["date"]), float("nan"))) for c in camps]
+    after = [x for x in after if x == x]
+    base = float(window.dropna().mean())
+    if not after or not base:
+        return {"enough": False, "reason": "Not enough overlapping dates."}
+    lift = (sum(after) / len(after) - base) / base * 100
+    return {"enough": True, "campaigns": len(after), "after": round(sum(after) / len(after), 1), "baseline": round(base, 1), "lift": round(lift, 1)}
+
+
+def complaints_vs_conversion(ws: str) -> dict:
+    """Weekly share of negative feedback against website conversion."""
+    fb = db.q("""SELECT date_trunc('week', date)::DATE AS week, avg(CASE WHEN sentiment = 'negative' THEN 1 ELSE 0 END) neg, count(*) n
+        FROM feedback WHERE ws = ? AND date IS NOT NULL GROUP BY 1""", [ws])
+    web = db.q("""SELECT date_trunc('week', date)::DATE AS week, sum(conversions)/nullif(sum(sessions),0) conv FROM web_sessions WHERE ws = ? GROUP BY 1""", [ws])
+    if fb.empty or web.empty:
+        return {"enough": False, "reason": "Needs feedback and website data covering the same weeks."}
+    df = fb.merge(web, on="week")
+    df = df[df["n"] >= 3]
+    if len(df) < MIN_WEEKS * 2:
+        return {"enough": False, "reason": f"Needs at least {MIN_WEEKS * 2} weeks with 3 or more pieces of feedback."}
+    return {"enough": True, "weeks": int(len(df)), "corr": round(float(df["neg"].corr(df["conv"])), 2)}

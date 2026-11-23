@@ -36,7 +36,7 @@ export function QuickCapture({ open, onOpenChange }: { open: boolean; onOpenChan
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange} title="Log customer feedback" description="Type or paste what a customer said. We will sort it into themes.">
-      <textarea autoFocus value={text} onChange={(e) => setText(e.target.value)} rows={4} className="input py-3 text-base" placeholder="For example: 'Loved the bamboo turban, but I wish it came in green'" aria-label="Feedback" />
+      <textarea autoFocus value={text} onChange={(e) => setText(e.target.value)} rows={4} className="input py-3 text-base" placeholder="For example: 'Loved it, but I wish it came in green'" aria-label="Feedback" />
       <div className="mt-3 label">Where did it come from?</div>
       <div className="mt-2 flex flex-wrap gap-2">
         {SOURCES.map((s) => (

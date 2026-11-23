@@ -7,7 +7,7 @@ import json
 from ..privacy.pii import scrub
 from . import client, guard
 
-SYSTEM = """You write short, warm, plain-English summaries for the two founders of iBBIBBI, a small Spanish brand of oncology headwear.
+SYSTEM = """You write short, warm, plain-English summaries for the owners of a small business, from the facts given.
 Use British English. Never use em dashes. Never invent numbers: use only numbers present in the facts. Never suggest targeting or
 segmenting people by health status or treatment stage, and never suggest using someone's personal story without explicit consent.
 Keep care and selling separate."""

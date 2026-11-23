@@ -36,6 +36,10 @@ class ConnectorError(Exception):
 # Encrypted credential store
 # --------------------------------------------------------------------------------------
 def _fernet() -> Fernet:
+    from ..config import CREDENTIALS_KEY
+
+    if CREDENTIALS_KEY:
+        return Fernet(CREDENTIALS_KEY.encode())
     path = DATA_DIR / ".credentials_key"
     if not path.exists():
         path.write_bytes(Fernet.generate_key())

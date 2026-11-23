@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { useIsMobile, useLoadDemo, useStatus } from "@/hooks/useData";
+import { useIsMobile, useLoadDemo, useProfile, useStatus } from "@/hooks/useData";
 import { RANGE_LABEL, useApp, type Range } from "@/lib/store";
 import { brand } from "@/theme/tokens";
 import { cx, Segmented } from "./ui";
@@ -36,11 +36,12 @@ const MORE = [
 ];
 
 export function Logo({ small }: { small?: boolean }) {
+  const p = useProfile();
   return (
     <div className="flex items-center gap-2.5">
       <img src="/favicon.svg" alt="" className={small ? "h-8 w-8" : "h-9 w-9"} />
       <div className="leading-tight">
-        <div className="font-display font-semibold text-[17px] text-ink">{brand.name}</div>
+        <div className="font-display font-semibold text-[17px] text-ink truncate max-w-[150px]">{p.name || brand.name}</div>
         <div className="text-[11px] text-ink-3 -mt-0.5">{brand.product}</div>
       </div>
     </div>
@@ -139,7 +140,7 @@ function Sidebar() {
 }
 
 function TopBar() {
-  const { ws, setWs, range, setRange, setPaletteOpen, theme, setTheme } = useApp();
+  const { ws, setWs, range, setRange, setPaletteOpen, theme, setTheme, lang, setLang } = useApp();
   const mobile = useIsMobile();
   const nav = useNavigate();
   return (
@@ -147,6 +148,11 @@ function TopBar() {
       <div className="mx-auto max-w-[1240px] px-4 sm:px-6 lg:px-8 h-[60px] flex items-center gap-2 sm:gap-3">
         {mobile ? <button onClick={() => nav("/")} aria-label="Home"><Logo small /></button> : null}
         <div className="flex-1" />
+        {!mobile ? (
+          <div translate="no">
+            <Segmented size="sm" label="Language" value={lang} onChange={setLang} options={[{ value: "en", label: "EN" }, { value: "es", label: "ES" }]} />
+          </div>
+        ) : null}
         <div data-tour="workspace">
           <Segmented size="sm" label="Workspace" value={ws} onChange={setWs} options={[{ value: "demo", label: mobile ? "Demo" : "Demo data" }, { value: "mine", label: mobile ? "Mine" : "My data" }]} />
         </div>
@@ -214,7 +220,7 @@ function BottomTabs() {
 
 function MoreSheet({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) {
   const nav = useNavigate();
-  const { range, setRange } = useApp();
+  const { range, setRange, lang, setLang } = useApp();
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
@@ -229,6 +235,10 @@ function MoreSheet({ open, onOpenChange }: { open: boolean; onOpenChange: (v: bo
                 <m.icon className="h-6 w-6 text-primary" aria-hidden />{m.label}
               </button>
             ))}
+          </div>
+          <div className="mt-5" translate="no">
+            <div className="label mb-2">{lang === "es" ? "Idioma" : "Language"}</div>
+            <Segmented size="sm" label="Language" value={lang} onChange={setLang} options={[{ value: "en", label: "English" }, { value: "es", label: "Español" }]} />
           </div>
           <div className="mt-5">
             <div className="label mb-2">Date range</div>

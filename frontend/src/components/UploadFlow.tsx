@@ -8,7 +8,7 @@ import { api } from "@/lib/api";
 import { useApp } from "@/lib/store";
 import { STATIC } from "@/lib/static";
 import { cx, Sheet } from "./ui";
-import { useIsMobile } from "@/hooks/useData";
+import { useIsMobile, useProfile } from "@/hooks/useData";
 
 type Staged = { upload_id: string; file_name: string; error?: string; tables: any[] };
 type Step = "pick" | "reading" | "check" | "done";
@@ -195,6 +195,7 @@ function Problem({ name, text }: { name: string; text: string }) {
 }
 
 function CheckTable({ t, update }: { t: any; update: (p: any) => void }) {
+  const profile = useProfile();
   if (t.kind === "image") {
     return <div className="rounded-2xl bg-sunken p-4 text-sm"><b>{t.name}</b><p className="mt-1 text-ink-2">{t.message}</p></div>;
   }
@@ -254,7 +255,7 @@ function CheckTable({ t, update }: { t: any; update: (p: any) => void }) {
       {t.privacy?.length ? (
         <div className="rounded-2xl border border-line p-4">
           <div className="flex items-center gap-2 font-medium"><ShieldCheck className="h-5 w-5 text-good" />Personal data we found</div>
-          <p className="mt-1 text-xs text-ink-3">This file relates to people affected by cancer. We keep only what is needed to find patterns.</p>
+          <p className="mt-1 text-xs text-ink-3">{profile.sensitive ? "This file may relate to people in a vulnerable situation. " : ""}We keep only what is needed to find patterns.</p>
           <ul className="mt-3 space-y-2">
             {t.privacy.map((p: any, i: number) => (
               <li key={p.column} className="flex flex-wrap items-center gap-2 text-sm">

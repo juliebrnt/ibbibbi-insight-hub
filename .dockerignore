@@ -1,0 +1,13 @@
+node_modules
+frontend/node_modules
+frontend/dist
+frontend/dist-prototype
+.venv
+data
+.env
+context
+**/__pycache__
+.git
+test_pack
+prototype
+docs

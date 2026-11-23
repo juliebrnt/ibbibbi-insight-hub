@@ -153,8 +153,11 @@ DRAFTS = {
 
 
 def draft(text: str, sentiment: str | None, themes: list[str] | None, language: str | None, distress: bool = False,
-          brand: str = "iBBIBBI") -> dict:
+          brand: str | None = None, ws: str = "demo") -> dict:
     """A starting point for a reply. The user always edits and approves it; nothing is sent from here."""
+    from .. import profile as prof
+
+    brand = brand or prof.get(ws)["name"]
     lang = language if language in DRAFTS else "en"
     t = DRAFTS[lang]
     th = themes or theme_of(text)

@@ -10,6 +10,7 @@ import { STATIC } from "./lib/static";
 const Router: any = STATIC ? MemoryRouter : BrowserRouter;
 import { Toaster } from "sonner";
 import { Shell } from "./components/Shell";
+import { SessionGate } from "./components/SignIn";
 import { AppProvider } from "./lib/store";
 import { Ask } from "./pages/Ask";
 import { Data } from "./pages/Data";
@@ -28,6 +29,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <QueryClientProvider client={qc}>
       <AppProvider>
         <Tip.Provider>
+          <SessionGate>
           <Router>
             <Shell>
               <Routes>
@@ -47,6 +49,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               </Routes>
             </Shell>
           </Router>
+          </SessionGate>
           <Toaster position="top-center" richColors closeButton toastOptions={{ style: { borderRadius: 14 } }} />
         </Tip.Provider>
       </AppProvider>

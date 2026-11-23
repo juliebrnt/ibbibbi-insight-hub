@@ -1,0 +1,28 @@
+# Render blueprint: one private web service per company, data on an encrypted disk in the EU.
+# In Render: New, Blueprint, pick this repository. Fill the secret values when asked.
+services:
+  - type: web
+    name: insight-hub
+    runtime: docker
+    region: frankfurt          # EU data residency (GDPR)
+    plan: starter              # persistent disks need a paid instance (about 7 USD a month)
+    healthCheckPath: /api/session
+    disk:
+      name: insight-data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: DATA_DIR
+        value: /data
+      - key: APP_PASSWORD      # the team password for signing in
+        sync: false
+      - key: SESSION_SECRET    # random, keeps sign-in cookies secure
+        generateValue: true
+      - key: HASH_SALT         # random, used to anonymise emails and phone numbers
+        generateValue: true
+      - key: CREDENTIALS_KEY   # encrypts stored Shopify / Judge.me keys; see DEPLOY.md for how to create it
+        sync: false
+      - key: ANTHROPIC_API_KEY # optional; leave empty to keep AI off
+        sync: false
+      - key: AI_MODEL
+        value: claude-sonnet-5-5

@@ -15,6 +15,7 @@ async function handle<T>(res: Response): Promise<T> {
   if (!res.ok) {
     const e = new ApiError(body?.error || body?.detail || "Something went wrong. Please try again.");
     e.login = body?.login;
+    if (e.login) window.dispatchEvent(new Event("login-required"));
     throw e;
   }
   return body as T;

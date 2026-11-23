@@ -290,3 +290,22 @@ export function ProgressRing({ value, size = 64, stroke = 7, label }: { value: n
 export function FadeIn({ children, delay = 0 }: { children: ReactNode; delay?: number }) {
   return <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.22, delay }}>{children}</motion.div>;
 }
+
+/** Simple labelled bars for shares or counts; optional negative share shown as a second colour. */
+export function ShareBarsLite({ rows, count }: { rows: { label: string; value: number; neg?: number }[]; count?: boolean }) {
+  const max = Math.max(...rows.map((r) => r.value), 0.0001);
+  return (
+    <ul className="space-y-2.5">
+      {rows.map((r) => (
+        <li key={r.label}>
+          <div className="flex justify-between gap-2 text-sm"><span className="truncate">{r.label}</span><span className="num text-ink-2">{count ? r.value : `${(r.value * 100).toFixed(0)}%`}</span></div>
+          <div className="mt-1 h-2 rounded-full bg-sunken overflow-hidden flex">
+            <div className="h-full bg-primary" style={{ width: `${(r.value / max) * 100 * (1 - (r.neg ?? 0))}%` }} />
+            {r.neg ? <div className="h-full bg-accent" style={{ width: `${(r.value / max) * 100 * r.neg}%` }} /> : null}
+          </div>
+        </li>
+      ))}
+      {rows.some((r) => r.neg) ? <li className="text-xs text-ink-3">Orange part: negative comments.</li> : null}
+    </ul>
+  );
+}

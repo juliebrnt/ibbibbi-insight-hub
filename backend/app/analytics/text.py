@@ -53,6 +53,14 @@ COMMENT_CATS = {
     "question": ["?", "como", "cuanto", "when", "how", "where", "donde", "quan", "on "],
 }
 
+# The brief's categories; each theme belongs to one.
+THEME_GROUPS = {"quality": "Product quality", "delivery": "Delivery", "service": "Customer service", "pricing": "Pricing",
+                "experience": "User experience", "expectations": "Product expectations", "positive": "Positive product attributes"}
+THEME_GROUP_OF = {"fabric": "quality", "softness": "positive", "fit": "expectations", "design": "expectations", "shipping": "delivery",
+                  "price": "pricing", "packaging": "experience", "children": "expectations", "gifting": "positive", "emotional": "positive",
+                  "service": "service", "website": "experience"}
+THEMES["website"] = {"label": "Website and checkout", "kw": ["web", "pagina", "checkout", "pago", "payment", "carrito", "cart", "app ", "login", "website", "online"]}
+
 PILLARS = {
     "mission": ["historia", "story", "comunidad", "community", "normaliz", "juntas", "no estas sola", "donamos", "asociacion", "autoestima",
                 "octubrerosa", "cancer", "gracias por", "mensaje de una clienta", "together", "mission"],

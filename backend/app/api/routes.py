@@ -44,7 +44,9 @@ def _ws(ws: str) -> str:
 @router.get("/status")
 def status(ws: str = WS):
     counts = {t: common.has(t, ws) for t in db.CANONICAL_TABLES}
-    return {"ws": ws, "counts": counts, "has_data": any(counts.values()), "latest": common.latest_date(ws).isoformat(),
+    from .. import profile as prof
+
+    return {"ws": ws, "profile": prof.get(ws), "counts": counts, "has_data": any(counts.values()), "latest": common.latest_date(ws).isoformat(),
             "ai_configured": ai_client.configured(), "ai_enabled": ai_client.enabled(), "demo_loaded": common.has("orders", "demo") > 0,
             "datasets": db.one("SELECT count(*) FROM datasets WHERE ws = ?", [ws])}
 
@@ -115,8 +117,8 @@ def feedback_page(ws: str = WS, range: str = "90d"):
 
 
 @router.get("/social")
-def social_page(ws: str = WS, range: str = "90d"):
-    out = social.overview(ws, common.period(ws, range))
+def social_page(ws: str = WS, range: str = "90d", platform: str | None = None):
+    out = social.overview(ws, common.period(ws, range), platform)
     out["cross"] = cross.mission_effect(ws)
     return out
 
@@ -147,6 +149,7 @@ def voice_items(ws: str = WS, source: str | None = None, rating: str | None = No
 
 
 class DraftBody(BaseModel):
+    ws: str = "demo"
     text: str
     sentiment: str | None = None
     themes: list[str] | None = None
@@ -156,7 +159,7 @@ class DraftBody(BaseModel):
 
 @router.post("/reply/draft")
 def reply_draft(b: DraftBody):
-    return voice.draft(b.text, b.sentiment, b.themes, b.language, b.distress)
+    return voice.draft(b.text, b.sentiment, b.themes, b.language, b.distress, ws=b.ws)
 
 
 class ConnectBody(BaseModel):
@@ -531,12 +534,16 @@ def del_decision(did: str, ws: str = WS):
 # Briefing
 # --------------------------------------------------------------------------------------
 @router.get("/briefing")
-def get_briefing(ws: str = WS, range: str = "28d", format: str = "json"):
+def get_briefing(ws: str = WS, range: str = "28d", format: str = "json", lang: str = "en"):
+    from shared.i18n_core import translate_tree
+
     b = briefing.build(ws, range)
+    if format in ("html", "md") and lang == "es":
+        b = translate_tree(b, "es")
     if format == "html":
-        return HTMLResponse(briefing.to_html(b))
+        return HTMLResponse(briefing.to_html(b, lang))
     if format == "md":
-        return PlainTextResponse(briefing.to_markdown(b), headers={"Content-Disposition": f'attachment; filename="briefing_{b["end"]}.md"'})
+        return PlainTextResponse(briefing.to_markdown(b, lang), headers={"Content-Disposition": f'attachment; filename="briefing_{b["end"]}.md"'})
     return b
 
 
@@ -556,6 +563,24 @@ def demo_file(name: str):
     return Response(path.read_bytes(), media_type="application/octet-stream", headers={"Content-Disposition": f'attachment; filename="{name}"'})
 
 
+class ProfileBody(BaseModel):
+    ws: str = "mine"
+    name: str | None = None
+    industry: str | None = None
+    mission: str | None = None
+    sensitive: bool | None = None
+    attribute_label: str | None = None
+    line_label: str | None = None
+    key_dates: list[dict] | None = None
+
+
+@router.post("/profile")
+def save_profile(b: ProfileBody):
+    from .. import profile as prof
+
+    return prof.save(_ws(b.ws), {k: v for k, v in b.model_dump().items() if k != "ws" and v is not None})
+
+
 @router.get("/settings")
 def get_settings(ws: str = WS):
     return {"ai_enabled": bool(db.get_setting("ai_enabled", True)), "ai_configured": ai_client.configured(),
@@ -564,6 +589,7 @@ def get_settings(ws: str = WS):
 
 
 class SettingsBody(BaseModel):
+    lang: str | None = None
     ai_enabled: bool | None = None
     priorities: dict | None = None
     retention_days: int | None = None
@@ -572,6 +598,8 @@ class SettingsBody(BaseModel):
 
 @router.post("/settings")
 def save_settings(b: SettingsBody):
+    if b.lang in ("en", "es"):
+        db.set_setting("lang", b.lang)
     if b.ai_enabled is not None:
         db.set_setting("ai_enabled", b.ai_enabled)
     if b.priorities is not None:

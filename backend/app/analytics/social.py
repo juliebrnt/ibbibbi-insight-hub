@@ -40,11 +40,33 @@ def consistency(ws: str, a, b, platform: str = "Instagram") -> dict:
             "avg_gap": avg_gap, "weeks_active": weeks_active, "weeks": weeks}
 
 
-def overview(ws: str, p: Period) -> dict:
+METRIC_COLS = ["reach", "views", "likes", "comments", "saves", "shares", "follows"]
+
+
+def platform_summary(ws: str, p: Period) -> list[dict]:
+    """One row per connected platform with only the metrics that platform actually provides."""
+    out = []
+    for r in db.rows("SELECT platform, count(*) n FROM social_posts WHERE ws = ? GROUP BY 1 ORDER BY n DESC", [ws]):
+        plat = r["platform"]
+        avail = db.rows(f"""SELECT {", ".join(f"count({c}) AS {c}" for c in METRIC_COLS)} FROM social_posts WHERE ws = ? AND platform = ?""", [ws, plat])[0]
+        metrics = [c for c in METRIC_COLS if avail[c]]
+        # reach copied from views (platforms without a reach metric) is not real reach: do not show it
+        if "reach" in metrics and not db.one("SELECT count(*) FROM social_posts WHERE ws = ? AND platform = ? AND reach IS DISTINCT FROM views",
+                                             [ws, plat]):
+            metrics.remove("reach")
+        cur = db.rows(f"""SELECT count(*) posts, {", ".join(f"avg({c}) AS {c}" for c in metrics)} FROM social_posts
+            WHERE ws = ? AND platform = ? AND date BETWEEN ? AND ?""", [ws, plat, p.start, p.end])[0]
+        first = db.one("SELECT min(date) FROM social_posts WHERE ws = ? AND platform = ?", [ws, plat])
+        out.append({"platform": plat, "metrics": metrics, "current": cur, "first": first, "total_posts": r["n"],
+                    "er_basis": "reach" if "reach" in metrics else "views"})
+    return out
+
+
+def overview(ws: str, p: Period, platform: str | None = None) -> dict:
     if not has("social_posts", ws):
         return {"empty": True}
     platforms = [r["platform"] for r in db.rows("SELECT platform, count(*) n FROM social_posts WHERE ws = ? GROUP BY 1 ORDER BY n DESC", [ws])]
-    plat = "Instagram" if "Instagram" in platforms else platforms[0]
+    plat = platform if platform in platforms else ("Instagram" if "Instagram" in platforms else platforms[0])
     w = "ws = ? AND platform = ? AND date BETWEEN ? AND ?"
     args = [ws, plat, p.start, p.end]
     src = f"{plat} posts"
@@ -79,6 +101,7 @@ def overview(ws: str, p: Period) -> dict:
                        [ws, plat, year_start, p.end])
     weekly = db.rows("""SELECT date_trunc('week', date)::DATE AS week, count(*) posts, avg(reach) reach FROM social_posts
         WHERE ws = ? AND platform = ? GROUP BY 1 ORDER BY 1""", [ws, plat])
+    comments = comment_summary(ws, p, plat)
     top_posts = db.rows(f"""SELECT post_id, date, format, pillar, caption, reach, saves, shares, {ER} er FROM social_posts WHERE {w}
         ORDER BY saves DESC LIMIT 5""", args)
 
@@ -104,14 +127,14 @@ def overview(ws: str, p: Period) -> dict:
 
     # before / after consistency change (first regular stretch)
     change = before_after(ws, plat)
-    comments = comment_summary(ws, p)
     tiktok = None
     if "TikTok" in platforms:
         tiktok = db.rows("""SELECT count(*) posts, avg(views) AS views, avg(likes) likes, avg(shares) shares, min(date) AS first_d, max(date) AS last_d
             FROM social_posts WHERE ws = ? AND platform = 'TikTok'""", [ws])[0]
 
     return {
-        "platform": plat, "platforms": platforms,
+        "platform": plat, "platforms": platforms, "platform_summary": platform_summary(ws, p),
+        "available": next((x["metrics"] for x in platform_summary(ws, p) if x["platform"] == plat), METRIC_COLS),
         "kpis": {
             "posts": {"value": cur["posts"], "prev": prev["posts"], "change": pct_change(cur["posts"], prev["posts"])},
             "er": {"value": cur["er"], "prev": prev["er"]},
@@ -163,7 +186,57 @@ CAT_LABELS = {"partnership": "Partnership enquiry", "request": "Product request"
               "praise": "Praise", "sensitive": "Needs a personal reply", "other": "Other"}
 
 
-def comment_summary(ws: str, p: Period) -> dict:
+def comment_analysis(ws: str, a, b, platform: str) -> dict:
+    """What people say in comments: themes, needs, and which content starts real conversations."""
+    from .text import THEMES, themes as theme_of, topic_words
+
+    rows = db.rows("""SELECT c.text, c.category, c.sentiment, c.date, p.format, p.pillar FROM social_comments c
+        LEFT JOIN social_posts p ON p.ws = c.ws AND p.post_id = c.post_id
+        WHERE c.ws = ? AND c.platform = ? AND c.date BETWEEN ? AND ?""", [ws, platform, a, b])
+    if not rows:
+        return {"empty": True}
+    counts: dict = {}
+    for r in rows:
+        for t in theme_of(r["text"]):
+            c = counts.setdefault(t, {"theme": t, "label": THEMES[t]["label"], "n": 0, "neg": 0})
+            c["n"] += 1
+            c["neg"] += r["sentiment"] == "negative"
+    themes = sorted(counts.values(), key=lambda x: -x["n"])[:8]
+    meaningful = {"question", "request", "sizing", "partnership"}
+
+    def by(key):
+        g: dict = {}
+        for r in rows:
+            k = r[key] or "Unknown"
+            x = g.setdefault(k, {"key": k, "comments": 0, "meaningful": 0, "positive": 0})
+            x["comments"] += 1
+            x["meaningful"] += r["category"] in meaningful
+            x["positive"] += r["sentiment"] == "positive"
+        out = [{**x, "meaningful_share": round(x["meaningful"] / x["comments"], 3)} for x in g.values() if x["comments"] >= 10]
+        return sorted(out, key=lambda x: -x["meaningful_share"])
+    from .text import PILLAR_LABELS
+
+    pillars = by("pillar")
+    for x in pillars:
+        x["label"] = PILLAR_LABELS.get(x["key"], x["key"])
+    formats = by("format")
+    needs = [r["text"] for r in rows if r["category"] in ("request", "sizing")]
+    mid = a + (b - a) / 2
+    recent = {}
+    for r in rows:
+        half = "recent" if r["date"] > mid else "earlier"
+        recent.setdefault(r["category"], {"recent": 0, "earlier": 0})[half] += 1
+    emerging = [{"category": k, "label": CAT_LABELS.get(k, k), **v, "change": round((v["recent"] - v["earlier"]) / max(v["earlier"], 1) * 100)}
+                for k, v in recent.items() if v["recent"] >= 5 and v["recent"] >= v["earlier"] * 1.3 and k in meaningful]
+    best = pillars[0] if pillars else None
+    title = (f"{best['label']} posts start the most conversations: {best['meaningful_share'] * 100:.0f}% of their comments are questions or requests"
+             if best else "What people say in comments")
+    return {"title": title, "subtitle": f"{a:%-d %b %Y} to {b:%-d %b %Y} · {platform} comments ({len(rows)} comments)",
+            "themes": themes, "by_pillar": pillars, "by_format": formats, "needs_words": topic_words(needs, 8),
+            "needs_examples": list(dict.fromkeys(needs))[:5], "emerging": emerging, "total": len(rows)}
+
+
+def comment_summary(ws: str, p: Period, platform: str = "Instagram") -> dict:
     if not has("social_comments", ws):
         return {"empty": True}
     a = p.end - timedelta(days=max(p.days, 90) - 1)
@@ -181,7 +254,7 @@ def comment_summary(ws: str, p: Period) -> dict:
     unanswered = db.one("""SELECT count(*) FROM social_comments WHERE ws = ? AND category IN ('partnership','request','sizing','question')
         AND NOT coalesce(replied, false)""", [ws])
     total = sum(r["n"] for r in cats) or 1
-    return {"categories": cats, "inbox": inbox, "sentiment": sent, "unanswered": unanswered,
+    return {"categories": cats, "inbox": inbox, "sentiment": sent, "unanswered": unanswered, "analysis": comment_analysis(ws, a, p.end, platform),
             "title": f"{unanswered} questions and requests in comments are still waiting for a reply" if unanswered else "Comments are all answered",
             "subtitle": f"Last {max(p.days, 90)} days · Instagram comments ({total} comments)"}
 

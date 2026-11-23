@@ -318,3 +318,54 @@ def test_example_reviews_are_labelled():
     from app.analytics import voice
     ex = voice.examples()
     assert ex["items"] and all(i["example"] for i in ex["items"]) and "made-up" in ex["note"]
+
+
+def test_password_gate_and_lockout(monkeypatch):
+    import importlib
+    monkeypatch.setenv("APP_PASSWORD", "correct horse")
+    from app import config
+    importlib.reload(config)
+    import app.main as m
+    importlib.reload(m)
+    from fastapi.testclient import TestClient
+    c = TestClient(m.app)
+    assert c.get("/api/status?ws=demo").status_code == 401
+    assert c.get("/api/session").json()["login_required"]
+    assert c.post("/api/login", json={"password": "wrong"}).status_code == 401
+    r = c.post("/api/login", json={"password": "correct horse"})
+    assert r.status_code == 200 and "correct" not in r.cookies.get("ihub", "")
+    assert c.get("/api/status?ws=demo").status_code == 200
+    assert r.headers.get("x-frame-options") == "DENY"
+    bad = TestClient(m.app)
+    codes = [bad.post("/api/login", json={"password": "nope"}).status_code for _ in range(11)]
+    assert codes[-1] == 429
+    monkeypatch.delenv("APP_PASSWORD")
+    importlib.reload(config)
+    importlib.reload(m)
+
+
+# ---------------- Spanish translation ----------------
+def test_translation_templates_numbers_and_months():
+    from shared.i18n_core import translate as t
+    assert t("Revenue fell 23%") == "Los ingresos bajaron un 23 %"
+    assert t("Revenue went from €12,334 to €9,489.") == "Los ingresos pasaron de 12.334 € a 9.489 €."
+    assert t("October brings 1.9x your usual orders") == "Octubre trae 1,9 veces tus pedidos habituales"
+    assert t("Customers rate you 4.4 out of 5.") == "Tus clientes te valoran con un 4,4 de 5."
+
+
+def test_translation_patterns_keep_customer_words():
+    from shared.i18n_core import translate as t
+    out = t('The most common complaint is about colour and design range (11 negative mentions). For example: "Echo de menos más colores."')
+    assert out.startswith("La queja más habitual es sobre gama de colores y diseños") and '"Echo de menos más colores."' in out
+    assert t("Bamboo outsells cotton 2.4 to 1") == "Bambú se vende 2,4 a 1 frente a algodón"
+
+
+def test_translation_leaves_unknown_text_alone():
+    from shared.i18n_core import translate as t
+    assert t("Turbante Luna bambú - Arena") == "Turbante Luna bambú - Arena"
+    assert t("Revenue fell 23%", "en") == "Revenue fell 23%"
+
+
+def test_spanish_briefing_export(client):
+    md = client.get("/api/briefing?ws=demo&format=md&lang=es").text
+    assert "Cifras clave" in md and "Recomendaciones principales" in md

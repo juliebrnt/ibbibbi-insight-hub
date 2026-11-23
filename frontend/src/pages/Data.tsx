@@ -73,7 +73,7 @@ export function Data() {
         <ul className="mt-2 space-y-1.5 text-sm text-ink-2 list-disc pl-5">
           <li>Everything stays on this computer. Nothing is sent anywhere unless you switch AI analysis on.</li>
           <li>Names and addresses are not stored. Emails and phone numbers become anonymous ids, so repeat customers can be counted without knowing who they are.</li>
-          <li><b>We never estimate anyone's health status or treatment stage</b> from what they buy or say, and never suggest targeting people that way.</li>
+          <li><b>We never estimate anyone's health, personal circumstances or other sensitive traits</b> from what they buy or say, and never suggest targeting people that way.</li>
           <li>Messages from people having a hard time are flagged for a personal reply, never used in marketing. Quotes need consent.</li>
           <li>Export or delete everything at any time in Settings.</li>
         </ul>

@@ -1,3 +1,4 @@
+import { locale } from "@/lib/i18n";
 import { ArrowRight, CalendarCheck, HeartHandshake, PenLine, Sparkles, Upload } from "lucide-react";
 import { Link } from "react-router-dom";
 import { InsightCard } from "@/components/InsightCard";
@@ -171,7 +172,7 @@ function Today({ d }: { d: any }) {
   const hour = new Date().getHours();
   return (
     <div>
-      <p className="text-sm text-ink-3">{new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })}</p>
+      <p className="text-sm text-ink-3">{new Date().toLocaleDateString(locale(), { weekday: "long", day: "numeric", month: "long" })}</p>
       <h1 className="h-page mt-0.5">{hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening"}</h1>
       <div className="mt-4 grid grid-cols-3 gap-2">
         {d.kpis.slice(0, 3).map((k: any) => <KpiCard key={k.key} {...k} spark={undefined} help={undefined} compact />)}

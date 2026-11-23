@@ -85,9 +85,12 @@ def build(ws: str, p: Period) -> dict:
         if ly:
             ly_change = (cur - ly) / abs(ly) * 100 if min_pts is None else (cur - ly) * 100
             context.append(f"Same period last year: {metrics.fmt(key, ly)} ({'+' if ly_change >= 0 else ''}{ly_change:.0f}{'%' if min_pts is None else ' points'}).")
+        from .. import profile as prof
         months = {p.prev_start.month, p.prev_end.month}
-        if not up and months & {10, 12} and sample_kind in ("orders", "sessions"):
-            context.append("The comparison period includes a seasonal peak (October awareness month or Christmas), so part of this fall is expected.")
+        peaks = months & prof.peak_months(ws)
+        if not up and peaks and sample_kind in ("orders", "sessions"):
+            names = ", ".join(prof.key_date(ws, m) for m in sorted(peaks))
+            context.append(f"The comparison period includes a seasonal peak ({names}), so part of this fall is expected.")
         alerts.append({
             "id": f"alert_{key}", "metric": key, "label": m["label"], "direction": "up" if up else "down",
             "tone": "good" if good else "warning",

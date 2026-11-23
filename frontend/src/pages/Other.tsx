@@ -6,22 +6,22 @@ import { toast } from "sonner";
 import { InsightCard } from "@/components/InsightCard";
 import { Logo } from "@/components/Shell";
 import { Card, Delta, PageHeader, PageSkeleton, ProgressRing } from "@/components/ui";
-import { usePage } from "@/hooks/useData";
+import { usePage, useProfile } from "@/hooks/useData";
 import { api } from "@/lib/api";
 import { fmt } from "@/lib/format";
 import { useApp } from "@/lib/store";
 import { STATIC, staticQr } from "@/lib/static";
 
 export function Briefing() {
-  const { ws, range } = useApp();
+  const { ws, range, lang } = useApp();
   const { data: b, isLoading } = usePage("briefing");
   if (isLoading || !b) return <PageSkeleton />;
   return (
     <div className="max-w-3xl mx-auto">
       <div className={STATIC ? "hidden" : "no-print flex flex-wrap gap-2 justify-end mb-4"}>
         <button className="btn-outline" onClick={() => window.print()}><Printer className="h-4 w-4" />Print or save as PDF</button>
-        <a className="btn-outline" href={`/api/briefing?ws=${ws}&range=${range}&format=html`} download={`briefing_${b.end}.html`}><FileDown className="h-4 w-4" />HTML</a>
-        <a className="btn-outline" href={`/api/briefing?ws=${ws}&range=${range}&format=md`}><Download className="h-4 w-4" />Markdown</a>
+        <a className="btn-outline" href={`/api/briefing?ws=${ws}&range=${range}&format=html&lang=${lang}`} download={`briefing_${b.end}.html`}><FileDown className="h-4 w-4" />HTML</a>
+        <a className="btn-outline" href={`/api/briefing?ws=${ws}&range=${range}&format=md&lang=${lang}`}><Download className="h-4 w-4" />Markdown</a>
       </div>
       <div className="flex items-center justify-between"><Logo /><span className="text-xs text-ink-3">{b.demo ? "Demo data, not real customers" : ""}</span></div>
       <h1 className="h-page mt-6">{b.title}</h1>
@@ -75,6 +75,7 @@ export function Collect() {
 }
 
 export function PublicForm() {
+  const profileName = useProfile().name;
   const ws = new URLSearchParams(window.location.search).get("ws") === "demo" ? "demo" : "mine";
   const [rating, setRating] = useState(0);
   const [text, setText] = useState("");
@@ -92,7 +93,7 @@ export function PublicForm() {
       <div className="mx-auto max-w-md">
         <Logo />
         {sent ? (
-          <Card className="mt-8 text-center"><h1 className="font-display text-2xl font-semibold">Thank you</h1><p className="mt-2 text-ink-2">Your words help us make headwear that feels like you.</p></Card>
+          <Card className="mt-8 text-center"><h1 className="font-display text-2xl font-semibold">Thank you</h1><p className="mt-2 text-ink-2">Your words help us improve. Thank you for taking the time.</p></Card>
         ) : (
           <Card className="mt-8">
             <h1 className="font-display text-2xl font-semibold">How was your experience?</h1>
@@ -105,7 +106,7 @@ export function PublicForm() {
             <div className="mt-2 flex flex-wrap gap-2">{["Me", "A family member", "My child", "A gift"].map((w) => <button key={w} onClick={() => setWho(w)} className={`chip !py-2 !px-3 border ${who === w ? "bg-primary text-primary-ink border-primary" : "border-line"}`}>{w}</button>)}</div>
             <label className="mt-4 flex gap-2 text-sm text-ink-2"><input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} />You may quote my words (without my name).</label>
             <button className="btn-primary w-full mt-5" disabled={!rating && !text.trim()} onClick={submit}>Send</button>
-            <p className="mt-3 text-xs text-ink-3">We do not ask for your name or email. Your answer is stored privately by iBBIBBI.</p>
+            <p className="mt-3 text-xs text-ink-3">We do not ask for your name or email. Your answer is stored privately by {profileName}.</p>
           </Card>
         )}
       </div>
@@ -123,7 +124,8 @@ export function SettingsPage() {
   return (
     <div className="max-w-3xl">
       <PageHeader title="Settings" />
-      <Card>
+      <BusinessProfile />
+      <Card className="mt-4">
         <h2 className="h-card flex items-center gap-2"><Sparkles className="h-5 w-5 text-accent" />AI analysis</h2>
         <label className="mt-3 flex items-center justify-between gap-4">
           <span className="text-sm text-ink-2">When on, short, anonymised summaries (no names, emails, phone numbers, handles or links) are sent to the AI service to word insights, answer free questions and read screenshots. Numbers are always checked against your data.</span>
@@ -165,5 +167,56 @@ export function SettingsPage() {
         </div>
       </Card>
     </div>
+  );
+}
+
+function BusinessProfile() {
+  const { ws } = useApp();
+  const qc = useQueryClient();
+  const p = useProfile();
+  const [f, setF] = useState<any>(null);
+  const v = f || p;
+  const set = (k: string) => (e: any) => setF({ ...v, [k]: e.target.type === "checkbox" ? e.target.checked : e.target.value });
+  const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  async function save() {
+    try {
+      await api.post("/profile", { ...v, ws });
+      qc.invalidateQueries();
+      setF(null);
+      toast.success("Business profile saved. Insights now use it.");
+    } catch (e: any) { toast.error(e.message); }
+  }
+  return (
+    <Card>
+      <h2 className="h-card">Business profile</h2>
+      <p className="mt-1 text-sm text-ink-2">The platform works for any business. These details shape the wording of insights, reply drafts and seasonal alerts.</p>
+      <div className="mt-4 grid sm:grid-cols-2 gap-3">
+        <label className="text-sm">Business name<input className="input mt-1" value={v.name || ""} onChange={set("name")} /></label>
+        <label className="text-sm">Industry<input className="input mt-1" placeholder="e.g. Fashion and accessories" value={v.industry || ""} onChange={set("industry")} /></label>
+        <label className="text-sm sm:col-span-2">Mission (optional)<textarea className="input mt-1 py-2" rows={2} value={v.mission || ""} onChange={set("mission")} /></label>
+        <label className="text-sm">Name for the main product attribute<input className="input mt-1" placeholder="Material, fabric, flavour…" value={v.attribute_label || ""} onChange={set("attribute_label")} /></label>
+        <label className="text-sm">Name for product groups<input className="input mt-1" placeholder="Product line, collection…" value={v.line_label || ""} onChange={set("line_label")} /></label>
+        <label className="sm:col-span-2 flex items-start gap-3 rounded-xl bg-sunken p-3 text-sm">
+          <input type="checkbox" className="mt-1 h-5 w-5" checked={!!v.sensitive} onChange={set("sensitive")} />
+          <span><b>Some customers may be in a vulnerable situation</b> (for example health, grief or financial difficulty). Turns on gentle care prompts for distressing messages and stricter wording rules.</span>
+        </label>
+      </div>
+      <div className="mt-4">
+        <div className="label mb-2">Key dates for your business (seasonal context in alerts)</div>
+        <ul className="space-y-2">
+          {(v.key_dates || []).map((d: any, i: number) => (
+            <li key={i} className="flex gap-2">
+              <select className="input !w-40" value={d.month} aria-label="Month" onChange={(e) => setF({ ...v, key_dates: v.key_dates.map((x: any, j: number) => (j === i ? { ...x, month: Number(e.target.value) } : x)) })}>
+                {MONTHS.map((m, n) => <option key={m} value={n + 1}>{m}</option>)}
+              </select>
+              <input className="input" value={d.label} aria-label="What happens" onChange={(e) => setF({ ...v, key_dates: v.key_dates.map((x: any, j: number) => (j === i ? { ...x, label: e.target.value } : x)) })} />
+              <button className="btn-ghost !px-3" aria-label="Remove date" onClick={() => setF({ ...v, key_dates: v.key_dates.filter((_: any, j: number) => j !== i) })}>✕</button>
+            </li>
+          ))}
+        </ul>
+        <button className="btn-ghost mt-2" onClick={() => setF({ ...v, key_dates: [...(v.key_dates || []), { month: 1, label: "" }] })}>+ Add a date</button>
+      </div>
+      <div className="mt-4 flex gap-2"><button className="btn-primary" onClick={save} disabled={!f || STATIC}>Save profile</button>{f ? <button className="btn-ghost" onClick={() => setF(null)}>Cancel</button> : null}</div>
+    </Card>
   );
 }

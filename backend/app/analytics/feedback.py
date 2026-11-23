@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from .. import db
 from .common import Period, bucket_for, div, has, pct_change, subtitle
-from .text import LANG_NAMES, THEMES
+from .text import LANG_NAMES, THEME_GROUP_OF, THEME_GROUPS, THEMES
 
 MIN_THEME_N = 5
 
@@ -59,7 +59,8 @@ def overview(ws: str, p: Period) -> dict:
     themes = []
     for k, r in cur_t.items():
         share, prev_share = r["n"] / n_cur_total, (prev_t.get(k, {}).get("n", 0) / n_prev_total)
-        themes.append({"theme": k, "label": THEMES.get(k, {}).get("label", k.title()), "n": r["n"], "share": round(share, 3),
+        g = THEME_GROUP_OF.get(k, "expectations")
+        themes.append({"theme": k, "label": THEMES.get(k, {}).get("label", k.title()), "group": g, "group_label": THEME_GROUPS[g], "n": r["n"], "share": round(share, 3),
                        "sentiment": round(r["sentiment"], 2), "neg_share": round(r["neg_share"], 3),
                        "change_pts": round((share - prev_share) * 100, 1) if prev_t else None})
     themes.sort(key=lambda r: -r["n"])
@@ -105,7 +106,18 @@ def overview(ws: str, p: Period) -> dict:
     if pos_share is not None:
         stream_title = f"{pos_share * 100:.0f}% of feedback in this period is positive"
 
+    groups: dict = {}
+    for t in themes:
+        gr = groups.setdefault(t["group"], {"group": t["group"], "label": t["group_label"], "n": 0, "neg": 0.0})
+        gr["n"] += t["n"]
+        gr["neg"] += t["n"] * t["neg_share"]
+    group_rows = sorted([{**g, "neg_share": round(g["neg"] / g["n"], 3) if g["n"] else 0} for g in groups.values()], key=lambda g: -g["n"])
+    praised = sorted([t for t in themes if t["n"] >= MIN_THEME_N], key=lambda t: -(t["n"] * (1 - t["neg_share"])))[:3]
+    complaints = sorted([t for t in themes if t["n"] >= MIN_THEME_N and t["neg_share"] >= 0.3], key=lambda t: -(t["n"] * t["neg_share"]))[:3]
     return {
+        "theme_groups": {"title": (f"{group_rows[0]['label']} comes up most" if group_rows else "Feedback by category"),
+                         "subtitle": subtitle(p, src), "rows": group_rows},
+        "praised": praised, "complaints": complaints,
         "kpis": {
             "rating": {"value": rt["avg"], "prev": rt_prev["avg"], "n": rt["n"]},
             "nps": {"value": n_wide["score"] if n_wide["n"] >= 30 else None, "n": n_wide["n"], "period_value": n_cur["score"],

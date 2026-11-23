@@ -1,3 +1,4 @@
+import { tr } from "@/lib/i18n";
 import { useState } from "react";
 import { Bars, Funnel, Heatmap, Lines } from "@/charts/charts";
 import { ChartCard, KpiCard, PageHeader, PageSkeleton, Segmented } from "@/components/ui";
@@ -49,7 +50,7 @@ export function Sales() {
             </ChartCard>
             <ChartCard title={s.seasonality.title} subtitle={s.seasonality.subtitle} table={s.seasonality.rows} columns={[{ key: "month", label: "Month" }, { key: "orders", label: "Avg orders", fmt: fmt.num }]}>
               <Bars rows={s.seasonality.rows} x="month" y="orders" height={220} fmt={(v) => v?.toFixed(0)} highlight="Oct" label="orders" />
-              <p className="mt-1 text-xs text-ink-3">Awareness moments: World Cancer Day (4 Feb), Childhood Cancer Awareness (Sep), Breast Cancer Awareness (Oct).</p>
+              {Object.keys(s.seasonality.awareness || {}).length ? <p className="mt-1 text-xs text-ink-3">Key dates from your business profile: {Object.entries(s.seasonality.awareness).map(([m, l]) => `${tr(l)} (${tr(m)})`).join(", ")}.</p> : null}
             </ChartCard>
             <ChartCard title={s.codes.title} subtitle={s.codes.subtitle} table={s.codes.rows} columns={[{ key: "code", label: "Code" }, { key: "orders", label: "Orders" }, { key: "avg_discount", label: "Avg discount", fmt: fmt.eur }]}>
               {s.codes.rows.length ? <Bars rows={s.codes.rows} x="code" y="orders" height={220} label="orders" /> : <p className="text-sm text-ink-3">No codes used.</p>}

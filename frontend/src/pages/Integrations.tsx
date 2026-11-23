@@ -1,3 +1,4 @@
+import { locale } from "@/lib/i18n";
 import { useQueryClient } from "@tanstack/react-query";
 import { CheckCircle2, ChevronDown, Clock, KeyRound, Laptop, Loader2, Plug, RefreshCw, ShieldCheck, TriangleAlert, Upload } from "lucide-react";
 import { useState } from "react";
@@ -22,7 +23,7 @@ export const STATUS: Record<string, { label: string; c: string }> = {
 export function when(s?: string | null) {
   if (!s) return "Never";
   const d = new Date(s.length === 10 ? s + "T00:00:00" : s);
-  return d.toLocaleString("en-GB", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
+  return d.toLocaleString(locale(), { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
 }
 
 export function useRefresh() {
@@ -128,7 +129,7 @@ function IntegrationCard({ i, ws, mobile, onConnect, onUpload }: { i: any; ws: s
       <dl className="mt-3 grid grid-cols-2 gap-2 text-xs">
         <div><dt className="text-ink-3">Last authorised</dt><dd className="num">{i.last_authorised ? when(i.last_authorised) : isLive ? "Unknown" : "Not applicable"}</dd></div>
         <div><dt className="text-ink-3">Last synchronised</dt><dd className="num">{when(i.last_synced)}</dd></div>
-        {i.rows ? <div className="col-span-2"><dt className="text-ink-3">Data held</dt><dd className="num">{i.rows.toLocaleString("en-GB")} records{i.date_min ? `, ${new Date(i.date_min + "T00:00:00").toLocaleDateString("en-GB", { month: "short", year: "numeric" })} to ${new Date(i.date_max + "T00:00:00").toLocaleDateString("en-GB", { month: "short", year: "numeric" })}` : ""}</dd></div> : null}
+        {i.rows ? <div className="col-span-2"><dt className="text-ink-3">Data held</dt><dd className="num">{i.rows.toLocaleString(locale())} records{i.date_min ? `, ${new Date(i.date_min + "T00:00:00").toLocaleDateString(locale(), { month: "short", year: "numeric" })} to ${new Date(i.date_max + "T00:00:00").toLocaleDateString(locale(), { month: "short", year: "numeric" })}` : ""}</dd></div> : null}
       </dl>
       <button className="mt-3 flex items-center gap-1 text-xs font-medium text-primary" onClick={() => setOpen((v) => !v)} aria-expanded={open}>
         Requirements and permissions <ChevronDown className={cx("h-3.5 w-3.5 transition-transform", open && "rotate-180")} />

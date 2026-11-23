@@ -10,3 +10,10 @@
 8. **Export the briefing:** More/sidebar → Weekly briefing → Print or save as PDF, or download HTML or Markdown.
 
 Backup lines: Feedback → "Who is missing?" shows the children's line is under-represented in feedback (4% of feedback vs 17% of sales). Social → Opportunity inbox lists partnership enquiries from associations and pharmacies.
+
+## New since phase 1 to 4 (add if time allows)
+- **Integrations** (left menu): each platform with what it provides, permissions and status; Shopify and Judge.me connect in five minutes with a key, the rest are honest "Coming soon".
+- **ES** in the top bar: the whole app, including the recommendations and alerts, switches to Spanish. Customer quotes stay in their own words.
+- **Social, TikTok tab:** only the metrics TikTok really provides; engagement is calculated on views because TikTok has no reach.
+- **Feedback, All customer feedback:** filter by platform, rating, feeling, theme and date, then Reply.
+- **Settings, Business profile:** the same platform works for any company.

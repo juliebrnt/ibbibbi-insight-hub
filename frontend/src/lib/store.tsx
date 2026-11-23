@@ -1,8 +1,10 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { setLanguage } from "./i18n";
 
 export type Workspace = "demo" | "mine";
 export type Range = "28d" | "90d" | "365d" | "all";
 export type Theme = "light" | "dark" | "system";
+export type Lang = "en" | "es";
 
 type Ctx = {
   ws: Workspace;
@@ -11,6 +13,8 @@ type Ctx = {
   setRange: (r: Range) => void;
   theme: Theme;
   setTheme: (t: Theme) => void;
+  lang: Lang;
+  setLang: (l: Lang) => void;
   uploadOpen: boolean;
   setUploadOpen: (v: boolean) => void;
   captureOpen: boolean;
@@ -42,6 +46,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [ws, setWsState] = useState<Workspace>(() => (import.meta.env.VITE_STATIC === "1" ? "demo" : stored("ih-ws", "demo")));
   const [range, setRangeState] = useState<Range>(() => stored("ih-range", "90d"));
   const [theme, setThemeState] = useState<Theme>(() => stored("ih-theme", "system"));
+  const [lang, setLangState] = useState<Lang>(() => stored("ih-lang", "en"));
+  useEffect(() => { setLanguage(lang); }, [lang]);
   const [uploadOpen, setUploadOpen] = useState(false);
   const [captureOpen, setCaptureOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
@@ -62,6 +68,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setWs: (w) => (setWsState(w), save("ih-ws", w)),
         range,
         setRange: (r) => (setRangeState(r), save("ih-range", r)),
+        lang,
+        setLang: (l) => {
+          setLangState(l);
+          save("ih-lang", l);
+          if (import.meta.env.VITE_STATIC !== "1") fetch("/api/settings", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ lang: l }) }).catch(() => {});
+        },
         theme,
         setTheme: (t) => (setThemeState(t), t === "system" ? (() => { try { localStorage.removeItem("ih-theme"); } catch { /* */ } })() : save("ih-theme", t)),
         uploadOpen,

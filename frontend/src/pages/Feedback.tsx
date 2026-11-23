@@ -35,13 +35,25 @@ export function Feedback() {
         <Card className="mt-5 !bg-care-soft border-0" as="section">
           <div id="care" className="flex items-center gap-2 font-display text-lg font-semibold"><HeartHandshake className="h-5 w-5 text-care" />Consider a personal reply</div>
           <p className="mt-1 text-sm text-ink-2">These customers may be having a hard time. They are shown here for care, never for marketing, and are never quoted.</p>
-          <ul className="mt-3 space-y-2">{d.care.slice(0, 5).map((c: any) => <li key={c.id} className="rounded-xl bg-surface px-3 py-2 text-sm"><span className="text-ink-3 text-xs">{fmt.date(c.date)} · {c.source}</span><div>{c.text}</div></li>)}</ul>
+          <ul className="mt-3 space-y-2">{d.care.slice(0, 5).map((c: any) => <li key={c.id} className="rounded-xl bg-surface px-3 py-2 text-sm"><span className="text-ink-3 text-xs">{fmt.date(c.date)} · {c.source}</span><div translate="no">{c.text}</div></li>)}</ul>
         </Card>
       ) : null}
 
       <div className="mt-5 grid lg:grid-cols-2 gap-4">
         <ChartCard title={d.stream.title} subtitle={d.stream.subtitle} table={d.stream.rows} columns={[{ key: "period", label: "Period", fmt: fmt.short }, { key: "sentiment", label: "Feeling" }, { key: "n", label: "Count" }]}>
           <SentimentStream rows={d.stream.rows} />
+        </ChartCard>
+        <ChartCard title={d.theme_groups.title} subtitle={d.theme_groups.subtitle} className="lg:col-span-2"
+          help="Each theme belongs to one category. Themes come from keywords in Spanish, Catalan and English."
+          table={d.theme_groups.rows} columns={[{ key: "label", label: "Category" }, { key: "n", label: "Mentions" }, { key: "neg_share", label: "Negative", fmt: (v) => fmt.pct(v) }]}>
+          <div className="grid md:grid-cols-[1.3fr_1fr] gap-6">
+            <ShareBars rows={d.theme_groups.rows} label="label" value="n" fmt={(v) => String(v)} colorFor={(r) => (r.neg_share > 0.4 ? t.sentiment.negative : t.series[0])}
+              extra={(r) => <span className="text-ink-3"> · {fmt.pct(r.neg_share)} negative</span>} />
+            <div className="space-y-4 text-sm">
+              <div><div className="label mb-1">Most praised</div>{d.praised.length ? <ul className="space-y-1">{d.praised.map((x: any) => <li key={x.theme} className="flex justify-between"><span>{x.label}</span><span className="num text-ink-3">{x.n}</span></li>)}</ul> : <p className="text-ink-3">Not enough feedback yet.</p>}</div>
+              <div><div className="label mb-1">Recurring complaints</div>{d.complaints.length ? <ul className="space-y-1">{d.complaints.map((x: any) => <li key={x.theme} className="flex justify-between"><span>{x.label}</span><span className="num text-ink-3">{fmt.pct(x.neg_share)} negative</span></li>)}</ul> : <p className="text-ink-3">No theme with a high share of complaints.</p>}</div>
+            </div>
+          </div>
         </ChartCard>
         <ChartCard title={d.themes.title} subtitle={d.themes.subtitle} help="Themes come from keywords in Spanish, Catalan and English. You can edit them in Settings."
           table={d.themes.rows} columns={[{ key: "label", label: "Theme" }, { key: "n", label: "Mentions" }, { key: "neg_share", label: "Negative", fmt: (v) => fmt.pct(v) }, { key: "change_pts", label: "Change (pts)" }]}>
@@ -113,7 +125,7 @@ function Quotes({ quotes }: { quotes: any[] }) {
           return (
             <Card key={q.id} className="!p-4">
               <div className="flex items-center gap-2 flex-wrap"><SentimentBadge s={q.sentiment} /><Stars n={q.rating} /><span className="text-xs text-ink-3 ml-auto">{fmt.date(q.date)}</span></div>
-              <blockquote className="mt-2 text-[15px] leading-relaxed">“{q.text}”</blockquote>
+              <blockquote className="mt-2 text-[15px] leading-relaxed" translate="no">“{q.text}”</blockquote>
               <div className="mt-2 flex items-center justify-between text-xs text-ink-3"><span>{q.source}{q.product ? ` · ${q.product.split(" - ")[0]}` : ""}</span>
                 <label className="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" checked={!!ok} onChange={(e) => { setConsent({ ...consent, [q.id]: e.target.checked }); api.patch(`/feedback/${q.id}/consent?ws=${ws}`, { consent: e.target.checked }).then(() => toast(e.target.checked ? "Marked as OK to quote" : "Not OK to quote")); }} />OK to quote</label></div>
             </Card>

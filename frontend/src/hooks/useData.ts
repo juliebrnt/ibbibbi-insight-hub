@@ -16,6 +16,11 @@ export function useStatus() {
   return useQuery({ queryKey: ["status", ws], queryFn: () => api.get(`/status?ws=${ws}`) });
 }
 
+export function useProfile() {
+  const s = useStatus();
+  return s.data?.profile || { name: "Your business", sensitive: false, key_dates: [], attribute_label: "Material", line_label: "Product line" };
+}
+
 export function useRefreshAll() {
   const qc = useQueryClient();
   return () => qc.invalidateQueries();

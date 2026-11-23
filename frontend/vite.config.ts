@@ -34,7 +34,7 @@ export default defineConfig({
     }),
   ],
   resolve: { alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) } },
-  server: { port: 5173, proxy: { "/api": "http://localhost:8000" } },
+  server: { port: 5173, proxy: { "/api": "http://localhost:8000" }, fs: { allow: [".."] } },
   build: STATIC
     ? { outDir: "dist-prototype", assetsInlineLimit: 100_000_000, cssCodeSplit: false, chunkSizeWarningLimit: 5000, rollupOptions: { output: { inlineDynamicImports: true } } }
     : { chunkSizeWarningLimit: 1500 },

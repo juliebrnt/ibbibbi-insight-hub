@@ -79,7 +79,7 @@ export function FeedbackCard({ r, onReply }: { r: any; onReply?: () => void }) {
         <SentimentBadge s={r.sentiment} /><Stars n={r.rating} />
         <span className="ml-auto text-xs text-ink-3">{fmt.date(r.date)}</span>
       </div>
-      <p className="mt-2 text-[15px] leading-relaxed">{r.text}</p>
+      <p className="mt-2 text-[15px] leading-relaxed" translate="no">{r.text}</p>
       <div className="mt-2 flex flex-wrap gap-1.5 text-xs text-ink-3">
         {r.product ? <span>{String(r.product).split(" - ")[0]} ·</span> : null}
         {(r.theme_labels || r.themes || []).map((t: string) => <span key={t} className="chip bg-primary-soft text-primary">{t}</span>)}
@@ -120,11 +120,11 @@ function ReplySheet({ r, onClose }: { r: any; onClose: () => void }) {
   function close() { setText(""); onClose(); }
   return (
     <Sheet open={!!r} onOpenChange={close} title="Reply to this customer" description={r.reply?.how}>
-      <blockquote className="rounded-xl bg-sunken p-3 text-sm">“{r.text}”</blockquote>
+      <blockquote className="rounded-xl bg-sunken p-3 text-sm" translate="no">“{r.text}”</blockquote>
       <label className="mt-4 flex items-center justify-between text-sm font-medium" htmlFor="reply-text">
         Your reply {draft.data ? <span className="chip bg-accent-soft text-accent font-normal"><Sparkles className="h-3 w-3" />{draft.data.ai_written ? "Suggested by AI" : "Suggested draft"}, edit before sending</span> : null}
       </label>
-      <textarea id="reply-text" rows={5} className="input mt-1 py-2" value={value} onChange={(e) => setText(e.target.value)} />
+      <textarea translate="no" id="reply-text" rows={5} className="input mt-1 py-2" value={value} onChange={(e) => setText(e.target.value)} />
       {r.distress ? <p className="mt-2 text-xs text-care">This person may be having a hard time. Keep the reply personal and gentle, with no selling.</p> : null}
       <div className="mt-4 flex flex-wrap gap-2">
         {r.reply?.direct ? (

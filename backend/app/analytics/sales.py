@@ -8,6 +8,7 @@ from .common import Period, bucket_for, div, eur, has, pct_change, subtitle
 
 LINE_LABEL = {"women": "Women's line", "children": "Children's line"}
 FABRIC_LABEL = {"bamboo": "Bamboo", "cotton": "Cotton", "silk": "Silk"}
+from .. import profile as prof  # noqa: E402
 
 
 def totals(ws: str, a, b) -> dict:
@@ -82,9 +83,12 @@ def overview(ws: str, p: Period) -> dict:
 
     fab_units = {r["fabric"]: r["units"] or 0 for r in fabric}
     fab_title = "Product mix by fabric"
-    if fab_units.get("bamboo") and fab_units.get("cotton"):
-        ratio = fab_units["bamboo"] / fab_units["cotton"]
-        fab_title = f"Bamboo outsells cotton {ratio:.1f} to 1" if ratio >= 1.2 else "Bamboo and cotton sell about the same"
+    ranked = sorted([(k, v) for k, v in fab_units.items() if k != "other" and v], key=lambda kv: -kv[1])
+    if len(ranked) >= 2:
+        (a, ua), (b, ub) = ranked[0], ranked[1]
+        ratio = ua / ub
+        la, lb = FABRIC_LABEL.get(a, a.title()), FABRIC_LABEL.get(b, b.title()).lower()
+        fab_title = f"{la} outsells {lb} {ratio:.1f} to 1" if ratio >= 1.2 else f"{la} and {lb} sell about the same"
     line_units = {r["line"]: r["units"] or 0 for r in line}
     tot_units = sum(line_units.values()) or 1
     line_title = f"The children's line is {line_units.get('children', 0) / tot_units * 100:.0f}% of units sold" if line_units.get("children") else "Sales by product line"
@@ -93,8 +97,8 @@ def overview(ws: str, p: Period) -> dict:
     peak = max(seasonality, key=lambda r: r["orders"]) if seasonality else None
     months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     season_title = f"{months[peak['m'] - 1]} is your busiest month" if peak else "Seasonality"
-    if peak and peak["m"] == 10:
-        season_title = "October, breast cancer awareness month, is your busiest month"
+    if peak and prof.key_date(ws, peak["m"]):
+        season_title = f"{months[peak['m'] - 1]} ({prof.key_date(ws, peak['m'])}) is your busiest month"
     total_c = sum(r["customers"] for r in dist) or 1
     one = next((r["customers"] for r in dist if r["grp"] == "One order"), 0)
     dist_title = f"{one / total_c * 100:.0f}% of customers have bought only once"
@@ -121,7 +125,8 @@ def overview(ws: str, p: Period) -> dict:
         "colours": {"title": f"{colours[0]['colour']} is the best-selling colour" if colours else "Colours", "subtitle": subtitle(p, src), "rows": colours},
         "seasonality": {"title": season_title, "subtitle": "Average orders per calendar month, all data · Shopify orders",
                         "rows": [{"month": months[r["m"] - 1][:3], **r} for r in seasonality],
-                        "awareness": {"Feb": "World Cancer Day (4 Feb)", "Sep": "Childhood Cancer Awareness Month", "Oct": "Breast Cancer Awareness Month"}},
+                        "awareness": {months[d["month"] - 1][:3]: d["label"] for d in prof.get(ws)["key_dates"]},
+                        "attribute_label": prof.get(ws)["attribute_label"]},
         "loyalty": {"title": dist_title, "subtitle": "All customers to date · Shopify orders", "rows": dist},
         "cohorts": cohorts(ws, p.end),
         "gift": {"value": cur["gift_share"]},

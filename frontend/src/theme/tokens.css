@@ -1,0 +1,102 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Colour tokens as RGB triplets so Tailwind can apply opacity. Mirror changes in tokens.ts. */
+:root {
+  color-scheme: light;
+  --bg: 251 248 244;          /* warm paper */
+  --surface: 255 255 255;
+  --sunken: 244 239 232;
+  --line: 232 224 215;
+  --ink: 43 37 34;
+  --ink-2: 92 83 77;
+  --ink-3: 116 106 99;
+  --primary: 46 94 90;
+  --primary-ink: 255 255 255;
+  --primary-soft: 228 239 236;
+  --accent: 176 90 52;
+  --accent-soft: 248 232 220;
+  --good: 22 120 86;
+  --good-soft: 222 243 234;
+  --warn: 160 98 14;
+  --warn-soft: 250 238 214;
+  --care: 122 74 140;
+  --care-soft: 240 231 245;
+  --shadow-card: 0 1px 2px rgba(60, 40, 30, 0.05), 0 4px 16px rgba(60, 40, 30, 0.05);
+  --shadow-lift: 0 2px 6px rgba(60, 40, 30, 0.08), 0 16px 40px rgba(60, 40, 30, 0.12);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: 27 25 23; --surface: 37 34 31; --sunken: 31 29 27; --line: 58 53 49;
+    --ink: 242 237 231; --ink-2: 200 192 184; --ink-3: 166 157 149;
+    --primary: 122 182 174; --primary-ink: 18 30 29; --primary-soft: 38 56 54;
+    --accent: 226 150 112; --accent-soft: 62 44 36;
+    --good: 104 200 158; --good-soft: 30 54 45; --warn: 230 180 96; --warn-soft: 60 48 28; --care: 196 160 214; --care-soft: 52 40 58;
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3); --shadow-lift: 0 16px 40px rgba(0, 0, 0, 0.45);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: 27 25 23; --surface: 37 34 31; --sunken: 31 29 27; --line: 58 53 49;
+  --ink: 242 237 231; --ink-2: 200 192 184; --ink-3: 166 157 149;
+  --primary: 122 182 174; --primary-ink: 18 30 29; --primary-soft: 38 56 54;
+  --accent: 226 150 112; --accent-soft: 62 44 36;
+  --good: 104 200 158; --good-soft: 30 54 45; --warn: 230 180 96; --warn-soft: 60 48 28; --care: 196 160 214; --care-soft: 52 40 58;
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3); --shadow-lift: 0 16px 40px rgba(0, 0, 0, 0.45);
+}
+
+html, body, #root { min-height: 100%; }
+body {
+  background: rgb(var(--bg));
+  color: rgb(var(--ink));
+  font-family: 'Inter Variable', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden;
+}
+.font-display { font-variation-settings: "opsz" 72, "SOFT" 50; letter-spacing: -0.01em; }
+.num { font-variant-numeric: tabular-nums; }
+
+@layer components {
+  .card { @apply bg-surface rounded-2xl shadow-card border border-line/60 min-w-0; }
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 min-h-[44px] text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 disabled:opacity-50 disabled:pointer-events-none; }
+  .btn-primary { @apply btn bg-primary text-primary-ink hover:bg-primary/90; }
+  .btn-soft { @apply btn bg-primary-soft text-primary hover:bg-primary-soft/70; }
+  .btn-ghost { @apply btn text-ink-2 hover:bg-sunken; }
+  .btn-outline { @apply btn border border-line bg-surface text-ink hover:bg-sunken; }
+  .chip { @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium; }
+  .input { @apply w-full rounded-xl border border-line bg-surface px-3 min-h-[44px] text-sm text-ink placeholder:text-ink-3 focus:outline-none focus:ring-2 focus:ring-primary/40; }
+  .label { @apply text-xs font-medium uppercase tracking-wide text-ink-3; }
+  .h-page { @apply font-display text-[28px] leading-tight sm:text-[34px] font-semibold text-ink; }
+  .h-card { @apply font-display text-lg leading-snug font-semibold text-ink; }
+}
+
+.page-in { animation: page-in 200ms ease-out; }
+@keyframes page-in { from { transform: translateY(6px); } to { transform: none; } }
+
+.skeleton {
+  background: linear-gradient(90deg, rgb(var(--sunken)) 0%, rgb(var(--line) / 0.6) 50%, rgb(var(--sunken)) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+  border-radius: 12px;
+}
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+.scroll-x { overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.scroll-x::-webkit-scrollbar { display: none; }
+.snap { scroll-snap-align: start; }
+.pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+@media print {
+  body { background: white; }
+  .no-print { display: none !important; }
+  .card { box-shadow: none; border-color: #ddd; break-inside: avoid; }
+  main { padding: 0 !important; margin: 0 !important; }
+}

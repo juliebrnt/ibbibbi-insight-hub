@@ -1,0 +1,21 @@
+Handle,Title,Vendor,Type,Tags,Option1 Name,Option1 Value,Variant SKU,Variant Price,Variant Inventory Qty,Status
+turbante-luna,Turbante Luna bambú - Arena,iBBIBBI,Turban,"bamboo, women",Color,Arena,IBB-BAM-101,39.00,50,active
+turbante-luna,Turbante Luna bambú - Negro,iBBIBBI,Turban,"bamboo, women",Color,Negro,IBB-BAM-102,39.00,29,active
+turbante-luna,Turbante Luna bambú - Terracota,iBBIBBI,Turban,"bamboo, women",Color,Terracota,IBB-BAM-103,39.00,42,active
+gorro-nube,Gorro Nube bambú - Gris perla,iBBIBBI,Cap,"bamboo, women",Color,Gris perla,IBB-BAM-104,29.00,2,active
+gorro-nube,Gorro Nube bambú - Azul noche,iBBIBBI,Cap,"bamboo, women",Color,Azul noche,IBB-BAM-105,29.00,4,active
+gorro-descanso,Gorro Descanso bambú - Crudo,iBBIBBI,Sleep cap,"bamboo, women",Color,Crudo,IBB-BAM-106,24.00,51,active
+panuelo-brisa,Pañuelo Brisa bambú - Salvia,iBBIBBI,Scarf,"bamboo, women",Color,Salvia,IBB-BAM-107,34.00,47,active
+turbante-alba,Turbante Alba algodón - Mostaza,iBBIBBI,Turban,"cotton, women",Color,Mostaza,IBB-COT-108,32.00,1,active
+turbante-alba,Turbante Alba algodón - Rayas marinas,iBBIBBI,Turban,"cotton, women",Color,Rayas marinas,IBB-COT-109,32.00,25,active
+gorro-paseo,Gorro Paseo algodón - Topos,iBBIBBI,Cap,"cotton, women",Color,Topos,IBB-COT-110,26.00,32,active
+panuelo-mediterráneo,Pañuelo Mediterráneo algodón - Estampado limón,iBBIBBI,Scarf,"cotton, women",Color,Estampado limón,IBB-COT-111,28.00,56,active
+panuelo-siena,Pañuelo Siena seda - Burdeos,iBBIBBI,Scarf,"silk, women",Color,Burdeos,IBB-SIL-112,59.00,30,active
+panuelo-siena,Pañuelo Siena seda - Verde botella,iBBIBBI,Scarf,"silk, women",Color,Verde botella,IBB-SIL-113,59.00,48,active
+turbante-gala,Turbante Gala seda - Champán,iBBIBBI,Turban,"silk, women",Color,Champán,IBB-SIL-114,64.00,36,active
+gorrito-estrella,Gorrito Estrella bambú - Rosa empolvado,iBBIBBI,Kids cap,"bamboo, kids",Color,Rosa empolvado,IBB-BAM-115,22.00,51,active
+gorrito-estrella,Gorrito Estrella bambú - Azul cielo,iBBIBBI,Kids cap,"bamboo, kids",Color,Azul cielo,IBB-BAM-116,22.00,29,active
+gorrito-dino,Gorrito Dino algodón - Verde,iBBIBBI,Kids cap,"cotton, kids",Color,Verde,IBB-COT-117,21.00,13,active
+bandana-pirata,Bandana Pirata algodón - Marino,iBBIBBI,Kids bandana,"cotton, kids",Color,Marino,IBB-COT-118,18.00,20,active
+gorrito-arcoiris,Gorrito Arcoíris bambú - Multicolor,iBBIBBI,Kids cap,"bamboo, kids",Color,Multicolor,IBB-BAM-119,23.00,51,active
+pack-regalo-calma,Pack Regalo Calma bambú - Arena + crudo,iBBIBBI,Gift set,"bamboo, women",Color,Arena + crudo,IBB-BAM-120,55.00,47,active

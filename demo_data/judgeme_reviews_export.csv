@@ -1,0 +1,332 @@
+review_date,rating,title,body,reviewer_name,reviewer_email,product_handle,product_title,source,curated
+2025-01-16,4,,"La tela de bambú es una caricia, de verdad.",Marta R.,marta.roca2@example.com,gorro-nube,Gorro Nube bambú - Azul noche,web,published
+2025-01-14,4,,Es tan suave que lo uso también para dormir.,Isabel R.,isabel.roca3@example.com,turbante-alba,Turbante Alba algodón - Rayas marinas,web,published
+2025-01-24,4,,"El envío tardó más de una semana, lo necesitaba antes de la quimio.",Laura B.,laura.brown16@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2025-02-11,4,,La atención por WhatsApp fue cercana y rápida.,Lucía N.,lucia.navarro35@example.com,panuelo-mediterráneo,Pañuelo Mediterráneo algodón - Estampado limón,web,published
+2025-02-11,5,,"Bought it as a gift for my sister, she cried.",Javier R.,javier.roca51@example.com,turbante-luna,Turbante Luna bambú - Arena,web,published
+2025-02-09,5,,A la meva filla li encanta el seu barret.,Clara G.,clara.gil55@example.com,gorrito-estrella,Gorrito Estrella bambú - Azul cielo,web,published
+2025-02-16,5,,Lo compré para regalar a mi madre y se emocionó.,Alba N.,alba.navarro8@example.com,gorro-nube,Gorro Nube bambú - Azul noche,web,published
+2025-03-02,3,,"La seda resbala un poco, cuesta anudarla.",Montse G.,montse.garcia13@example.com,gorro-paseo,Gorro Paseo algodón - Topos,web,published
+2025-02-20,3,,"Es tan suave que lo uso también para dormir. El algodón es fresco, ideal para el verano.",Montse R.,montse.romero67@example.com,panuelo-brisa,Pañuelo Brisa bambú - Salvia,web,published
+2025-02-21,4,,The colours are gorgeous and elegant.,Montse S.,montse.sanchez69@example.com,turbante-alba,Turbante Alba algodón - Mostaza,web,published
+2025-02-25,4,,It gave me my confidence back.,Alba T.,alba.torres72@example.com,panuelo-mediterráneo,Pañuelo Mediterráneo algodón - Estampado limón,web,published
+2025-03-03,5,,La seda és de molt bona qualitat.,Pilar S.,pilar.soler74@example.com,panuelo-brisa,Pañuelo Brisa bambú - Salvia,web,published
+2025-03-11,5,,"La tela de bambú es una caricia, de verdad. Gracias por hacerme sentir yo misma en un momento tan difícil.",Teresa R.,teresa.roca75@example.com,gorro-nube,Gorro Nube bambú - Azul noche,web,published
+2025-02-27,4,,Me ha devuelto la confianza para salir a la calle. Es tan suave que lo uso también para dormir.,Clara S.,clara.sanchez86@example.com,turbante-alba,Turbante Alba algodón - Rayas marinas,web,published
+2025-03-08,4,,Se ajusta perfecto y no se mueve en todo el día.,Montse B.,montse.brown39@example.com,gorro-paseo,Gorro Paseo algodón - Topos,web,published
+2025-03-15,5,,M'ha tornat la confiança.,Montse T.,montse.torres89@example.com,turbante-luna,Turbante Luna bambú - Arena,web,published
+2025-03-05,3,,"Shipping took over a week, which was stressful.",Olivia G.,olivia.gil48@example.com,panuelo-siena,Pañuelo Siena seda - Burdeos,web,published
+2025-03-17,4,,Me ayudaron a elegir con mucho cariño.,Elena P.,elena.puig98@example.com,panuelo-brisa,Pañuelo Brisa bambú - Salvia,web,published
+2025-03-08,3,,"La seda resbala un poco, cuesta anudarla.",David F.,david.ferrer0@example.com,turbante-luna,Turbante Luna bambú - Negro,web,published
+2025-03-17,3,,La seda rellisca una mica.,Núria P.,nuria.puig102@example.com,gorro-nube,Gorro Nube bambú - Azul noche,web,published
+2025-03-08,4,,S'ajusta molt bé i no es mou.,Olivia T.,olivia.torres6@example.com,turbante-luna,Turbante Luna bambú - Arena,web,published
+2025-03-17,5,,"Llegó en dos días, rapidísimo.",Clara T.,clara.torres109@example.com,gorro-nube,Gorro Nube bambú - Azul noche,web,published
+2025-03-15,4,,"Un regalo perfecto para mi amiga. La talla es perfecta, queda muy natural.",Ana S.,ana.sanchez114@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2025-03-29,5,,A la meva filla li encanta el seu barret.,Mercè S.,merce.smith60@example.com,gorrito-arcoiris,Gorrito Arcoíris bambú - Multicolor,web,published
+2025-03-20,4,,"Great fit, it does not slip.",Núria C.,nuria.costa68@example.com,panuelo-siena,Pañuelo Siena seda - Burdeos,web,published
+2025-04-02,5,,"Bought it as a gift for my sister, she cried.",Montse S.,montse.smith126@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2025-03-18,5,,"Incredibly soft, no itching at all on a sensitive scalp.",Lucía G.,lucia.gil128@example.com,gorro-nube,Gorro Nube bambú - Azul noche,web,published
+2025-04-02,4,,Lo compré para regalar a mi madre y se emocionó.,Teresa P.,teresa.puig130@example.com,turbante-luna,Turbante Luna bambú - Arena,web,published
+2025-03-23,4,,"Echo de menos más colores, la gama es limitada.",Júlia M.,julia.morales131@example.com,gorro-nube,Gorro Nube bambú - Gris perla,web,published
+2025-03-30,4,,Uns colors preciosos.,Rosa F.,rosa.font49@example.com,panuelo-mediterráneo,Pañuelo Mediterráneo algodón - Estampado limón,web,published
+2025-03-31,4,,El cotó és fresc per a l'estiu. Uns colors preciosos.,Teresa F.,teresa.ferrer137@example.com,turbante-luna,Turbante Luna bambú - Negro,web,published
+2025-04-08,4,,"Por fin algo que no parece de hospital. El packaging es precioso, con una nota escrita a mano.",Javier S.,javier.soler105@example.com,gorro-nube,Gorro Nube bambú - Gris perla,web,published
+2025-04-22,3,,El paquete llegó con retraso.,Isabel R.,isabel.roca3@example.com,gorro-paseo,Gorro Paseo algodón - Topos,web,published
+2025-05-01,5,,Por fin algo que no parece de hospital.,Elena V.,elena.vidal113@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2025-04-29,4,,"Suavísimo, no pica nada aunque tengo el cuero cabelludo muy sensible. Llegó en dos días, rapidísimo.",Olivia S.,olivia.smith123@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2025-04-27,4,,"Incredibly soft, no itching at all on a sensitive scalp. Bought it as a gift for my sister, she cried.",Elena S.,elena.smith157@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2025-04-23,4,,It slips a bit when I walk.,Mercè C.,merce.costa158@example.com,pack-regalo-calma,Pack Regalo Calma bambú - Arena + crudo,web,published
+2025-04-19,4,,"Echo de menos más colores, la gama es limitada.",Clara S.,clara.smith167@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2025-05-08,5,,Un regalo perfecto para mi amiga.,Jordi R.,jordi.roca171@example.com,gorro-nube,Gorro Nube bambú - Azul noche,web,published
+2025-04-26,5,,Gracias por hacerme sentir yo misma en un momento tan difícil. Un regalo perfecto para mi amiga.,Júlia S.,julia.sanchez172@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2025-04-25,4,,Lovely packaging with a handwritten note. Thank you for making me feel like me again.,David R.,david.ruiz173@example.com,turbante-alba,Turbante Alba algodón - Mostaza,web,published
+2025-05-07,5,,"Incredibly soft, no itching at all on a sensitive scalp.",Sofía N.,sofia.navarro180@example.com,gorro-nube,Gorro Nube bambú - Azul noche,web,published
+2025-04-30,5,,El vaig comprar per regalar a la meva mare. Gràcies per fer-me sentir jo mateixa.,Lucía S.,lucia.soler80@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2025-04-30,3,,"Echo de menos más colores, la gama es limitada.",Júlia L.,julia.lopez185@example.com,panuelo-brisa,Pañuelo Brisa bambú - Salvia,web,published
+2025-05-16,5,,Uns colors preciosos. La roba de bambú és molt suau i fresca.,Javier R.,javier.ruiz186@example.com,turbante-luna,Turbante Luna bambú - Arena,web,published
+2025-05-13,4,,"És suavíssim, no pica gens.",Rosa F.,rosa.font49@example.com,gorro-nube,Gorro Nube bambú - Gris perla,web,published
+2025-05-09,4,,Customer service was warm and quick.,Clara F.,clara.ferrer188@example.com,gorro-nube,Gorro Nube bambú - Azul noche,web,published
+2025-05-15,2,,"El envío tardó más de una semana, lo necesitaba antes de la quimio. Me queda un poco grande, ¿hay talla más pequeña?",Carmen G.,carmen.gil190@example.com,panuelo-siena,Pañuelo Siena seda - Burdeos,web,published
+2025-05-07,4,,"A mi hija le encanta su gorrito de estrellas, quiere llevarlo al cole. Por fin algo que no parece de hospital.",María S.,maria.serra197@example.com,gorrito-dino,Gorrito Dino algodón - Verde,web,published
+2025-05-04,4,,"Suavísimo, no pica nada aunque tengo el cuero cabelludo muy sensible.",Ana B.,ana.brown198@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2025-05-17,5,,"Me encanta el estampado, me siento guapa otra vez.",Ana B.,ana.brown198@example.com,gorro-nube,Gorro Nube bambú - Azul noche,web,published
+2025-05-09,4,,"La talla es perfecta, queda muy natural. La tela de bambú es una caricia, de verdad.",Lucía R.,lucia.ruiz95@example.com,turbante-alba,Turbante Alba algodón - Mostaza,web,published
+2025-05-18,4,,"Echo de menos más colores, la gama es limitada.",Rosa L.,rosa.lopez99@example.com,gorro-nube,Gorro Nube bambú - Gris perla,web,published
+2025-05-19,5,,"Suavísimo, no pica nada aunque tengo el cuero cabelludo muy sensible.",Isabel F.,isabel.font200@example.com,panuelo-mediterráneo,Pañuelo Mediterráneo algodón - Estampado limón,web,published
+2025-05-18,5,,Lovely packaging with a handwritten note.,Núria L.,nuria.lopez205@example.com,panuelo-brisa,Pañuelo Brisa bambú - Salvia,web,published
+2025-05-31,4,,M'ha tornat la confiança. L'embolcall és preciós.,Carmen N.,carmen.navarro207@example.com,turbante-alba,Turbante Alba algodón - Mostaza,web,published
+2025-05-26,4,,"Llegó en dos días, rapidísimo.",Olivia L.,olivia.lopez208@example.com,gorro-nube,Gorro Nube bambú - Gris perla,web,published
+2025-05-29,4,,Lo compré para regalar a mi madre y se emocionó.,Pilar M.,pilar.martinez209@example.com,turbante-alba,Turbante Alba algodón - Mostaza,web,published
+2025-05-21,5,,S'ajusta molt bé i no es mou.,Laura N.,laura.navarro217@example.com,turbante-luna,Turbante Luna bambú - Arena,web,published
+2025-05-25,4,,"Me encanta el estampado, me siento guapa otra vez.",Núria R.,nuria.roca227@example.com,turbante-alba,Turbante Alba algodón - Rayas marinas,web,published
+2025-06-10,4,,La seda es de muy buena calidad.,Rosa R.,rosa.roca230@example.com,gorro-nube,Gorro Nube bambú - Azul noche,web,published
+2025-06-04,4,,Uns colors preciosos.,Montse R.,montse.ruiz234@example.com,gorro-nube,Gorro Nube bambú - Gris perla,web,published
+2025-06-10,4,,M'ha tornat la confiança.,Núria M.,nuria.martinez93@example.com,gorro-nube,Gorro Nube bambú - Azul noche,web,published
+2025-06-18,5,,Los colores son preciosos y elegantes.,Emma L.,emma.lopez237@example.com,pack-regalo-calma,Pack Regalo Calma bambú - Arena + crudo,web,published
+2025-06-03,5,,"Bought it as a gift for my sister, she cried.",Montse S.,montse.sanchez69@example.com,turbante-luna,Turbante Luna bambú - Arena,web,published
+2025-06-09,4,,"La tela de bambú es una caricia, de verdad.",Núria S.,nuria.serra70@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2025-06-20,4,,Los colores son preciosos y elegantes.,Júlia S.,julia.serra244@example.com,pack-regalo-calma,Pack Regalo Calma bambú - Arena + crudo,web,published
+2025-06-20,5,,Lo compré para regalar a mi madre y se emocionó.,Emma F.,emma.font250@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2025-06-09,4,,La seda rellisca una mica.,Núria F.,nuria.font254@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2025-06-28,4,,Gracias por hacerme sentir yo misma en un momento tan difícil.,Irene R.,irene.romero261@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2025-06-16,5,,Por fin algo que no parece de hospital.,Irene F.,irene.ferrer262@example.com,gorro-paseo,Gorro Paseo algodón - Topos,web,published
+2025-06-13,5,,"Llegó en dos días, rapidísimo.",Sofía L.,sofia.lopez264@example.com,turbante-luna,Turbante Luna bambú - Arena,web,published
+2025-06-14,5,,"Por fin algo que no parece de hospital. La tela de bambú es una caricia, de verdad.",Anna S.,anna.smith266@example.com,gorro-nube,Gorro Nube bambú - Azul noche,web,published
+2025-06-24,4,,Gràcies per fer-me sentir jo mateixa.,Cristina P.,cristina.puig273@example.com,panuelo-brisa,Pañuelo Brisa bambú - Salvia,web,published
+2025-07-09,5,,"Incredibly soft, no itching at all on a sensitive scalp.",Javier T.,javier.torres277@example.com,gorro-paseo,Gorro Paseo algodón - Topos,web,published
+2025-07-11,4,,Se ajusta perfecto y no se mueve en todo el día.,Laura R.,laura.romero282@example.com,gorro-nube,Gorro Nube bambú - Azul noche,web,published
+2025-06-30,4,,Finally something that does not look medical.,Montse N.,montse.navarro228@example.com,turbante-luna,Turbante Luna bambú - Negro,web,published
+2025-07-10,5,,"Bought it as a gift for my sister, she cried.",Isabel B.,isabel.brown241@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2025-07-21,5,,Se ajusta perfecto y no se mueve en todo el día.,Anna S.,anna.sanchez300@example.com,turbante-luna,Turbante Luna bambú - Negro,web,published
+2025-07-21,5,,"Suavísimo, no pica nada aunque tengo el cuero cabelludo muy sensible.",Pilar G.,pilar.gil96@example.com,gorro-nube,Gorro Nube bambú - Gris perla,web,published
+2025-07-23,4,,S'ajusta molt bé i no es mou.,María F.,maria.ferrer243@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2025-07-17,5,,"La tela de bambú es una caricia, de verdad.",Montse B.,montse.brown310@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2025-07-20,5,,"L'embolcall és preciós. És suavíssim, no pica gens.",Pilar S.,pilar.smith313@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2025-08-03,4,,"La seda resbala un poco, cuesta anudarla.",Lucía T.,lucia.torres162@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2025-07-26,3,,"M'encanta l'estampat, em sento guapa.",Núria F.,nuria.font254@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2025-08-03,4,,"Se me resbala un poco al caminar. El envío tardó más de una semana, lo necesitaba antes de la quimio.",Sofía F.,sofia.ferrer280@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2025-08-06,5,,Es tan suave que lo uso también para dormir.,David F.,david.font324@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2025-08-03,5,,La seda es de muy buena calidad. Lo compré para regalar a mi madre y se emocionó.,Rosa L.,rosa.lopez99@example.com,panuelo-siena,Pañuelo Siena seda - Verde botella,web,published
+2025-07-20,4,,A la meva filla li encanta el seu barret.,Ana G.,ana.gil327@example.com,gorrito-estrella,Gorrito Estrella bambú - Azul cielo,web,published
+2025-08-08,3,,És una mica car. És una mica car.,Lucía S.,lucia.soler80@example.com,gorro-paseo,Gorro Paseo algodón - Topos,web,published
+2025-07-30,4,,M'ha tornat la confiança.,Jordi M.,jordi.morales335@example.com,gorro-paseo,Gorro Paseo algodón - Topos,web,published
+2025-08-04,4,,"Viene en una caja muy bonita, perfecto para regalar.",Júlia L.,julia.lopez185@example.com,turbante-alba,Turbante Alba algodón - Rayas marinas,web,published
+2025-07-27,5,,"A mi hija le encanta su gorrito de estrellas, quiere llevarlo al cole.",Júlia L.,julia.lopez185@example.com,gorrito-estrella,Gorrito Estrella bambú - Azul cielo,web,published
+2025-08-10,5,,El paquete llegó con retraso.,Carmen R.,carmen.romero339@example.com,turbante-luna,Turbante Luna bambú - Arena,web,published
+2025-08-09,5,,"Me ha devuelto la confianza para salir a la calle. Suavísimo, no pica nada aunque tengo el cuero cabelludo muy sensible.",Pilar B.,pilar.brown298@example.com,turbante-luna,Turbante Luna bambú - Arena,web,published
+2025-08-22,5,,The colours are gorgeous and elegant. The colours are gorgeous and elegant.,Ana B.,ana.brown355@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2025-08-25,4,,Fits perfectly and stays put all day. The colours are gorgeous and elegant.,Ana B.,ana.brown355@example.com,turbante-alba,Turbante Alba algodón - Rayas marinas,web,published
+2025-08-25,5,,"El packaging es precioso, con una nota escrita a mano. Gracias por hacerme sentir yo misma en un momento tan difícil.",Claire M.,claire.morales358@example.com,turbante-luna,Turbante Luna bambú - Arena,web,published
+2025-08-25,5,,"Llegó en dos días, rapidísimo.",David S.,david.serra360@example.com,turbante-alba,Turbante Alba algodón - Rayas marinas,web,published
+2025-09-02,3,,Se me resbala un poco al caminar.,Júlia F.,julia.font365@example.com,turbante-luna,Turbante Luna bambú - Negro,web,published
+2025-09-10,3,,El paquete llegó con retraso.,Núria T.,nuria.torres275@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2025-09-15,5,,Me ayudaron a elegir con mucho cariño.,Montse N.,montse.navarro383@example.com,panuelo-brisa,Pañuelo Brisa bambú - Salvia,web,published
+2025-09-13,4,,La atención por WhatsApp fue cercana y rápida.,Lucía F.,lucia.ferrer385@example.com,turbante-alba,Turbante Alba algodón - Mostaza,web,published
+2025-09-26,4,,Mi hijo dice que es un gorro de pirata y lo lleva orgulloso.,Rosa S.,rosa.serra218@example.com,gorrito-dino,Gorrito Dino algodón - Verde,web,published
+2025-09-22,3,,Thank you for making me feel like me again.,Emma S.,emma.sanchez411@example.com,turbante-alba,Turbante Alba algodón - Mostaza,web,published
+2025-10-08,5,,It gave me my confidence back.,Emma S.,emma.sanchez411@example.com,turbante-luna,Turbante Luna bambú - Arena,web,published
+2025-10-05,4,,La seda es de muy buena calidad.,Elena M.,elena.morales414@example.com,turbante-gala,Turbante Gala seda - Champán,web,published
+2025-10-01,5,,Se ajusta perfecto y no se mueve en todo el día.,Júlia S.,julia.serra417@example.com,panuelo-brisa,Pañuelo Brisa bambú - Salvia,web,published
+2025-10-10,5,,"El algodón es fresco, ideal para el verano.",Claire G.,claire.gil420@example.com,turbante-luna,Turbante Luna bambú - Arena,web,published
+2025-10-08,4,,"A mi hija le encanta su gorrito de estrellas, quiere llevarlo al cole. Por fin algo que no parece de hospital.",Javier R.,javier.ruiz184@example.com,gorrito-estrella,Gorrito Estrella bambú - Rosa empolvado,web,published
+2025-10-14,4,,Me gustaría más variedad de colores y estampados.,Cristina F.,cristina.ferrer426@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2025-10-19,4,,El vaig comprar per regalar a la meva mare.,Olivia M.,olivia.morales432@example.com,turbante-alba,Turbante Alba algodón - Rayas marinas,web,published
+2025-10-10,5,,"Suavísimo, no pica nada aunque tengo el cuero cabelludo muy sensible. Es tan suave que lo uso también para dormir.",Alba P.,alba.puig182@example.com,turbante-luna,Turbante Luna bambú - Arena,web,published
+2025-10-24,4,,"Bought it as a gift for my sister, she cried.",Rosa S.,rosa.serra435@example.com,turbante-alba,Turbante Alba algodón - Rayas marinas,web,published
+2025-10-20,4,,The silk is slippery and hard to tie.,María F.,maria.ferrer380@example.com,gorro-nube,Gorro Nube bambú - Gris perla,web,published
+2025-10-16,5,,"La talla es perfecta, queda muy natural.",Sara M.,sara.morales442@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2025-10-29,5,,"M'encanta l'estampat, em sento guapa. El vaig comprar per regalar a la meva mare.",Olivia C.,olivia.costa388@example.com,turbante-luna,Turbante Luna bambú - Negro,web,published
+2025-10-23,4,,És una mica car. L'enviament va trigar massa.,Isabel B.,isabel.brown404@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2025-10-26,5,,Los colores son preciosos y elegantes. Es tan suave que lo uso también para dormir.,Núria P.,nuria.puig303@example.com,gorro-paseo,Gorro Paseo algodón - Topos,web,published
+2025-10-22,4,,"El envío tardó más de una semana, lo necesitaba antes de la quimio.",Sofía T.,sofia.torres478@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2025-10-29,5,,La roba de bambú és molt suau i fresca.,Mercè C.,merce.costa479@example.com,gorro-nube,Gorro Nube bambú - Azul noche,web,published
+2025-10-27,4,,Uns colors preciosos.,Sofía R.,sofia.roca482@example.com,gorro-nube,Gorro Nube bambú - Gris perla,web,published
+2025-10-23,3,,"Wish there were more colours, the range feels limited.",Júlia L.,julia.lopez483@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2025-11-01,5,,Los colores son preciosos y elegantes.,María S.,maria.smith484@example.com,turbante-luna,Turbante Luna bambú - Negro,web,published
+2025-10-30,3,,El algodón da algo de calor en agosto.,Núria L.,nuria.lopez485@example.com,panuelo-mediterráneo,Pañuelo Mediterráneo algodón - Estampado limón,web,published
+2025-11-09,5,,La roba de bambú és molt suau i fresca.,Noelia M.,noelia.martinez494@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2025-11-08,5,,"A mi hija le encanta su gorrito de estrellas, quiere llevarlo al cole.",Lucía R.,lucia.ruiz95@example.com,gorrito-arcoiris,Gorrito Arcoíris bambú - Multicolor,web,published
+2025-10-29,5,,Los colores son preciosos y elegantes.,Ana L.,ana.lopez498@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2025-11-02,3,,Me gustaría más variedad de colores y estampados. Es un poco caro para necesitar varios.,Pilar S.,pilar.soler501@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2025-11-08,4,,Es tan suave que lo uso también para dormir.,Emma F.,emma.ferrer363@example.com,panuelo-siena,Pañuelo Siena seda - Verde botella,web,published
+2025-11-01,5,,"Me encanta el estampado, me siento guapa otra vez.",Alba R.,alba.ruiz509@example.com,pack-regalo-calma,Pack Regalo Calma bambú - Arena + crudo,web,published
+2025-10-31,5,,Va arribar en dos dies. L'embolcall és preciós.,Montse T.,montse.torres374@example.com,gorro-nube,Gorro Nube bambú - Azul noche,web,published
+2025-11-09,4,,"Wish there were more colours, the range feels limited.",Sofía R.,sofia.ruiz410@example.com,panuelo-brisa,Pañuelo Brisa bambú - Salvia,web,published
+2025-11-10,4,,"It gave me my confidence back. Incredibly soft, no itching at all on a sensitive scalp.",Elena N.,elena.navarro520@example.com,gorro-nube,Gorro Nube bambú - Gris perla,web,published
+2025-11-19,4,,La seda és de molt bona qualitat. Gràcies per fer-me sentir jo mateixa.,Anna T.,anna.torres416@example.com,pack-regalo-calma,Pack Regalo Calma bambú - Arena + crudo,web,published
+2025-11-13,2,,El paquete llegó con retraso.,Isabel F.,isabel.font526@example.com,turbante-luna,Turbante Luna bambú - Negro,web,published
+2025-11-03,5,,Me ha devuelto la confianza para salir a la calle.,Mercè S.,merce.soler529@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2025-11-14,5,,"Llegó en dos días, rapidísimo. El packaging es precioso, con una nota escrita a mano.",Júlia T.,julia.torres532@example.com,gorro-nube,Gorro Nube bambú - Gris perla,web,published
+2025-11-14,4,,Mi hijo dice que es un gorro de pirata y lo lleva orgulloso.,Sofía R.,sofia.romero535@example.com,bandana-pirata,Bandana Pirata algodón - Marino,web,published
+2025-11-14,5,,"La tela de bambú es una caricia, de verdad. Me ha devuelto la confianza para salir a la calle.",Sofía S.,sofia.soler538@example.com,turbante-luna,Turbante Luna bambú - Arena,web,published
+2025-11-23,5,,Por fin algo que no parece de hospital.,Claire G.,claire.gil420@example.com,gorro-nube,Gorro Nube bambú - Gris perla,web,published
+2025-11-18,5,,Un regalo perfecto para mi amiga.,Emma R.,emma.ruiz381@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2025-11-23,5,,"La tela de bambú es una caricia, de verdad.",Olivia R.,olivia.roca437@example.com,gorro-nube,Gorro Nube bambú - Gris perla,web,published
+2025-11-13,5,,Se ajusta perfecto y no se mueve en todo el día. Me ha devuelto la confianza para salir a la calle.,Olivia R.,olivia.roca437@example.com,pack-regalo-calma,Pack Regalo Calma bambú - Arena + crudo,web,published
+2025-11-27,4,,Gràcies per fer-me sentir jo mateixa.,Núria F.,nuria.ferrer564@example.com,turbante-luna,Turbante Luna bambú - Arena,web,published
+2025-12-02,4,,"És suavíssim, no pica gens.",Alba S.,alba.serra459@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2025-11-16,5,,M'ha tornat la confiança.,Carmen R.,carmen.ruiz467@example.com,panuelo-brisa,Pañuelo Brisa bambú - Salvia,web,published
+2025-11-28,4,,"El packaging es precioso, con una nota escrita a mano. Me ha devuelto la confianza para salir a la calle.",María T.,maria.torres372@example.com,pack-regalo-calma,Pack Regalo Calma bambú - Arena + crudo,web,published
+2025-11-29,5,,Los colores son preciosos y elegantes.,Rosa F.,rosa.font429@example.com,gorro-nube,Gorro Nube bambú - Azul noche,web,published
+2025-11-28,5,,Me ayudaron a elegir con mucho cariño.,Noelia B.,noelia.brown599@example.com,turbante-luna,Turbante Luna bambú - Arena,web,published
+2025-11-26,5,,Es tan suave que lo uso también para dormir.,Noelia B.,noelia.brown599@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2025-11-30,4,,Se ajusta perfecto y no se mueve en todo el día.,Paula F.,paula.ferrer477@example.com,gorro-nube,Gorro Nube bambú - Gris perla,web,published
+2025-12-09,4,,"Me encanta el estampado, me siento guapa otra vez.",Laura L.,laura.lopez617@example.com,pack-regalo-calma,Pack Regalo Calma bambú - Arena + crudo,web,published
+2025-12-20,3,,"Me encanta el estampado, me siento guapa otra vez. El packaging es precioso, con una nota escrita a mano.",Anna S.,anna.sanchez619@example.com,panuelo-mediterráneo,Pañuelo Mediterráneo algodón - Estampado limón,web,published
+2025-12-14,5,,Por fin algo que no parece de hospital.,Irene S.,irene.serra621@example.com,panuelo-brisa,Pañuelo Brisa bambú - Salvia,web,published
+2025-12-18,3,,"Trobo a faltar més colors, la gamma és limitada.",Sofía R.,sofia.roca482@example.com,gorro-nube,Gorro Nube bambú - Azul noche,web,published
+2025-12-24,5,,"Me encanta el estampado, me siento guapa otra vez.",Pilar V.,pilar.vidal641@example.com,pack-regalo-calma,Pack Regalo Calma bambú - Arena + crudo,web,published
+2025-12-29,3,,So soft I sleep in it.,Teresa L.,teresa.lopez642@example.com,panuelo-mediterráneo,Pañuelo Mediterráneo algodón - Estampado limón,web,published
+2026-01-03,5,,So soft I sleep in it.,Olivia B.,olivia.brown647@example.com,pack-regalo-calma,Pack Regalo Calma bambú - Arena + crudo,web,published
+2025-12-28,4,,"La talla es perfecta, queda muy natural.",Cristina M.,cristina.martinez652@example.com,gorro-nube,Gorro Nube bambú - Azul noche,web,published
+2026-01-02,5,,"Suavísimo, no pica nada aunque tengo el cuero cabelludo muy sensible.",Carmen B.,carmen.brown655@example.com,panuelo-brisa,Pañuelo Brisa bambú - Salvia,web,published
+2026-01-03,4,,Es un poco caro para necesitar varios.,Carmen V.,carmen.vidal656@example.com,turbante-luna,Turbante Luna bambú - Arena,web,published
+2026-01-12,5,,Mi hijo dice que es un gorro de pirata y lo lleva orgulloso.,Elena R.,elena.romero661@example.com,gorrito-estrella,Gorrito Estrella bambú - Rosa empolvado,web,published
+2026-01-02,5,,Es tan suave que lo uso también para dormir.,Jordi G.,jordi.garcia456@example.com,turbante-luna,Turbante Luna bambú - Arena,web,published
+2026-01-10,5,,Fits perfectly and stays put all day. Fits perfectly and stays put all day.,Sofía R.,sofia.ruiz410@example.com,turbante-alba,Turbante Alba algodón - Rayas marinas,web,published
+2026-01-12,5,,La talla és perfecta.,Alba V.,alba.vidal668@example.com,gorro-nube,Gorro Nube bambú - Azul noche,web,published
+2026-01-13,4,,Customer service was warm and quick.,Irene G.,irene.garcia673@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2026-01-09,4,,"Me encanta el estampado, me siento guapa otra vez.",Javier N.,javier.navarro471@example.com,pack-regalo-calma,Pack Regalo Calma bambú - Arena + crudo,web,published
+2026-01-15,5,,La seda és de molt bona qualitat.,Alba T.,alba.torres676@example.com,gorro-nube,Gorro Nube bambú - Azul noche,web,published
+2025-12-31,4,,Los colores son preciosos y elegantes.,Núria P.,nuria.puig571@example.com,turbante-alba,Turbante Alba algodón - Mostaza,web,published
+2026-01-17,4,,"El cotó és fresc per a l'estiu. És suavíssim, no pica gens.",Claire R.,claire.ruiz686@example.com,panuelo-mediterráneo,Pañuelo Mediterráneo algodón - Estampado limón,web,published
+2026-01-10,4,,El paquet va arribar tard.,Núria F.,nuria.ferrer564@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2026-01-14,5,,Mi hijo dice que es un gorro de pirata y lo lleva orgulloso. Me ayudaron a elegir con mucho cariño.,Rosa S.,rosa.serra218@example.com,gorrito-arcoiris,Gorrito Arcoíris bambú - Multicolor,web,published
+2026-01-11,5,,"Breathable cotton, perfect for summer.",Rosa G.,rosa.garcia710@example.com,turbante-luna,Turbante Luna bambú - Negro,web,published
+2026-01-24,3,,"Echo de menos más colores, la gama es limitada. El paquete llegó con retraso.",Carmen F.,carmen.font555@example.com,pack-regalo-calma,Pack Regalo Calma bambú - Arena + crudo,web,published
+2026-01-30,4,,El algodón da algo de calor en agosto. Me gustaría más variedad de colores y estampados.,Carmen R.,carmen.romero600@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2026-01-31,5,,Lo compré para regalar a mi madre y se emocionó. Gracias por hacerme sentir yo misma en un momento tan difícil.,Isabel F.,isabel.font526@example.com,turbante-luna,Turbante Luna bambú - Negro,web,published
+2026-01-17,4,,Lo compré para regalar a mi madre y se emocionó.,Paula S.,paula.serra723@example.com,gorro-paseo,Gorro Paseo algodón - Topos,web,published
+2026-01-18,5,,L'embolcall és preciós.,Mercè B.,merce.brown618@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2026-01-31,4,,La atención por WhatsApp fue cercana y rápida. La seda es de muy buena calidad.,Júlia L.,julia.lopez185@example.com,panuelo-siena,Pañuelo Siena seda - Burdeos,web,published
+2026-01-28,5,,La seda es de muy buena calidad.,Júlia L.,julia.lopez185@example.com,gorro-nube,Gorro Nube bambú - Gris perla,web,published
+2026-02-14,4,,"Me encanta el estampado, me siento guapa otra vez.",Claire R.,claire.romero497@example.com,panuelo-brisa,Pañuelo Brisa bambú - Salvia,web,published
+2026-02-07,4,,"Me ha devuelto la confianza para salir a la calle. La talla es perfecta, queda muy natural.",Lucía S.,lucia.serra470@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2026-02-19,4,,Por fin algo que no parece de hospital.,Anna R.,anna.ruiz744@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2026-02-03,5,,"Me encanta el estampado, me siento guapa otra vez. Me ha devuelto la confianza para salir a la calle.",Montse F.,montse.ferrer748@example.com,panuelo-brisa,Pañuelo Brisa bambú - Salvia,web,published
+2026-02-25,5,,Uns colors preciosos.,Sofía V.,sofia.vidal753@example.com,gorro-nube,Gorro Nube bambú - Azul noche,web,published
+2026-02-14,4,,Se ajusta perfecto y no se mueve en todo el día.,Alba V.,alba.vidal756@example.com,turbante-luna,Turbante Luna bambú - Arena,web,published
+2026-02-20,5,,Es tan suave que lo uso también para dormir.,Emma R.,emma.roca763@example.com,gorro-nube,Gorro Nube bambú - Gris perla,web,published
+2026-02-18,5,,Mi hijo dice que es un gorro de pirata y lo lleva orgulloso. Es tan suave que lo uso también para dormir.,Elena R.,elena.romero661@example.com,gorrito-arcoiris,Gorrito Arcoíris bambú - Multicolor,web,published
+2026-02-17,3,,Me gustaría más variedad de colores y estampados.,Elena R.,elena.roca408@example.com,turbante-luna,Turbante Luna bambú - Negro,web,published
+2026-02-26,4,,El cotó és fresc per a l'estiu. La talla és perfecta.,David V.,david.vidal666@example.com,gorro-nube,Gorro Nube bambú - Azul noche,web,published
+2026-02-18,5,,Se ajusta perfecto y no se mueve en todo el día.,Alba F.,alba.font782@example.com,gorro-nube,Gorro Nube bambú - Azul noche,web,published
+2026-03-04,5,,"Beautiful print, I feel like myself again.",Rosa S.,rosa.serra689@example.com,gorro-nube,Gorro Nube bambú - Gris perla,web,published
+2026-02-20,4,,Es tan suave que lo uso también para dormir. Un regalo perfecto para mi amiga.,Paula S.,paula.smith786@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2026-03-03,4,,"It gave me my confidence back. Beautiful print, I feel like myself again.",Claire F.,claire.ferrer561@example.com,turbante-luna,Turbante Luna bambú - Arena,web,published
+2026-03-04,5,,Es tan suave que lo uso también para dormir. Un regalo perfecto para mi amiga.,Rosa P.,rosa.puig803@example.com,turbante-gala,Turbante Gala seda - Champán,web,published
+2026-03-09,4,,"Great fit, it does not slip. Great fit, it does not slip.",Sara T.,sara.torres807@example.com,panuelo-brisa,Pañuelo Brisa bambú - Salvia,web,published
+2026-03-17,5,,Me ha devuelto la confianza para salir a la calle.,Carmen S.,carmen.soler826@example.com,pack-regalo-calma,Pack Regalo Calma bambú - Arena + crudo,web,published
+2026-03-23,5,,Los colores son preciosos y elegantes.,María L.,maria.lopez833@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2026-03-13,4,,"Viene en una caja muy bonita, perfecto para regalar.",Claire B.,claire.brown834@example.com,gorro-nube,Gorro Nube bambú - Gris perla,web,published
+2026-03-30,4,,La roba de bambú és molt suau i fresca.,Clara F.,clara.ferrer840@example.com,gorro-nube,Gorro Nube bambú - Gris perla,web,published
+2026-03-12,5,,"Incredibly soft, no itching at all on a sensitive scalp.",Mercè P.,merce.puig845@example.com,panuelo-mediterráneo,Pañuelo Mediterráneo algodón - Estampado limón,web,published
+2026-03-20,5,,"La talla es perfecta, queda muy natural. Gracias por hacerme sentir yo misma en un momento tan difícil.",Jordi S.,jordi.soler849@example.com,panuelo-siena,Pañuelo Siena seda - Burdeos,web,published
+2026-03-23,5,,"La talla es perfecta, queda muy natural.",Núria F.,nuria.ferrer854@example.com,pack-regalo-calma,Pack Regalo Calma bambú - Arena + crudo,web,published
+2026-03-25,4,,"Me queda un poco grande, ¿hay talla más pequeña?",Marta M.,marta.martinez860@example.com,gorro-nube,Gorro Nube bambú - Gris perla,web,published
+2026-03-23,5,,"Bought it as a gift for my sister, she cried.",Javier R.,javier.ruiz871@example.com,pack-regalo-calma,Pack Regalo Calma bambú - Arena + crudo,web,published
+2026-04-12,5,,"L'embolcall és preciós. És suavíssim, no pica gens.",Rosa T.,rosa.torres671@example.com,panuelo-siena,Pañuelo Siena seda - Verde botella,web,published
+2026-04-19,5,,"A mi hija le encanta su gorrito de estrellas, quiere llevarlo al cole.",Paula P.,paula.puig894@example.com,gorrito-estrella,Gorrito Estrella bambú - Rosa empolvado,web,published
+2026-04-24,4,,"Bought it as a gift for my sister, she cried.",Emma G.,emma.garcia902@example.com,turbante-luna,Turbante Luna bambú - Negro,web,published
+2026-04-20,4,,"La talla es perfecta, queda muy natural.",Olivia R.,olivia.romero907@example.com,turbante-luna,Turbante Luna bambú - Negro,web,published
+2026-04-20,5,,"Fits perfectly and stays put all day. Breathable cotton, perfect for summer.",Núria G.,nuria.gil911@example.com,turbante-luna,Turbante Luna bambú - Arena,web,published
+2026-04-29,5,,Gracias por hacerme sentir yo misma en un momento tan difícil. Gracias por hacerme sentir yo misma en un momento tan difícil.,Clara B.,clara.brown937@example.com,turbante-luna,Turbante Luna bambú - Arena,web,published
+2026-04-26,4,,Los colores son preciosos y elegantes.,Sara R.,sara.ruiz706@example.com,panuelo-brisa,Pañuelo Brisa bambú - Salvia,web,published
+2026-04-27,5,,"El algodón es fresco, ideal para el verano.",Javier R.,javier.ruiz951@example.com,gorro-nube,Gorro Nube bambú - Gris perla,web,published
+2026-05-01,5,,"The silk is excellent quality. Bought it as a gift for my sister, she cried.",Júlia L.,julia.lopez530@example.com,turbante-luna,Turbante Luna bambú - Arena,web,published
+2026-05-07,4,,"El packaging es precioso, con una nota escrita a mano.",Noelia F.,noelia.ferrer869@example.com,turbante-gala,Turbante Gala seda - Champán,web,published
+2026-05-01,5,,Lo compré para regalar a mi madre y se emocionó.,Isabel P.,isabel.puig578@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2026-05-16,4,,"Pocos colores para elegir, ojalá hubiera tonos más vivos.",Javier L.,javier.lopez717@example.com,turbante-luna,Turbante Luna bambú - Arena,web,published
+2026-04-30,4,,El precio de la seda es alto.,Sara F.,sara.ferrer549@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2026-05-15,4,,Gracias por hacerme sentir yo misma en un momento tan difícil. Es tan suave que lo uso también para dormir.,Javier M.,javier.martinez962@example.com,gorro-nube,Gorro Nube bambú - Gris perla,web,published
+2026-05-19,4,,La seda es de muy buena calidad.,Anna B.,anna.brown969@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2026-05-05,5,,"El packaging es precioso, con una nota escrita a mano.",Teresa M.,teresa.martinez970@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2026-05-22,4,,"El envío tardó más de una semana, lo necesitaba antes de la quimio.",Teresa M.,teresa.martinez970@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2026-05-14,5,,Va arribar en dos dies.,Núria G.,nuria.garcia824@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2026-05-22,3,,The silk is slippery and hard to tie.,Núria L.,nuria.lopez205@example.com,gorro-nube,Gorro Nube bambú - Gris perla,web,published
+2026-05-12,5,,Se ajusta perfecto y no se mueve en todo el día. Lo compré para regalar a mi madre y se emocionó.,Irene M.,irene.morales979@example.com,turbante-luna,Turbante Luna bambú - Negro,web,published
+2026-05-22,5,,"El packaging es precioso, con una nota escrita a mano.",Alba R.,alba.roca988@example.com,panuelo-mediterráneo,Pañuelo Mediterráneo algodón - Estampado limón,web,published
+2026-05-18,4,,M'ha tornat la confiança.,Clara S.,clara.serra992@example.com,panuelo-brisa,Pañuelo Brisa bambú - Salvia,web,published
+2026-06-02,5,,Por fin algo que no parece de hospital.,Emma R.,emma.roca763@example.com,gorro-nube,Gorro Nube bambú - Azul noche,web,published
+2026-05-31,5,,Gràcies per fer-me sentir jo mateixa.,Núria S.,nuria.smith659@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2026-06-03,4,,La seda rellisca una mica.,María S.,maria.sanchez997@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2026-05-22,4,,La talla és perfecta.,María S.,maria.sanchez997@example.com,panuelo-siena,Pañuelo Siena seda - Verde botella,web,published
+2026-06-05,4,,Se me resbala un poco al caminar.,Teresa S.,teresa.smith998@example.com,gorro-nube,Gorro Nube bambú - Azul noche,web,published
+2026-05-22,3,,"Pocos colores para elegir, ojalá hubiera tonos más vivos.",Teresa S.,teresa.smith998@example.com,turbante-alba,Turbante Alba algodón - Mostaza,web,published
+2026-06-08,5,,So soft I sleep in it.,Teresa N.,teresa.navarro812@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2026-06-11,4,,"Echo de menos más colores, la gama es limitada.",Sara V.,sara.vidal1021@example.com,turbante-luna,Turbante Luna bambú - Negro,web,published
+2026-05-30,4,,"El packaging es precioso, con una nota escrita a mano.",Montse S.,montse.serra658@example.com,panuelo-brisa,Pañuelo Brisa bambú - Salvia,web,published
+2026-05-31,3,,"La seda resbala un poco, cuesta anudarla.",Clara B.,clara.brown937@example.com,turbante-alba,Turbante Alba algodón - Mostaza,web,published
+2026-06-13,4,,Los colores son preciosos y elegantes.,Irene V.,irene.vidal948@example.com,turbante-gala,Turbante Gala seda - Champán,web,published
+2026-06-08,4,,Se ajusta perfecto y no se mueve en todo el día.,Emma R.,emma.ruiz381@example.com,gorro-nube,Gorro Nube bambú - Gris perla,web,published
+2026-06-12,4,,"Bought it as a gift for my sister, she cried.",Mercè P.,merce.puig845@example.com,gorro-nube,Gorro Nube bambú - Gris perla,web,published
+2026-06-21,4,,"És suavíssim, no pica gens.",Marta T.,marta.torres1037@example.com,panuelo-siena,Pañuelo Siena seda - Verde botella,web,published
+2026-06-29,4,,"El algodón es fresco, ideal para el verano. Un regalo perfecto para mi amiga.",David N.,david.navarro983@example.com,pack-regalo-calma,Pack Regalo Calma bambú - Arena + crudo,web,published
+2026-06-30,5,,"Gracias por hacerme sentir yo misma en un momento tan difícil. La tela de bambú es una caricia, de verdad.",Clara R.,clara.roca904@example.com,gorro-nube,Gorro Nube bambú - Azul noche,web,published
+2026-06-16,5,,"Me encanta el estampado, me siento guapa otra vez.",Núria P.,nuria.puig571@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2026-06-28,5,,Por fin algo que no parece de hospital.,Javier R.,javier.romero1045@example.com,panuelo-brisa,Pañuelo Brisa bambú - Salvia,web,published
+2026-06-21,5,,"La seda es de muy buena calidad. Suavísimo, no pica nada aunque tengo el cuero cabelludo muy sensible.",Javier R.,javier.ruiz1049@example.com,gorro-nube,Gorro Nube bambú - Gris perla,web,published
+2026-06-21,5,,"El algodón es fresco, ideal para el verano.",Pilar B.,pilar.brown473@example.com,turbante-luna,Turbante Luna bambú - Negro,web,published
+2026-06-26,4,,La roba de bambú és molt suau i fresca.,Javier S.,javier.serra1063@example.com,gorro-paseo,Gorro Paseo algodón - Topos,web,published
+2026-07-07,3,,Hi ha pocs colors per triar.,Jordi T.,jordi.torres1064@example.com,gorro-nube,Gorro Nube bambú - Azul noche,web,published
+2026-07-01,4,,Gracias por hacerme sentir yo misma en un momento tan difícil.,Laura R.,laura.romero570@example.com,turbante-alba,Turbante Alba algodón - Mostaza,web,published
+2026-07-09,5,,"La talla es perfecta, queda muy natural.",Sofía L.,sofia.lopez920@example.com,turbante-luna,Turbante Luna bambú - Arena,web,published
+2026-07-12,5,,"El algodón es fresco, ideal para el verano.",Montse M.,montse.martinez1075@example.com,panuelo-brisa,Pañuelo Brisa bambú - Salvia,web,published
+2026-07-01,5,,"La talla es perfecta, queda muy natural. Me encanta el estampado, me siento guapa otra vez.",Júlia M.,julia.martinez1077@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2026-07-19,5,,So soft I sleep in it. Fits perfectly and stays put all day.,Mercè G.,merce.garcia1084@example.com,gorro-nube,Gorro Nube bambú - Azul noche,web,published
+2026-07-07,4,,"El envío tardó más de una semana, lo necesitaba antes de la quimio.",Ana S.,ana.smith1090@example.com,gorro-paseo,Gorro Paseo algodón - Topos,web,published
+2026-07-24,4,,Me ha devuelto la confianza para salir a la calle.,David F.,david.ferrer1094@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2026-07-26,5,,Los colores son preciosos y elegantes.,Alba B.,alba.brown774@example.com,gorro-nube,Gorro Nube bambú - Gris perla,web,published
+2026-07-13,3,,"La tela de bambú es una caricia, de verdad.",Alba R.,alba.romero1105@example.com,panuelo-mediterráneo,Pañuelo Mediterráneo algodón - Estampado limón,web,published
+2026-08-03,4,,Lo compré para regalar a mi madre y se emocionó.,Anna R.,anna.romero1108@example.com,turbante-luna,Turbante Luna bambú - Arena,web,published
+2026-07-21,4,,So soft I sleep in it. Thank you for making me feel like me again.,Pilar L.,pilar.lopez1109@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2026-07-29,4,,El algodón da algo de calor en agosto.,Claire S.,claire.smith839@example.com,gorro-nube,Gorro Nube bambú - Azul noche,web,published
+2026-08-05,5,,Los colores son preciosos y elegantes.,Sofía M.,sofia.morales1114@example.com,turbante-luna,Turbante Luna bambú - Negro,web,published
+2026-07-29,4,,"La seda resbala un poco, cuesta anudarla.",Isabel R.,isabel.romero1122@example.com,panuelo-brisa,Pañuelo Brisa bambú - Salvia,web,published
+2026-07-30,5,,Me ha devuelto la confianza para salir a la calle.,Claire N.,claire.navarro1138@example.com,turbante-alba,Turbante Alba algodón - Rayas marinas,web,published
+2026-08-02,4,,El vaig comprar per regalar a la meva mare.,Alba S.,alba.smith1142@example.com,pack-regalo-calma,Pack Regalo Calma bambú - Arena + crudo,web,published
+2026-08-01,4,,El vaig comprar per regalar a la meva mare.,Elena F.,elena.font1073@example.com,turbante-luna,Turbante Luna bambú - Arena,web,published
+2026-08-03,4,,"Me encanta el estampado, me siento guapa otra vez.",Marta L.,marta.lopez511@example.com,panuelo-siena,Pañuelo Siena seda - Burdeos,web,published
+2026-08-03,5,,"El packaging es precioso, con una nota escrita a mano.",Isabel G.,isabel.garcia612@example.com,gorro-nube,Gorro Nube bambú - Azul noche,web,published
+2026-08-06,5,,Es tan suave que lo uso también para dormir.,Rosa B.,rosa.brown1160@example.com,gorro-nube,Gorro Nube bambú - Gris perla,web,published
+2026-08-18,5,,Thank you for making me feel like me again. Lovely packaging with a handwritten note.,Mercè B.,merce.brown1163@example.com,turbante-luna,Turbante Luna bambú - Arena,web,published
+2026-08-23,5,,"Viene en una caja muy bonita, perfecto para regalar.",Clara B.,clara.brown999@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2026-08-10,4,,"El algodón es fresco, ideal para el verano.",Júlia R.,julia.romero1170@example.com,turbante-alba,Turbante Alba algodón - Rayas marinas,web,published
+2026-08-13,4,,"La talla es perfecta, queda muy natural.",Jordi P.,jordi.puig777@example.com,panuelo-siena,Pañuelo Siena seda - Verde botella,web,published
+2026-08-22,5,,La seda es de muy buena calidad.,Elena F.,elena.font1183@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2026-08-29,5,,So soft I sleep in it.,Lucía S.,lucia.sanchez1185@example.com,gorro-nube,Gorro Nube bambú - Azul noche,web,published
+2026-09-03,5,,"El packaging es precioso, con una nota escrita a mano.",Lucía S.,lucia.smith1050@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2026-09-02,3,,"A little too big for me, I wish there were sizes.",María M.,maria.morales825@example.com,turbante-alba,Turbante Alba algodón - Mostaza,web,published
+2026-09-05,4,,"Bought it as a gift for my sister, she cried.",Isabel R.,isabel.romero1193@example.com,turbante-alba,Turbante Alba algodón - Rayas marinas,web,published
+2026-08-26,4,,Es tan suave que lo uso también para dormir.,Lucía R.,lucia.ruiz1198@example.com,turbante-luna,Turbante Luna bambú - Negro,web,published
+2026-09-13,4,,"Incredibly soft, no itching at all on a sensitive scalp.",María L.,maria.lopez577@example.com,panuelo-siena,Pañuelo Siena seda - Burdeos,web,published
+2026-09-16,5,,"S'ajusta molt bé i no es mou. M'encanta l'estampat, em sento guapa.",Olivia F.,olivia.ferrer1209@example.com,turbante-luna,Turbante Luna bambú - Negro,web,published
+2026-09-05,4,,La roba de bambú és molt suau i fresca.,Javier F.,javier.font1218@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2026-09-16,5,,Por fin algo que no parece de hospital.,Teresa B.,teresa.brown1221@example.com,panuelo-brisa,Pañuelo Brisa bambú - Salvia,web,published
+2026-09-21,5,,El cotó és fresc per a l'estiu.,Elena F.,elena.font1073@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2026-09-26,5,,"Arrived in two days, very quick. Beautiful print, I feel like myself again.",Jordi P.,jordi.puig1223@example.com,gorro-paseo,Gorro Paseo algodón - Topos,web,published
+2026-09-19,3,,"A little too big for me, I wish there were sizes.",Noelia R.,noelia.romero1068@example.com,turbante-luna,Turbante Luna bambú - Negro,web,published
+2026-09-12,4,,És una mica car.,María R.,maria.roca1067@example.com,turbante-luna,Turbante Luna bambú - Arena,web,published
+2026-09-19,4,,"Echo de menos más colores, la gama es limitada.",Teresa T.,teresa.torres1238@example.com,turbante-gala,Turbante Gala seda - Champán,web,published
+2026-09-17,4,,"Suavísimo, no pica nada aunque tengo el cuero cabelludo muy sensible.",Clara N.,clara.navarro546@example.com,panuelo-brisa,Pañuelo Brisa bambú - Salvia,web,published
+2026-09-22,5,,Me ha devuelto la confianza para salir a la calle.,Lucía S.,lucia.serra1248@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2026-09-20,5,,"La tela de bambú es una caricia, de verdad. Me encanta el estampado, me siento guapa otra vez.",María S.,maria.serra940@example.com,turbante-luna,Turbante Luna bambú - Negro,web,published
+2026-10-06,5,,Un regalo perfecto para mi amiga.,Júlia G.,julia.garcia862@example.com,pack-regalo-calma,Pack Regalo Calma bambú - Arena + crudo,web,published
+2026-09-30,5,,La atención por WhatsApp fue cercana y rápida.,Carmen P.,carmen.puig1257@example.com,gorro-nube,Gorro Nube bambú - Azul noche,web,published
+2026-10-13,5,,"Me ha devuelto la confianza para salir a la calle. Viene en una caja muy bonita, perfecto para regalar.",Clara G.,clara.garcia1259@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2026-10-10,3,,"El envío tardó más de una semana, lo necesitaba antes de la quimio.",Rosa T.,rosa.torres1262@example.com,panuelo-mediterráneo,Pañuelo Mediterráneo algodón - Estampado limón,web,published
+2026-09-27,4,,"Llegó en dos días, rapidísimo.",María P.,maria.puig1266@example.com,panuelo-mediterráneo,Pañuelo Mediterráneo algodón - Estampado limón,web,published
+2026-10-07,5,,"Llegó en dos días, rapidísimo.",Ana P.,ana.puig732@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2026-10-08,5,,Mi hijo dice que es un gorro de pirata y lo lleva orgulloso.,Lucía R.,lucia.romero1271@example.com,gorrito-estrella,Gorrito Estrella bambú - Azul cielo,web,published
+2026-10-12,5,,"La tela de bambú es una caricia, de verdad. Los colores son preciosos y elegantes.",Montse G.,montse.garcia1274@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2026-10-14,5,,Los colores son preciosos y elegantes.,Clara S.,clara.serra1296@example.com,gorro-nube,Gorro Nube bambú - Gris perla,web,published
+2026-10-21,4,,Es mou una mica quan camino. És una mica car.,Irene F.,irene.font1298@example.com,turbante-alba,Turbante Alba algodón - Rayas marinas,web,published
+2026-10-17,5,,Va arribar en dos dies.,Alba T.,alba.torres1300@example.com,gorro-nube,Gorro Nube bambú - Gris perla,web,published
+2026-10-15,5,,"Es tan suave que lo uso también para dormir. La talla es perfecta, queda muy natural.",Sara F.,sara.ferrer1304@example.com,turbante-alba,Turbante Alba algodón - Rayas marinas,web,published
+2026-10-29,5,,M'ha tornat la confiança. La seda és de molt bona qualitat.,Júlia S.,julia.serra1313@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2026-10-13,4,,"La tela de bambú es una caricia, de verdad.",Jordi R.,jordi.ruiz1147@example.com,gorro-nube,Gorro Nube bambú - Gris perla,web,published
+2026-10-18,5,,"Suavísimo, no pica nada aunque tengo el cuero cabelludo muy sensible.",Olivia B.,olivia.brown1325@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2026-10-30,5,,Finally something that does not look medical.,Carmen F.,carmen.ferrer1328@example.com,gorro-nube,Gorro Nube bambú - Gris perla,web,published
+2026-10-20,5,,Es tan suave que lo uso también para dormir.,Sara R.,sara.roca1092@example.com,pack-regalo-calma,Pack Regalo Calma bambú - Arena + crudo,web,published
+2026-10-26,4,,Es tan suave que lo uso también para dormir.,Isabel R.,isabel.romero1340@example.com,panuelo-siena,Pañuelo Siena seda - Verde botella,web,published
+2026-11-01,3,,It slips a bit when I walk.,Anna S.,anna.soler1342@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2026-10-22,4,,"M'encanta l'estampat, em sento guapa.",Montse T.,montse.torres1345@example.com,gorro-paseo,Gorro Paseo algodón - Topos,web,published
+2026-11-05,3,,"Me queda un poco grande, ¿hay talla más pequeña?",Elena M.,elena.martinez1175@example.com,panuelo-siena,Pañuelo Siena seda - Verde botella,web,published
+2026-11-07,5,,"La seda es de muy buena calidad. La tela de bambú es una caricia, de verdad.",Carmen S.,carmen.serra1052@example.com,gorro-descanso,Gorro Descanso bambú - Crudo,web,published
+2026-11-04,5,,"La tela de bambú es una caricia, de verdad.",Sofía C.,sofia.costa1359@example.com,gorro-nube,Gorro Nube bambú - Azul noche,web,published
+2026-11-08,4,,El vaig comprar per regalar a la meva mare.,Javier S.,javier.soler1368@example.com,turbante-luna,Turbante Luna bambú - Arena,web,published
+2026-11-05,5,,Es tan suave que lo uso también para dormir.,Olivia G.,olivia.garcia1043@example.com,turbante-luna,Turbante Luna bambú - Arena,web,published
+2026-11-18,5,,"És suavíssim, no pica gens.",David G.,david.garcia1404@example.com,turbante-alba,Turbante Alba algodón - Rayas marinas,web,published
+2026-11-20,4,,"La talla es perfecta, queda muy natural.",Marta S.,marta.sanchez802@example.com,pack-regalo-calma,Pack Regalo Calma bambú - Arena + crudo,web,published
+2026-11-05,4,,"Suavísimo, no pica nada aunque tengo el cuero cabelludo muy sensible.",Carmen R.,carmen.ruiz1115@example.com,turbante-alba,Turbante Alba algodón - Rayas marinas,web,published
+2026-11-14,4,,Lo compré para regalar a mi madre y se emocionó. Me ha devuelto la confianza para salir a la calle.,Pilar S.,pilar.soler882@example.com,panuelo-siena,Pañuelo Siena seda - Verde botella,web,published
+2026-11-05,5,,Es tan suave que lo uso también para dormir.,David N.,david.navarro1429@example.com,gorro-paseo,Gorro Paseo algodón - Topos,web,published
+2026-11-04,3,,La seda rellisca una mica.,Núria S.,nuria.sanchez1250@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2026-11-22,4,,"Pocos colores para elegir, ojalá hubiera tonos más vivos.",Rosa S.,rosa.sanchez1435@example.com,turbante-alba,Turbante Alba algodón - Rayas marinas,web,published
+2026-11-05,4,,El algodón da algo de calor en agosto.,Rosa S.,rosa.sanchez1435@example.com,turbante-luna,Turbante Luna bambú - Negro,web,published
+2026-11-15,4,,"La tela de bambú es una caricia, de verdad.",Lucía T.,lucia.torres1440@example.com,pack-regalo-calma,Pack Regalo Calma bambú - Arena + crudo,web,published
+2026-11-12,5,,"Suavísimo, no pica nada aunque tengo el cuero cabelludo muy sensible.",Elena C.,elena.costa1445@example.com,gorro-nube,Gorro Nube bambú - Gris perla,web,published
+2026-11-15,4,,Se ajusta perfecto y no se mueve en todo el día.,Clara G.,clara.gil1457@example.com,gorro-nube,Gorro Nube bambú - Gris perla,web,published
+2026-11-21,4,,"Me encanta el estampado, me siento guapa otra vez.",Clara G.,clara.gil1457@example.com,turbante-luna,Turbante Luna bambú - Terracota,web,published
+2026-11-22,5,,"Bought it as a gift for my sister, she cried.",Sara F.,sara.font1467@example.com,gorro-paseo,Gorro Paseo algodón - Topos,web,published
+2026-11-21,4,,"La roba de bambú és molt suau i fresca. És suavíssim, no pica gens.",Clara S.,clara.smith1476@example.com,turbante-luna,Turbante Luna bambú - Arena,web,published

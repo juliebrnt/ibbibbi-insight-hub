@@ -1,5 +1,7 @@
 # iBBIBBI Insight Hub
 
+**Try the prototype:** https://juliebrnt.github.io/ibbibbi-insight-hub/ (demo data, made-up customers; switch to *Mine* to see the first-day screen)
+
 Drop in any data the founders have (Shopify, Instagram, TikTok, Google Analytics, Klaviyo, surveys, pasted messages, any spreadsheet) and get clear charts, plain-language insights, recommended actions, a question box and a plan that tracks what was decided and learned. Works on a laptop and on a phone. Data stays on the machine.
 
 ## Quick start
@@ -10,7 +12,7 @@ Drop in any data the founders have (Shopify, Instagram, TikTok, Google Analytics
 5. `make dev` for hot reload (http://localhost:5173), `make test` for the tests.
 
 ## Prototype (no install needed)
-`make prototype` builds `prototype/index.html` plus `prototype-data.json`: the real app running on saved snapshots of the demo data, so anyone can click through it in a browser. **Demo data** shows the app full of sample customers; **My data** shows the first-day screen the founders see before uploading anything. Nothing is saved in the prototype.
+`make prototype` builds `docs/index.html` (published with GitHub Pages) and `prototype/index.html` (for a Claude artifact): the real app running on saved snapshots of the demo data, so anyone can click through it in a browser. **Demo data** shows the app full of sample customers; **My data** shows the first-day screen the founders see before uploading anything. Nothing is saved in the prototype.
 
 ## What is where
 - `backend/app/ingest`: reading any file, header detection, EU formats, classification, mapping, recipes, validation, undo, flexible datasets

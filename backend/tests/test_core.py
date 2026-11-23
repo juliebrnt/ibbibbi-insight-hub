@@ -245,3 +245,76 @@ def test_empty_file_gets_friendly_message():
 def test_totals_row_is_dropped():
     grid = [["Informe"], [], ["Fecha", "Unidades"], ["01/10/2026", "3"], ["02/10/2026", "4"], ["TOTAL", "7"]]
     assert len(readers.grid_to_df(grid)) == 2
+
+
+# ---------------- live connectors (mocked platform APIs, no real store needed) ----------------
+import httpx  # noqa: E402
+
+SHOPIFY_PAGE = {"data": {"orders": {"pageInfo": {"hasNextPage": False, "endCursor": None}, "edges": [{"node": {
+    "id": "gid://shopify/Order/1", "name": "#9001", "createdAt": "2026-11-20T10:15:00Z", "displayFinancialStatus": "PAID", "sourceName": "web",
+    "note": "Es un regalo", "customAttributes": [], "customer": {"id": "gid://shopify/Customer/77"},
+    "currentTotalPriceSet": {"shopMoney": {"amount": "68.00", "currencyCode": "EUR"}}, "subtotalPriceSet": {"shopMoney": {"amount": "68.00"}},
+    "totalShippingPriceSet": {"shopMoney": {"amount": "0.00"}}, "totalDiscountsSet": {"shopMoney": {"amount": "0.00"}}, "discountCodes": [],
+    "shippingAddress": {"city": "Girona", "countryCodeV2": "ES"},
+    "lineItems": {"edges": [{"node": {"name": "Turbante Luna bambú - Arena", "quantity": 1, "sku": "IBB-BAM-101", "originalUnitPriceSet": {"shopMoney": {"amount": "39.00"}}}},
+                            {"node": {"name": "Gorro Nube bambú - Gris perla", "quantity": 1, "sku": "IBB-BAM-104", "originalUnitPriceSet": {"shopMoney": {"amount": "29.00"}}}}]}}}]}}}
+JUDGEME_PAGE = {"current_page": 1, "per_page": 100, "reviews": [
+    {"id": 555, "title": "Precioso", "body": "Suavísimo y muy cómodo, me encanta.", "rating": 5, "product_title": "Turbante Luna bambú - Arena",
+     "product_handle": "turbante-luna", "reviewer": {"id": 1, "email": "ana@example.com", "name": "Ana P"}, "source": "web", "curated": "ok",
+     "hidden": False, "verified": "buyer", "created_at": "2026-11-19T09:00:00Z"},
+    {"id": 556, "title": "Hidden", "body": "spam", "rating": 1, "hidden": True, "created_at": "2026-11-19T09:00:00Z", "reviewer": {}}]}
+
+
+def mock_client(calls: list):
+    def handler(req: httpx.Request):
+        calls.append(req)
+        if "myshopify.com" in req.url.host:
+            assert req.headers["X-Shopify-Access-Token"] == "shpat_test_token_123"
+            body = json.loads(req.content)
+            return httpx.Response(200, json={"data": {"shop": {"name": "Test Shop"}}} if "shop {" in body["query"] else SHOPIFY_PAGE)
+        assert req.headers["X-Api-Token"] == "jdgm_private_test_key"
+        if req.method == "POST":
+            return httpx.Response(200, json={})
+        return httpx.Response(200, json=JUDGEME_PAGE)
+    return httpx.Client(transport=httpx.MockTransport(handler))
+
+
+import json  # noqa: E402
+
+
+def test_shopify_and_judgeme_connect_sync_and_reply(client):
+    from app import db
+    from app.models import connectors
+    calls: list = []
+    c = mock_client(calls)
+    assert connectors.connect("mine", "shopify", "test-shop", "shpat_test_token_123", c)["account"] == "Test Shop"
+    assert connectors.sync("mine", "shopify", c)["status"] == "ok"
+    o = db.rows("SELECT * FROM orders WHERE ws = 'mine' AND order_id = '#9001'")
+    assert o and o[0]["total"] == 68.0 and o[0]["customer_id"].startswith("c_") and o[0]["is_gift"]
+    # token is encrypted at rest and never stored in plain text
+    raw = db.one("SELECT value FROM settings WHERE key = 'cred:mine:shopify'")
+    assert "shpat_test_token_123" not in raw
+    assert connectors.connect("mine", "judgeme", "test-shop.myshopify.com", "jdgm_private_test_key", c)["ok"]
+    assert connectors.sync("mine", "judgeme", c)["status"] == "ok"
+    r = db.rows("SELECT _key, platform, external_id, text FROM feedback WHERE ws = 'mine' AND external_id = '555'")
+    assert r and r[0]["platform"] == "Judge.me" and db.one("SELECT count(*) FROM feedback WHERE external_id = '556'") == 0
+    # replying goes through POST /replies with the Judge.me review id
+    from app.analytics import voice
+    res = voice.publish_reply("mine", r[0]["_key"], "¡Gracias Ana!", client=c)
+    assert res["ok"], res
+    post = [x for x in calls if x.method == "POST" and "/replies" in str(x.url)][-1]
+    assert json.loads(post.content) == {"review_id": 555, "send_reply_email": False, "reply": {"content": "¡Gracias Ana!"}}
+    assert db.one("SELECT reply_status FROM feedback WHERE _key = ?", [r[0]["_key"]]) == "published"
+
+
+def test_bad_token_gives_friendly_error():
+    from app.models import connectors
+    c = httpx.Client(transport=httpx.MockTransport(lambda req: httpx.Response(401, json={})))
+    with pytest.raises(connectors.ConnectorError, match="did not accept"):
+        connectors.connect("mine", "shopify", "x.myshopify.com", "shpat_wrong_token_000", c)
+
+
+def test_example_reviews_are_labelled():
+    from app.analytics import voice
+    ex = voice.examples()
+    assert ex["items"] and all(i["example"] for i in ex["items"]) and "made-up" in ex["note"]

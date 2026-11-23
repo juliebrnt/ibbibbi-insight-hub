@@ -39,6 +39,16 @@ def add_goal(ws: str, title: str, metric: str, target: float, due: str | None) -
     return goal_progress(ws, db.rows("SELECT * FROM goals WHERE id = ?", [gid])[0])
 
 
+def update_goal(ws: str, gid: str, title: str | None, target: float | None, due: str | None) -> dict:
+    g = db.rows("SELECT * FROM goals WHERE id = ? AND ws = ?", [gid, ws])
+    if not g:
+        raise ValueError("Goal not found")
+    g = g[0]
+    db.execute("UPDATE goals SET title = ?, target = ?, due = ? WHERE id = ?",
+               [title or g["title"], target if target is not None else g["target"], due or g["due"], gid])
+    return goal_progress(ws, db.rows("SELECT * FROM goals WHERE id = ?", [gid])[0])
+
+
 def add_decision(ws: str, title: str, hypothesis: str, metric: str | None, review_date: str | None, owner: str | None,
                  insight_id: str | None = None, linked_goal: str | None = None, kind: str = "decision",
                  created: date | None = None) -> dict:

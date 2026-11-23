@@ -9,12 +9,13 @@ import { api } from "@/lib/api";
 import { fmt, LANGS } from "@/lib/format";
 import { useApp } from "@/lib/store";
 import { NoData } from "./Home";
+import { ExampleReviews, VoiceExplorer } from "@/components/VoiceExplorer";
 
 export function Feedback() {
   const { data: d, isLoading } = usePage("feedback");
   const t = useChartTheme();
   if (isLoading || !d) return <PageSkeleton />;
-  if (d.empty) return <><PageHeader title="What customers say" /><NoData page="feedback" /></>;
+  if (d.empty) return <><PageHeader title="What customers say" /><NoData page="feedback" /><ExampleReviews /></>;
   const k = d.kpis;
   const neg = d.themes.complaint_title;
   return (
@@ -24,10 +25,10 @@ export function Feedback() {
         why={neg ? `${neg}. Fixing the top complaint is usually the cheapest way to win loyalty.` : "Understanding feelings, not just ratings, shows what to protect and what to fix."}
         todo={d.who_is_missing.flagged.length ? `Hear more from ${d.who_is_missing.flagged[0].label.toLowerCase()} customers before deciding.` : "Keep asking: add the feedback QR card to every parcel."} />
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <KpiCard label="Average rating" value={k.rating.value} unit="stars" change={k.rating.prev ? ((k.rating.value - k.rating.prev) / k.rating.prev) * 100 : null} help="Average stars of reviews written in this period." />
-        <KpiCard label="NPS (12 months)" value={k.nps.value} unit="score" help="Share of promoters (9 to 10) minus detractors (0 to 6). Above 50 is excellent." />
-        <KpiCard label="Positive feedback" value={k.positive_share.value} unit="pct" help="Share of all feedback that reads as positive." />
-        <KpiCard label="Pieces of feedback" value={k.volume.value} unit="count" change={k.volume.change} help="Reviews, survey answers and messages in this period." />
+        <KpiCard label="Average rating" value={k.rating.value} unit="stars" change={k.rating.prev ? ((k.rating.value - k.rating.prev) / k.rating.prev) * 100 : null} help="rating" />
+        <KpiCard label="NPS (12 months)" value={k.nps.value} unit="score" help="nps" />
+        <KpiCard label="Positive feedback" value={k.positive_share.value} unit="pct" help="positive_share" />
+        <KpiCard label="Pieces of feedback" value={k.volume.value} unit="count" change={k.volume.change} help="volume" />
       </div>
 
       {d.care.length ? (
@@ -83,6 +84,7 @@ export function Feedback() {
           <ShareBars rows={d.languages.rows.map((r: any) => ({ ...r, label: LANGS[r.language] || r.label }))} label="label" value="n" fmt={(v) => v.toString()} />
         </ChartCard>
       </div>
+      <VoiceExplorer />
       <Quotes quotes={d.quotes} />
     </>
   );

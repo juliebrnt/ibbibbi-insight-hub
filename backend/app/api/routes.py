@@ -7,7 +7,7 @@ import pickle
 import zipfile
 from datetime import datetime, timedelta
 
-from fastapi import APIRouter, File, Form, HTTPException, Query, UploadFile
+from fastapi import APIRouter, File, Form, HTTPException, Query, Request, UploadFile
 from fastapi.responses import HTMLResponse, PlainTextResponse, Response
 from pydantic import BaseModel
 
@@ -23,6 +23,9 @@ from ..ingest import pipeline, vision
 from ..ingest.readers import ReadError
 from ..insights import briefing, plan, rules
 from ..models import connectors
+from .. import integrations as integ
+from ..analytics import voice
+from ..insights import alerts as alerts_mod
 from ..privacy.pii import hash_value, scrub_storage
 
 router = APIRouter(prefix="/api")
@@ -75,9 +78,15 @@ def home(ws: str = WS, range: str = "28d"):
         kpis.append({"key": "saves", "label": "Saves per post", "value": so["kpis"]["saves"]["value"], "unit": "count",
                      "change": so["kpis"]["saves"]["change"], "spark": [w["saves"] / max(w["posts"], 1) for w in weekly],
                      "help": "How often people save your Instagram posts to come back to. The strongest sign content is useful."})
-        kpis.append({"key": "consistency", "label": "Posting consistency", "value": so["kpis"]["consistency"]["value"], "unit": "score",
-                     "change": None, "help": "0 to 100, from posts per week, how regular they are and the longest gap."})
+        kpis.append({"key": "per_week", "label": "Posts per week", "value": so["kpis"]["per_week"]["value"], "unit": "count",
+                     "change": None, "help": "posts_per_week"})
+    ist = integ.status(ws)
+    connected = set(ist["connected"])
+    unlock = [{"key": i["key"], "name": i["name"], "icon": i["icon"], "unlocks": i["data"][:2]} for i in ist["integrations"]
+              if i["key"] in ("shopify", "instagram", "judgeme", "ga4", "klaviyo", "tiktok", "surveys") and i["key"] not in connected][:4]
     return {"period": {"label": p.label, "start": p.start.isoformat(), "end": p.end.isoformat()}, "kpis": kpis,
+            "alerts": alerts_mod.build(ws, p), "sources": [i for i in ist["integrations"] if i["key"] in connected],
+            "last_refresh": ist["last_refresh"], "unlock": unlock,
             "changed": rules.what_changed(ws, p), "insights": ins, "waiting": res["waiting"],
             "goals": plan.list_goals(ws), "due": [d for d in plan.list_decisions(ws) if d.get("due")],
             "care": len(f.get("care", [])) if not f.get("empty") else 0}
@@ -110,6 +119,97 @@ def social_page(ws: str = WS, range: str = "90d"):
     out = social.overview(ws, common.period(ws, range))
     out["cross"] = cross.mission_effect(ws)
     return out
+
+
+@router.get("/integrations")
+def integrations_page(ws: str = WS):
+    return integ.status(ws)
+
+
+class RefreshBody(BaseModel):
+    ws: str = "demo"
+
+
+@router.post("/refresh")
+def refresh(b: RefreshBody):
+    return integ.refresh(_ws(b.ws))
+
+
+@router.get("/alerts")
+def alerts(ws: str = WS, range: str = "28d"):
+    return alerts_mod.build(ws, common.period(ws, range))
+
+
+@router.get("/voice")
+def voice_items(ws: str = WS, source: str | None = None, rating: str | None = None, sentiment: str | None = None, theme: str | None = None,
+                date_from: str | None = None, date_to: str | None = None, q: str | None = None, limit: int = 60):
+    return voice.items(ws, source, rating, sentiment, theme, date_from, date_to, q, min(limit, 200))
+
+
+class DraftBody(BaseModel):
+    text: str
+    sentiment: str | None = None
+    themes: list[str] | None = None
+    language: str | None = None
+    distress: bool = False
+
+
+@router.post("/reply/draft")
+def reply_draft(b: DraftBody):
+    return voice.draft(b.text, b.sentiment, b.themes, b.language, b.distress)
+
+
+class ConnectBody(BaseModel):
+    shop_domain: str
+    token: str
+    ws: str = "mine"
+
+
+def _is_phone(request: Request) -> bool:
+    ua = (request.headers.get("user-agent") or "").lower()
+    return any(k in ua for k in ("iphone", "android", "mobile"))
+
+
+@router.post("/connections/{key}")
+def connect(key: str, b: ConnectBody, request: Request):
+    if _is_phone(request):
+        return {"ok": False, "error": "For security, accounts can only be connected from a computer."}
+    try:
+        res = connectors.connect(_ws(b.ws), key, b.shop_domain, b.token)
+    except connectors.ConnectorError as e:
+        return {"ok": False, "error": str(e)}
+    first = connectors.sync(b.ws, key)
+    return {**res, "sync": first}
+
+
+@router.delete("/connections/{key}")
+def disconnect(key: str, request: Request, ws: str = WS, delete_data: bool = False):
+    if _is_phone(request):
+        return {"ok": False, "error": "Connections can only be changed from a computer."}
+    connectors.forget(ws, key)
+    removed = 0
+    if delete_data:
+        for d in db.rows("SELECT id FROM datasets WHERE ws = ? AND file_name LIKE ?", [ws, f"{key}_%_live.csv"]):
+            pipeline.undo(d["id"])
+            removed += 1
+    return {"ok": True, "removed_datasets": removed,
+            "note": "Disconnected. Your access key was deleted here; also remove the app or key in the platform to fully revoke access."}
+
+
+class ReplyBody(BaseModel):
+    id: str
+    text: str
+    ws: str = "mine"
+
+
+@router.post("/reply")
+def publish_reply(b: ReplyBody):
+    return voice.publish_reply(_ws(b.ws), b.id, b.text)
+
+
+@router.get("/reviews/examples")
+def review_examples():
+    return voice.examples()
 
 
 @router.get("/metrics")
@@ -367,6 +467,21 @@ def add_goal(b: GoalBody):
         return plan.add_goal(_ws(b.ws), b.title, b.metric, b.target, b.due)
     except ValueError as e:
         raise HTTPException(400, str(e)) from e
+
+
+class GoalEdit(BaseModel):
+    title: str | None = None
+    target: float | None = None
+    due: str | None = None
+    ws: str = "demo"
+
+
+@router.patch("/goals/{gid}")
+def edit_goal(gid: str, b: GoalEdit):
+    try:
+        return plan.update_goal(_ws(b.ws), gid, b.title, b.target, b.due)
+    except ValueError as e:
+        raise HTTPException(404, str(e)) from e
 
 
 @router.delete("/goals/{gid}")

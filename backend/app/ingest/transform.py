@@ -119,6 +119,8 @@ def to_orders(df, m, report: Report, first_row: int) -> dict[str, pd.DataFrame]:
     d = d.groupby(oid).transform(lambda s: s.ffill().bfill())
     email = texts(df, m, "customer_email")
     email = email.groupby(oid).transform(lambda s: s.ffill().bfill())
+    ref = texts(df, m, "customer_ref").groupby(oid).transform(lambda s: s.ffill().bfill())
+    email = email.where(email.notna(), ref)
     cust = email.map(lambda v: v if v and str(v).startswith("c_") else hash_value(v))
     status = texts(df, m, "financial_status").map(lambda v: norm(v or ""))
     bad = status.isin({"refunded", "voided", "reembolsado", "anulado", "cancelled", "cancelado"})
@@ -229,7 +231,8 @@ def to_feedback(df, m, report, first_row, kind: str, source: str):
         "product": texts(df, m, "product"), "language": texts(df, m, "language"),
         "customer_id": texts(df, m, "customer_email").map(lambda v: v if v is None or v.startswith("c_") else hash_value(v)),
         "heard_from": texts(df, m, "heard_from"), "consent_quote": texts(df, m, "consent_quote").map(lambda v: bool(parse_bool(v))),
-        "row_num": base_rows(df, first_row)})
+        "platform": texts(df, m, "platform").fillna(source.replace(" reviews", "")) if kind == "review" else None,
+        "external_id": texts(df, m, "external_id"), "row_num": base_rows(df, first_row)})
     if kind == "review":
         f["rating"] = f["rating"].where(f["rating"].between(1, 5))
     if "nps" in m:
@@ -241,7 +244,8 @@ def to_feedback(df, m, report, first_row, kind: str, source: str):
     report.skipped += int(bad.sum())
     f = f[~bad].copy()
     f = _enrich_feedback(f)
-    f["_key"] = [key_of(d, t, c, r, s) for d, t, c, r, s in zip(f["date"], f["text"], f["customer_id"], f["rating"], f["nps"])]
+    f["_key"] = [key_of(p, x) if x else key_of(d, t, c, r, s) for d, t, c, r, s, p, x in
+                 zip(f["date"], f["text"], f["customer_id"], f["rating"], f["nps"], f["platform"], f["external_id"])]
     report.notes.append(f"Analysed {len(f):,} pieces of feedback for sentiment, themes and language.")
     if f["distress"].any():
         report.notes.append(f"{int(f['distress'].sum())} messages may come from someone having a hard time. They are flagged for a personal reply.")

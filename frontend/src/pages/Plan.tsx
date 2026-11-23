@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { CalendarClock, Plus, Search, Trash2 } from "lucide-react";
+import { CalendarClock, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Card, cx, Delta, PageHeader, PageSkeleton, ProgressRing, Sheet } from "@/components/ui";
@@ -15,6 +15,7 @@ export function Plan() {
   const [goalOpen, setGoalOpen] = useState(false);
   const [decOpen, setDecOpen] = useState<null | "decision" | "experiment">(null);
   const [search, setSearch] = useState("");
+  const [editing, setEditing] = useState<any>(null);
   if (isLoading || !d) return <PageSkeleton />;
   const refresh = () => qc.invalidateQueries();
   const all = [...d.decisions, ...d.experiments];
@@ -38,7 +39,10 @@ export function Plan() {
               <div className="mt-1 text-xs text-ink-3 num">Started {g.baseline_display} · now <b className="text-ink">{g.current_display}</b> · target {g.target_display}</div>
               {g.due ? <div className="text-xs text-ink-3">By {fmt.date(String(g.due))}</div> : null}
             </div>
-            <button className="btn-ghost !min-h-[36px] !px-2" aria-label="Remove goal" onClick={() => api.del(`/goals/${g.id}?ws=${ws}`).then(refresh)}><Trash2 className="h-4 w-4" /></button>
+            <div className="flex flex-col">
+              <button className="btn-ghost !min-h-[34px] !px-2" aria-label="Edit goal" onClick={() => setEditing(g)}><Pencil className="h-4 w-4" /></button>
+              <button className="btn-ghost !min-h-[34px] !px-2" aria-label="Remove goal" onClick={() => api.del(`/goals/${g.id}?ws=${ws}`).then(refresh)}><Trash2 className="h-4 w-4" /></button>
+            </div>
           </Card>
         ))}
         {!d.goals.length ? <Card className="md:col-span-3 text-sm text-ink-2">Pick up to three goals, for example "Raise Instagram saves by 20%" or "NPS above 50". We track progress for you.</Card> : null}
@@ -79,6 +83,7 @@ export function Plan() {
         ))}
       </ol>
       <GoalSheet open={goalOpen} onOpenChange={setGoalOpen} metrics={d.metrics} onDone={refresh} />
+      <EditGoal g={editing} onClose={() => setEditing(null)} onDone={refresh} />
       <DecisionSheet kind={decOpen} onOpenChange={() => setDecOpen(null)} metrics={d.metrics} onDone={refresh} />
     </>
   );
@@ -130,6 +135,25 @@ function DecisionSheet({ kind, onOpenChange, metrics, onDone }: any) {
         <select className="input" value={f.metric} onChange={(e) => setF({ ...f, metric: e.target.value })} aria-label="Measure to watch"><option value="">Measure to watch (optional)</option>{metrics.map((x: any) => <option key={x.key} value={x.key}>{x.label}</option>)}</select>
         <div className="grid grid-cols-2 gap-2"><input className="input" type="date" value={f.review_date} onChange={(e) => setF({ ...f, review_date: e.target.value })} aria-label="Review date" /><input className="input" placeholder="Owner" value={f.owner} onChange={(e) => setF({ ...f, owner: e.target.value })} aria-label="Owner" /></div>
         <button className="btn-primary w-full" disabled={!f.title} onClick={() => api.post("/decisions", { ...f, metric: f.metric || null, review_date: f.review_date || null, kind, ws }).then(() => { onOpenChange(); onDone(); toast.success("Added to your plan"); })}>Save</button>
+      </div>
+    </Sheet>
+  );
+}
+
+function EditGoal({ g, onClose, onDone }: { g: any; onClose: () => void; onDone: () => void }) {
+  const { ws } = useApp();
+  const [title, setTitle] = useState("");
+  const [target, setTarget] = useState("");
+  const [due, setDue] = useState("");
+  if (!g) return null;
+  return (
+    <Sheet open={!!g} onOpenChange={onClose} title="Edit goal" description={`Measured by ${g.label}. Starting point ${g.baseline_display}.`}>
+      <div className="space-y-3">
+        <input className="input" defaultValue={g.title} onChange={(e) => setTitle(e.target.value)} aria-label="Goal" />
+        <input className="input" type="number" step="any" defaultValue={g.target} onChange={(e) => setTarget(e.target.value)} aria-label="Target" />
+        <input className="input" type="date" defaultValue={g.due ? String(g.due).slice(0, 10) : ""} onChange={(e) => setDue(e.target.value)} aria-label="By when" />
+        <button className="btn-primary w-full" onClick={() => api.patch(`/goals/${g.id}`, { title: title || null, target: target ? Number(target) : null, due: due || null, ws })
+          .then(() => { toast.success("Goal updated"); onClose(); onDone(); })}>Save changes</button>
       </div>
     </Sheet>
   );

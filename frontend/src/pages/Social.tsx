@@ -20,12 +20,13 @@ export function Social() {
       <PageHeader title="What content works"
         what={d.formats.title + "."} why={d.pillars.title + ". Saves and shares spread your mission further than likes."}
         todo={inbox.length ? `Reply to ${d.comments.unanswered} waiting questions and requests, starting with partnership enquiries.` : "Keep a steady rhythm of three posts a week."} />
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
-        <KpiCard label="Posts" value={k.posts.value} unit="count" change={k.posts.change} />
-        <KpiCard label="Engagement rate" value={k.er.value} unit="pct" help="(Likes + comments + saves + shares) divided by reach." />
-        <KpiCard label="Saves per post" value={k.saves.value} unit="count" change={k.saves.change} help="People saving a post to come back to it. The strongest sign of useful content." />
-        <KpiCard label="Consistency" value={k.consistency.value} unit="score" help="0 to 100 from posts per week, regularity and the longest gap." />
-        <KpiCard label="Mission-led posts" value={k.mission_share.value} unit="pct" help="Share of posts about community, normalising headwear and the mission." />
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
+        <KpiCard label="Posts per week" value={k.per_week.value} unit="count" help="posts_per_week" />
+        <KpiCard label="Avg days between posts" value={k.avg_gap.value} unit="count" help="avg_gap" />
+        <KpiCard label="Weeks with a post" value={k.weeks_active.value} unit="pct" help="weeks_active" />
+        <KpiCard label="Engagement rate" value={k.er.value} unit="pct" help="er" />
+        <KpiCard label="Saves per post" value={k.saves.value} unit="count" change={k.saves.change} help="saves" />
+        <KpiCard label="Mission-led posts" value={k.mission_share.value} unit="pct" help="mission_share" />
       </div>
       <div className="mt-5 grid lg:grid-cols-2 gap-4">
         <ChartCard title={d.formats.title} subtitle={d.formats.subtitle} table={d.formats.rows}

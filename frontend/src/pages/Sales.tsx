@@ -23,10 +23,10 @@ export function Sales() {
       {tab === "sales" && !s.empty ? (
         <>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-            <KpiCard label="Revenue" value={s.kpis.revenue.value} unit="eur" change={s.kpis.revenue.change} spark={s.kpis.revenue.spark} />
-            <KpiCard label="Orders" value={s.kpis.orders.value} unit="count" change={s.kpis.orders.change} spark={s.kpis.orders.spark} />
-            <KpiCard label="Average order" value={s.kpis.aov.value} unit="eur" change={s.kpis.aov.change} />
-            <KpiCard label="Gifts" value={s.kpis.gift_share.value} unit="pct" help="Orders whose notes mention a gift." />
+            <KpiCard label="Revenue" value={s.kpis.revenue.value} unit="eur" change={s.kpis.revenue.change} spark={s.kpis.revenue.spark} help="revenue" />
+            <KpiCard label="Orders" value={s.kpis.orders.value} unit="count" change={s.kpis.orders.change} spark={s.kpis.orders.spark} help="orders" />
+            <KpiCard label="Average order" value={s.kpis.aov.value} unit="eur" change={s.kpis.aov.change} help="aov" />
+            <KpiCard label="Gifts" value={s.kpis.gift_share.value} unit="pct" help="gift_share" />
           </div>
           <div className="mt-5 grid lg:grid-cols-2 gap-4">
             <ChartCard title={s.revenue_chart.title} subtitle={s.revenue_chart.subtitle} className="lg:col-span-2" table={s.revenue_chart.current}
@@ -69,8 +69,8 @@ export function Sales() {
           </ChartCard>
           <ChartCard title="New and returning customers" subtitle={`${s.period.label} · Shopify orders`}>
             <div className="grid grid-cols-2 gap-3">
-              <KpiCard label="New customers" value={s.kpis.new_customers.value} unit="count" compact />
-              <KpiCard label="Repeat purchase rate" value={s.kpis.repeat_rate.value} unit="pct" compact />
+              <KpiCard label="New customers" value={s.kpis.new_customers.value} unit="count" help="new_customers" compact />
+              <KpiCard label="Repeat purchase rate" value={s.kpis.repeat_rate.value} unit="pct" help="repeat_rate" compact />
             </div>
           </ChartCard>
           {data.email && !data.email.empty ? (
@@ -84,9 +84,9 @@ export function Sales() {
       {tab === "web" && !w.empty ? (
         <>
           <div className="grid grid-cols-3 gap-3">
-            <KpiCard label="Visits" value={w.kpis.sessions.value} unit="count" change={w.kpis.sessions.change} />
-            <KpiCard label="Conversion" value={w.kpis.conversion.value} unit="pct" help="Share of visits that end in a purchase." />
-            <KpiCard label="Web revenue" value={w.kpis.revenue.value} unit="eur" />
+            <KpiCard label="Visits" value={w.kpis.sessions.value} unit="count" change={w.kpis.sessions.change} help="sessions" />
+            <KpiCard label="Conversion" value={w.kpis.conversion.value} unit="pct" help="conversion" />
+            <KpiCard label="Web revenue" value={w.kpis.revenue.value} unit="eur" help="web_revenue" />
           </div>
           <div className="mt-5 grid lg:grid-cols-2 gap-4">
             <ChartCard title={w.trend.title} subtitle={w.trend.subtitle}><Lines x={w.trend.rows.map((r: any) => fmt.short(r.period))} series={[{ name: "Visits", data: w.trend.rows.map((r: any) => r.sessions) }]} /></ChartCard>

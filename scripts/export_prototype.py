@@ -51,9 +51,18 @@ def record() -> dict:
         for page in ("home", "feedback", "social", "sales", "briefing"):
             for rng in ("28d", "90d", "365d", "all"):
                 get(f"/{page}?ws={ws}&range={rng}")
-        for page in ("plan", "datasets", "settings"):
+        for page in ("plan", "datasets", "settings", "integrations"):
             get(f"/{page}?ws={ws}")
+        get(f"/voice?ws={ws}&limit=400")
+        for rng in ("28d", "90d", "365d", "all"):
+            get(f"/alerts?ws={ws}&range={rng}")
     get("/ask/suggestions")
+    get("/reviews/examples")
+    snap["__refreshed"] = c.post("/api/refresh", json={"ws": "demo"}).json()["refreshed_at"]
+    for ws in ("demo", "mine"):  # pick up the refresh time
+        for rng in ("28d", "90d", "365d", "all"):
+            get(f"/home?ws={ws}&range={rng}")
+        get(f"/integrations?ws={ws}")
     snap["__suggested"] = SUGGESTED[:4]
     snap["__answers"] = {q: c.post("/api/ask", json={"question": q, "ws": "demo"}).json() for q in SUGGESTED}
     snap["__qr"] = "data:image/svg+xml;charset=utf-8," + c.get("/api/collect/qr?url=https://your-shop.example/feedback").text.replace("#", "%23")

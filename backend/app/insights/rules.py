@@ -36,6 +36,8 @@ class Insight:
     kind: str = "opportunity"  # opportunity | risk | care | win
     score: float = 0.0
     ai_written: bool = False
+    measure: str | None = None
+    urgency: str = "This month"
 
 
 @dataclass
@@ -147,12 +149,13 @@ def r_consistency(ws, p, ctx):
     if score is not None and score < 50:
         c = so["consistency"]
         return Insight(
-            "consistency_low", f"Posting is irregular (consistency {score} out of 100)",
+            "consistency_low", f"Posting is irregular: {c['per_week']} posts a week, longest gap {c['longest_gap']} days",
             f"You posted {c['per_week']} times a week with a longest gap of {c['longest_gap']} days.",
             "Long gaps reset momentum and make the brand feel inactive to new visitors.",
             "Set a simple rhythm of three posts a week (Monday, Wednesday, Friday) and batch-create them once a fortnight.",
             "Steadier reach and follower growth", "Low", 0.7, "Efficiency", 2,
-            [ev("Consistency score", score, p.label, "Instagram posts"), ev("Longest gap (days)", c["longest_gap"], p.label, "Instagram posts")],
+            [ev("Posts per week", c["per_week"], p.label, "Instagram posts"), ev("Weeks with a post (%)", round(c["weeks_active"] * 100), p.label, "Instagram posts"),
+             ev("Longest gap (days)", c["longest_gap"], p.label, "Instagram posts")],
             "consistency", "/social", "risk")
     return None
 
@@ -502,6 +505,18 @@ def run(ws: str, p: Period, ctx: dict | None = None) -> dict:
         boost = 1.3 if i.metric and i.metric in goal_metrics else 1.0
         care = 1.5 if i.kind == "care" else 1.0
         i.score = round(i.impact * i.confidence * pr.get(i.linked_goal, 1.0) * boost * care, 3)
+    end = p.end
+    for i in insights:
+        if i.metric and i.metric in metrics.METRICS:
+            try:
+                now = metrics.window_value(ws, i.metric, end, 28)
+            except Exception:  # noqa: BLE001
+                now = None
+            i.measure = (f"Track {metrics.METRICS[i.metric]['label']}: {metrics.fmt(i.metric, now)} over the last 4 weeks. "
+                         "Add it to the plan and review it after 4 to 8 weeks.")
+        elif i.metric and i.metric.startswith("flex:"):
+            i.measure = "Track the same total over the next three months in your own file."
+        i.urgency = "This week" if i.kind in ("care", "risk") or i.impact >= 3 else "This month" if i.impact == 2 else "When you have time"
     insights.sort(key=lambda i: -i.score)
     return {"insights": [asdict(i) for i in insights], "waiting": [asdict(w) for w in waiting]}
 

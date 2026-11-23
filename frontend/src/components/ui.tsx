@@ -6,6 +6,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useIsMobile } from "@/hooks/useData";
 import { fmt } from "@/lib/format";
 import { Sparkline } from "@/charts/charts";
+import { DEFINITIONS } from "@/lib/definitions";
 
 export function cx(...c: (string | false | null | undefined)[]) {
   return c.filter(Boolean).join(" ");
@@ -24,8 +25,17 @@ export function Help({ text }: { text: string }) {
         </button>
       </Tip.Trigger>
       <Tip.Portal>
-        <Tip.Content sideOffset={6} className="z-50 max-w-[260px] rounded-xl bg-ink px-3 py-2 text-xs leading-relaxed text-bg shadow-lift">
-          {text}
+        <Tip.Content sideOffset={6} className="z-50 max-w-[300px] rounded-xl bg-ink px-3 py-2.5 text-xs leading-relaxed text-bg shadow-lift">
+          {DEFINITIONS[text] ? (
+            <dl className="space-y-1">
+              <dt className="font-semibold text-[13px]">{DEFINITIONS[text].label}</dt>
+              <dd>{DEFINITIONS[text].what}</dd>
+              <dd><b>How it is calculated:</b> {DEFINITIONS[text].how}</dd>
+              <dd><b>Unit:</b> {DEFINITIONS[text].unit}</dd>
+              <dd><b>Period:</b> {DEFINITIONS[text].period}</dd>
+              <dd><b>Source:</b> {DEFINITIONS[text].source}</dd>
+            </dl>
+          ) : text}
           <Tip.Arrow className="fill-ink" />
         </Tip.Content>
       </Tip.Portal>

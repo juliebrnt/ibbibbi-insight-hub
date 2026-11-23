@@ -34,7 +34,7 @@ export function Data() {
       <PageHeader title="Your data"
         what={`${d.datasets.length} files imported.`} why="The more sources you add, the more reliable the insights become."
         todo={d.missing[0]?.message || "Refresh your exports once a month."}
-        right={<button className="btn-primary" onClick={() => setUploadOpen(true)}><Upload className="h-4 w-4" />Upload</button>} />
+        right={<button className="btn-primary hidden md:inline-flex" onClick={() => setUploadOpen(true)}><Upload className="h-4 w-4" />Upload</button>} />
 
       {d.missing.length ? (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-6">

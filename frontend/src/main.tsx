@@ -17,6 +17,7 @@ import { Feedback } from "./pages/Feedback";
 import { Home } from "./pages/Home";
 import { Briefing, Collect, PublicForm, SettingsPage } from "./pages/Other";
 import { Plan } from "./pages/Plan";
+import { Integrations } from "./pages/Integrations";
 import { Sales } from "./pages/Sales";
 import { Social } from "./pages/Social";
 
@@ -37,6 +38,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                 <Route path="/ask" element={<Ask />} />
                 <Route path="/plan" element={<Plan />} />
                 <Route path="/data" element={<Data />} />
+                <Route path="/integrations" element={<Integrations />} />
                 <Route path="/briefing" element={<Briefing />} />
                 <Route path="/collect" element={<Collect />} />
                 <Route path="/settings" element={<SettingsPage />} />

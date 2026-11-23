@@ -42,12 +42,14 @@ export function InsightCard({ ins, rank, compact }: { ins: any; rank?: number; c
         <span className={cx("chip", k.c)}><k.Icon className="h-3.5 w-3.5" aria-hidden />{k.l}</span>
         <span className="chip bg-sunken text-ink-2">{ins.linked_goal}</span>
         {ins.ai_written ? <span className="chip bg-accent-soft text-accent"><Sparkles className="h-3 w-3" />Worded by AI, numbers checked</span> : null}
+        {ins.urgency ? <span className={cx("chip", ins.urgency === "This week" ? "bg-accent-soft text-accent" : "bg-sunken text-ink-3")}>{ins.urgency}</span> : null}
         {rank ? <span className="ml-auto text-xs text-ink-3 num">#{rank}</span> : null}
       </div>
       <h3 className="mt-3 font-display text-[19px] leading-snug font-semibold">{ins.title}</h3>
       <p className="mt-2 text-sm text-ink-2 leading-relaxed">{ins.finding}</p>
       {!compact ? <p className="mt-2 text-sm text-ink-3 leading-relaxed">{ins.why_it_matters}</p> : null}
       <div className="mt-3 rounded-xl bg-accent-soft/70 px-3 py-2.5 text-sm"><b className="text-ink">Do this: </b><span className="text-ink-2">{ins.recommended_action}</span></div>
+      {ins.measure && !compact ? <p className="mt-2 text-xs text-ink-2"><b className="text-ink">How to measure success: </b>{ins.measure}</p> : null}
       <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-ink-3">
         <span>Effort: <b className="text-ink-2">{ins.effort}</b></span>
         <span>Confidence: <b className="text-ink-2">{Math.round(ins.confidence * 100)}%</b></span>

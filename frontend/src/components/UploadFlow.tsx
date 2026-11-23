@@ -8,6 +8,7 @@ import { api } from "@/lib/api";
 import { useApp } from "@/lib/store";
 import { STATIC } from "@/lib/static";
 import { cx, Sheet } from "./ui";
+import { useIsMobile } from "@/hooks/useData";
 
 type Staged = { upload_id: string; file_name: string; error?: string; tables: any[] };
 type Step = "pick" | "reading" | "check" | "done";
@@ -26,6 +27,7 @@ export function UploadFlow({ open, onOpenChange }: { open: boolean; onOpenChange
   const fileRef = useRef<HTMLInputElement>(null);
   const camRef = useRef<HTMLInputElement>(null);
   const target = ws === "demo" ? "demo" : "mine";
+  const mobile = useIsMobile();
 
   useEffect(() => {
     if (open && droppedFiles.length) {
@@ -116,7 +118,10 @@ export function UploadFlow({ open, onOpenChange }: { open: boolean; onOpenChange
         ))}
       </ol>
 
-      {step === "pick" ? (
+      {step === "pick" && mobile ? (
+        <div className="rounded-2xl bg-sunken p-4 text-sm">For security, uploading data and connecting accounts is done on a computer. On your phone you can view everything, refresh connected sources and log a piece of feedback.</div>
+      ) : null}
+      {step === "pick" && !mobile ? (
         <div className="space-y-4">
           {STATIC ? <div className="rounded-2xl bg-accent-soft p-4 text-sm"><b>This is a preview.</b> In the real app the founders drop in any export here (Shopify, Instagram, a survey, a spreadsheet, even a screenshot). It is recognised in seconds, personal data is removed, and every chart updates. The Demo workspace shows what that looks like.</div> : null}
           <button onClick={() => fileRef.current?.click()} className="w-full rounded-3xl border-2 border-dashed border-line hover:border-primary bg-sunken/50 p-8 text-center transition-colors">

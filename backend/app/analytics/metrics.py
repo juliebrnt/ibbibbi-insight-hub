@@ -18,7 +18,8 @@ METRICS = {
     "ig_saves": {"label": "Instagram saves per post", "unit": "count", "higher_is_better": True},
     "ig_er": {"label": "Instagram engagement rate", "unit": "pct", "higher_is_better": True},
     "posts_per_week": {"label": "Posts per week", "unit": "count", "higher_is_better": True},
-    "consistency": {"label": "Posting consistency score", "unit": "score", "higher_is_better": True},
+    "consistency": {"label": "Weeks with at least one post", "unit": "pct", "higher_is_better": True},
+    "negative_share": {"label": "Share of negative feedback", "unit": "pct", "higher_is_better": False},
     "sessions": {"label": "Website visits", "unit": "count", "higher_is_better": True},
     "conversion": {"label": "Website conversion rate", "unit": "pct", "higher_is_better": True},
     "comments_answered": {"label": "Comment questions answered", "unit": "pct", "higher_is_better": True},
@@ -54,7 +55,10 @@ def value(ws: str, metric: str, a: date, b: date) -> float | None:
         n = db.one("SELECT count(*) FROM social_posts WHERE ws = ? AND platform = 'Instagram' AND date BETWEEN ? AND ?", [ws, a, b])
         return round(n / max(1, ((b - a).days + 1) / 7), 2)
     if metric == "consistency":
-        return consistency(ws, a, b)["score"]
+        return consistency(ws, a, b)["weeks_active"]
+    if metric == "negative_share":
+        return db.one("SELECT avg(CASE WHEN sentiment = 'negative' THEN 1 ELSE 0 END) FROM feedback WHERE ws = ? AND date BETWEEN ? AND ?",
+                      [ws, a, b])
     if metric == "sessions":
         return db.one("SELECT sum(sessions) FROM web_sessions WHERE ws = ? AND date BETWEEN ? AND ?", [ws, a, b])
     if metric == "conversion":

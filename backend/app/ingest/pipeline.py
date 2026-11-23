@@ -307,6 +307,9 @@ def configure_flexible(dataset_id: str, trend: dict | None = None, text_column: 
         fb["_key"] = [tf.key_of(dataset_id, r) for r in fb["row_num"]]
         fb["ws"], fb["dataset_id"] = ds[0]["ws"], dataset_id
         cols = [x.strip().split()[0] for x in db.SCHEMA["feedback"].replace("\n", " ").split(",")]
+        for x in cols:
+            if x not in fb.columns:
+                fb[x] = None
         with db.locked() as c:
             c.execute("DELETE FROM feedback WHERE dataset_id = ?", [dataset_id])
             c.register("_incoming", fb[cols])

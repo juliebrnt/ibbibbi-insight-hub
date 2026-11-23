@@ -2,7 +2,7 @@ import { Command } from "cmdk";
 import * as Dialog from "@radix-ui/react-dialog";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  BarChart3, Database, FileText, Heart, Home, LayoutGrid, Lightbulb, MessageCircleQuestion, Moon, MessagesSquare, Plus, QrCode,
+  BarChart3, Database, FileText, Plug, Heart, Home, LayoutGrid, Lightbulb, MessageCircleQuestion, Moon, MessagesSquare, Plus, QrCode,
   Search, Settings, Sun, Target, Upload, X, Zap, Monitor, PenLine,
 } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
@@ -23,12 +23,13 @@ export const NAV = [
   { to: "/sales", label: "Sales", icon: BarChart3, hint: "Sales, customers and the website" },
   { to: "/ask", label: "Ask", icon: MessageCircleQuestion, hint: "Ask a question in plain words" },
   { to: "/plan", label: "Plan", icon: Target, hint: "Goals, decisions and what you learned" },
-  { to: "/data", label: "Data", icon: Database, hint: "Your files, privacy and export guides" },
+  { to: "/integrations", label: "Integrations", icon: Plug, hint: "Connect accounts, refresh data, see sync status" },
 ];
 const MORE = [
   { to: "/ask", label: "Ask", icon: MessageCircleQuestion },
   { to: "/plan", label: "Plan", icon: Target },
-  { to: "/data", label: "Data", icon: Database },
+  { to: "/integrations", label: "Integrations", icon: Plug },
+  { to: "/data", label: "Uploaded files", icon: Database },
   { to: "/briefing", label: "Weekly briefing", icon: FileText },
   { to: "/collect", label: "Collect feedback", icon: QrCode },
   { to: "/settings", label: "Settings", icon: Settings },
@@ -258,8 +259,8 @@ function Fab() {
           <>
             <motion.button initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 8 }} onClick={() => { setOpen(false); setCaptureOpen(true); }}
               className="btn-outline shadow-lift !rounded-2xl"><PenLine className="h-4 w-4" />Log feedback</motion.button>
-            <motion.button initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 8 }} transition={{ delay: 0.03 }} onClick={() => { setOpen(false); setUploadOpen(true); }}
-              className="btn-outline shadow-lift !rounded-2xl"><Upload className="h-4 w-4" />Upload a file or photo</motion.button>
+            <motion.p initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 8 }} transition={{ delay: 0.03 }}
+              className="max-w-[230px] rounded-2xl bg-surface px-3 py-2 text-xs text-ink-2 shadow-lift">Uploading data and connecting accounts is done on a computer, for security.</motion.p>
           </>
         ) : null}
       </AnimatePresence>

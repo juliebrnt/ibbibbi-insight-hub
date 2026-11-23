@@ -19,7 +19,7 @@ def consistency(ws: str, a, b, platform: str = "Instagram") -> dict:
                     [ws, platform, a, b])
     weeks = max(1, ((b - a).days + 1) // 7)
     if not posts:
-        return {"score": 0, "per_week": 0, "longest_gap": (b - a).days, "regularity": 0, "posts": 0}
+        return {"score": 0, "per_week": 0, "longest_gap": (b - a).days, "regularity": 0, "posts": 0, "avg_gap": None, "weeks_active": 0, "weeks": weeks}
     dates = [r["date"] for r in posts]
     counts = [0] * weeks
     for d in dates:
@@ -33,7 +33,11 @@ def consistency(ws: str, a, b, platform: str = "Instagram") -> dict:
     cadence = min(1.0, per_week / 3)
     gap_score = max(0.0, 1 - max(0, longest - 4) / 24)
     score = round(100 * (0.4 * cadence + 0.35 * regularity + 0.25 * gap_score))
-    return {"score": score, "per_week": round(per_week, 1), "longest_gap": longest, "regularity": round(regularity, 2), "posts": len(dates)}
+    between = [(dates[i + 1] - dates[i]).days for i in range(len(dates) - 1)]
+    avg_gap = round(sum(between) / len(between), 1) if between else None
+    weeks_active = round(sum(1 for c in counts if c) / weeks, 3)
+    return {"score": score, "per_week": round(per_week, 1), "longest_gap": longest, "regularity": round(regularity, 2), "posts": len(dates),
+            "avg_gap": avg_gap, "weeks_active": weeks_active, "weeks": weeks}
 
 
 def overview(ws: str, p: Period) -> dict:
@@ -96,7 +100,7 @@ def overview(ws: str, p: Period) -> dict:
                             "Mission posts perform about the same as other content")
     best_day = max(by_day, key=lambda r: r["er"] or 0) if by_day else None
     timing_title = f"{best_day['day']} posts get the most engagement" if best_day and best_day["posts"] >= 3 else "When to post"
-    cons_title = (f"Consistency score {cons['score']} out of 100: {cons['per_week']} posts a week, longest gap {cons['longest_gap']} days")
+    cons_title = (f"{cons['per_week']} posts a week, a post in {cons['weeks_active'] * 100:.0f}% of weeks, longest gap {cons['longest_gap']} days")
 
     # before / after consistency change (first regular stretch)
     change = before_after(ws, plat)
@@ -113,6 +117,9 @@ def overview(ws: str, p: Period) -> dict:
             "er": {"value": cur["er"], "prev": prev["er"]},
             "saves": {"value": cur["saves"], "prev": prev["saves"], "change": pct_change(cur["saves"], prev["saves"])},
             "consistency": {"value": cons["score"], "prev": cons_prev["score"]},
+            "per_week": {"value": cons["per_week"], "prev": cons_prev["per_week"]},
+            "avg_gap": {"value": cons["avg_gap"], "prev": cons_prev["avg_gap"]},
+            "weeks_active": {"value": cons["weeks_active"], "prev": cons_prev["weeks_active"]},
             "mission_share": {"value": cur["mission_share"], "prev": prev["mission_share"]},
         },
         "formats": {"title": format_title, "subtitle": f"Last 6 months or more · {src}", "rows": by_format},

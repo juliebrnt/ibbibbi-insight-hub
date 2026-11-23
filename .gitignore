@@ -12,3 +12,4 @@ frontend/dist-prototype/
 # Course and company documents stay private
 context/
 ibbibbi_test_pack.zip
+*.tsbuildinfo

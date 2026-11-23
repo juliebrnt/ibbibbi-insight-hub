@@ -27,7 +27,8 @@ SCHEMA = {
         total_spent DOUBLE, accepts_marketing BOOLEAN""",
     "feedback": f"""{PROV}, date DATE, kind VARCHAR, source VARCHAR, text VARCHAR, title VARCHAR, rating DOUBLE, nps DOUBLE,
         product VARCHAR, fabric VARCHAR, line VARCHAR, language VARCHAR, customer_id VARCHAR, heard_from VARCHAR,
-        consent_quote BOOLEAN, sentiment VARCHAR, sentiment_score DOUBLE, themes VARCHAR, distress BOOLEAN""",
+        consent_quote BOOLEAN, sentiment VARCHAR, sentiment_score DOUBLE, themes VARCHAR, distress BOOLEAN,
+        platform VARCHAR, external_id VARCHAR, reply_status VARCHAR, reply_text VARCHAR, replied_at TIMESTAMP""",
     "social_posts": f"""{PROV}, post_id VARCHAR, platform VARCHAR, ts TIMESTAMP, date DATE, format VARCHAR, caption VARCHAR,
         pillar VARCHAR, reach DOUBLE, views DOUBLE, likes DOUBLE, comments DOUBLE, saves DOUBLE, shares DOUBLE,
         follows DOUBLE, hashtags INTEGER, caption_length INTEGER""",
@@ -65,9 +66,15 @@ def con() -> duckdb.DuckDBPyConnection:
     return _con
 
 
+MIGRATIONS = [("feedback", "platform VARCHAR"), ("feedback", "external_id VARCHAR"), ("feedback", "reply_status VARCHAR"),
+              ("feedback", "reply_text VARCHAR"), ("feedback", "replied_at TIMESTAMP")]
+
+
 def init_schema(c: duckdb.DuckDBPyConnection) -> None:
     for name, cols in {**SCHEMA, **META}.items():
         c.execute(f"CREATE TABLE IF NOT EXISTS {name} ({cols})")
+    for table, col in MIGRATIONS:
+        c.execute(f"ALTER TABLE {table} ADD COLUMN IF NOT EXISTS {col}")
 
 
 @contextmanager

@@ -5,6 +5,10 @@ import { Card, Delta, EmptyState, KpiCard, PageHeader, PageSkeleton, ProgressRin
 import { useIsMobile, useLoadDemo, usePage } from "@/hooks/useData";
 import { useApp } from "@/lib/store";
 import { Onboarding } from "@/components/Onboarding";
+import { AlertsPanel, Disclaimer } from "@/components/Alerts";
+import { PlatformIcon } from "@/components/PlatformIcon";
+import { RefreshButton, STATUS, when } from "@/pages/Integrations";
+import { DEFINITIONS } from "@/lib/definitions";
 import { useStatus } from "@/hooks/useData";
 
 const EMPTY: Record<string, { title: string; body: string; shows: string[] }> = {
@@ -53,6 +57,48 @@ export function Home() {
   return mobile ? <Today d={data} /> : <CommandCentre d={data} />;
 }
 
+const helpKey = (k: string) => (k === "per_week" ? "posts_per_week" : DEFINITIONS[k] ? k : undefined);
+
+/** Which sources feed the dashboards, their status and the last refresh. */
+function SourceStrip({ d }: { d: any }) {
+  return (
+    <div className="mb-5 card !p-3 sm:!p-4 flex flex-wrap items-center gap-x-4 gap-y-3">
+      <div className="flex items-center gap-2 min-w-0">
+        <span className="label !text-[11px] shrink-0">Connected</span>
+        <div className="flex -space-x-1.5">
+          {d.sources.slice(0, 8).map((s: any) => (
+            <span key={s.key} title={`${s.name}: ${(STATUS[s.status] || STATUS.available).label}, synced ${when(s.last_synced)}`}><PlatformIcon icon={s.icon} name={s.name} k={s.key} size={30} /></span>
+          ))}
+        </div>
+        <span className="text-sm text-ink-2 truncate">{d.sources.length} sources</span>
+      </div>
+      <span className="text-xs text-ink-3">Last refresh: <span className="num">{when(d.last_refresh)}</span></span>
+      <div className="ml-auto flex items-center gap-2">
+        <Link to="/integrations" className="btn-ghost !min-h-[38px]">Manage</Link>
+        <RefreshButton compact />
+      </div>
+    </div>
+  );
+}
+
+function Unlock({ d }: { d: any }) {
+  if (!d.unlock?.length) return null;
+  return (
+    <Card className="mt-4">
+      <h3 className="h-card">Unlock more insights</h3>
+      <p className="mt-1 text-sm text-ink-2">These sources are not connected yet. Each one adds pages and recommendations.</p>
+      <ul className="mt-3 grid sm:grid-cols-2 gap-2">
+        {d.unlock.map((u: any) => (
+          <li key={u.key}><Link to="/integrations" className="flex items-center gap-3 rounded-xl border border-line p-3 hover:border-primary">
+            <PlatformIcon icon={u.icon} name={u.name} k={u.key} size={34} />
+            <span className="min-w-0"><span className="block text-sm font-medium">{u.name}</span><span className="block text-xs text-ink-3 truncate">{u.unlocks.join(" · ")}</span></span>
+          </Link></li>
+        ))}
+      </ul>
+    </Card>
+  );
+}
+
 function CommandCentre({ d }: { d: any }) {
   const top = d.insights.find((i: any) => i.kind !== "care");
   return (
@@ -61,8 +107,10 @@ function CommandCentre({ d }: { d: any }) {
         what={d.changed[0] ? <>{d.changed[0].label} {d.changed[0].change > 0 ? "up" : "down"} {Math.abs(d.changed[0].change).toFixed(0)}% ({d.changed[0].prev_display} to {d.changed[0].display}).</> : "Things are steady."}
         why={top ? top.title + "." : undefined}
         todo={top ? top.recommended_action.split(". ")[0].replace(/\.$/, "") + "." : undefined} />
-      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">{d.kpis.map((k: any) => <KpiCard key={k.key} {...k} compact={false} />)}</div>
-      <p className="mt-2 text-xs text-ink-3">{d.period.label}, compared with the period before.</p>
+      <SourceStrip d={d} />
+      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">{d.kpis.map((k: any) => <KpiCard key={k.key} {...k} help={helpKey(k.key) || k.help} compact={false} />)}</div>
+      <p className="mt-2 text-xs text-ink-3">{d.period.label} ({d.period.start} to {d.period.end}), compared with the same number of days before. Hover the ? for how each figure is calculated.</p>
+      <div className="mt-5"><AlertsPanel data={d.alerts} /></div>
 
       {d.care ? (
         <Link to="/feedback#care" className="mt-5 flex items-center gap-3 rounded-2xl bg-care-soft px-4 py-3 text-sm">
@@ -72,6 +120,8 @@ function CommandCentre({ d }: { d: any }) {
 
       <div className="mt-7 flex items-end justify-between"><h2 className="font-display text-2xl font-semibold">Top recommendations</h2><Link to="/plan" className="text-sm text-primary font-medium">See your plan →</Link></div>
       <div className="mt-3 grid lg:grid-cols-3 gap-4">{d.insights.filter((i: any) => i.kind !== "care").slice(0, 3).map((i: any, n: number) => <InsightCard key={i.id} ins={i} rank={n + 1} />)}</div>
+      <Disclaimer className="mt-2" />
+      <Unlock d={d} />
 
       <div className="mt-6 grid lg:grid-cols-3 gap-4">
         <Card className="lg:col-span-1">
@@ -126,6 +176,11 @@ function Today({ d }: { d: any }) {
       <div className="mt-4 grid grid-cols-3 gap-2">
         {d.kpis.slice(0, 3).map((k: any) => <KpiCard key={k.key} {...k} spark={undefined} help={undefined} compact />)}
       </div>
+      <div className="mt-2 flex items-center justify-between gap-2 text-xs text-ink-3">
+        <span>{d.period.label} · refreshed <span className="num">{when(d.last_refresh)}</span></span>
+        <RefreshButton compact />
+      </div>
+      <div className="mt-4"><AlertsPanel data={d.alerts} limit={2} /></div>
       {d.care ? (
         <Link to="/feedback#care" className="mt-3 flex items-center gap-3 rounded-2xl bg-care-soft px-4 py-3 text-sm">
           <HeartHandshake className="h-5 w-5 text-care shrink-0" /><span><b>{d.care}</b> messages may need a personal reply</span>
@@ -142,6 +197,20 @@ function Today({ d }: { d: any }) {
       <div className="scroll-x -mx-4 px-4 mt-2 flex gap-3 pb-2">
         {ins.map((i: any, n: number) => <div key={i.id} className="snap shrink-0 w-[86%]"><InsightCard ins={i} rank={n + 1} compact /></div>)}
       </div>
+      <Disclaimer className="mt-1" />
+      {d.goals.length ? (
+        <details className="mt-4 card p-4" open>
+          <summary className="cursor-pointer font-display text-lg font-semibold">Goals</summary>
+          <ul className="mt-3 space-y-3">{d.goals.map((g: any) => (
+            <li key={g.id} className="flex items-center gap-3"><ProgressRing value={g.progress} size={46} stroke={5} /><div className="min-w-0"><div className="text-sm font-medium">{g.title}</div><div className="text-xs text-ink-3 num">Now {g.current_display} · target {g.target_display}</div></div></li>))}</ul>
+        </details>
+      ) : null}
+      <details className="mt-3 card p-4">
+        <summary className="cursor-pointer font-display text-lg font-semibold">Channels ({d.sources.length})</summary>
+        <ul className="mt-3 space-y-2">{d.sources.map((s: any) => (
+          <li key={s.key} className="flex items-center gap-3 text-sm"><PlatformIcon icon={s.icon} name={s.name} k={s.key} size={30} /><span className="flex-1">{s.name}</span><span className="text-xs text-ink-3 num">{when(s.last_synced)}</span></li>))}</ul>
+        <Link to="/integrations" className="mt-3 inline-block text-sm text-primary font-medium">See all integrations →</Link>
+      </details>
       <button onClick={() => setCaptureOpen(true)} className="mt-4 w-full card flex items-center gap-3 p-4 text-left">
         <span className="h-11 w-11 rounded-2xl bg-accent-soft text-accent grid place-items-center"><PenLine className="h-5 w-5" /></span>
         <span><span className="block font-medium">Log customer feedback</span><span className="text-sm text-ink-3">Type or paste a message in seconds</span></span>

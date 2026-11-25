@@ -83,6 +83,13 @@ def translate(s: str, lang: str = "es") -> str:
     return _cap(s.strip(), out) if out != s else out
 
 
+def _sentence(p: str, lang: str = "es") -> str:
+    t = translate(p + ".", lang)
+    if t != p + "." and t.endswith("."):
+        return t[:-1]
+    return translate(p, lang)
+
+
 def _translate(s: str, lang: str = "es") -> str:
     core = s.strip()
     whole = _translate_one(s)
@@ -92,14 +99,10 @@ def _translate(s: str, lang: str = "es") -> str:
         if sep not in core:
             continue
         parts = core.split(sep)
-        out = [translate(p, lang) for p in parts]
+        # a sentence split off at ". " keeps its full stop while it is looked up
+        out = [_sentence(p, lang) if sep == ". " and i < len(parts) - 1 else translate(p, lang) for i, p in enumerate(parts)]
         if out != parts:
             return s[: len(s) - len(s.lstrip())] + sep.join(out) + s[len(s.rstrip()):]
-    if False:
-        parts = core.split(" · ")
-        out = [translate(p, lang) for p in parts]
-        if out != parts:
-            return s[: len(s) - len(s.lstrip())] + " · ".join(out) + s[len(s.rstrip()):]
     if core[-1:] in ".:" and len(core) > 3:  # a sentence with a full stop added on screen
         inner = _translate_one(core[:-1])
         if inner != core[:-1]:

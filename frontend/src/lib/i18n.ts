@@ -78,13 +78,19 @@ function core(s: string): string {
   return s;
 }
 
+function sentence(p: string): string {
+  const t = translate(p + ".");
+  return t !== p + "." && t.endsWith(".") ? t.slice(0, -1) : translate(p);
+}
+
 function full(s: string): string {
   const r = core(s);
   if (r !== s) return r;
   for (const sep of [" · ", ". "]) {
     if (!s.includes(sep)) continue;
     const parts = s.split(sep);
-    const out = parts.map((p) => translate(p));
+    // a sentence split off at ". " keeps its full stop while it is looked up
+    const out = parts.map((p, i) => (sep === ". " && i < parts.length - 1 ? sentence(p) : translate(p)));
     if (out.some((o, i) => o !== parts[i])) return out.join(sep);
   }
   const last = s.slice(-1);
@@ -98,7 +104,8 @@ function full(s: string): string {
 const cache = new Map<string, string>();
 export function translate(s: string): string {
   const k = s.trim();
-  if (!k || !/[A-Za-z]/.test(k)) return s;
+  // Numbers alone are translated too (30,312 € style), anything else without letters is left as it is.
+  if (!k || !/[A-Za-z]|\d[.,]\d|[€%]/.test(k)) return s;
   let out = cache.get(k);
   if (out === undefined) {
     out = cap(k, full(k));
@@ -120,8 +127,32 @@ let active = false;
 
 const skip = (el: Element | null) => !!el?.closest('[translate="no"], script, style, textarea, code, pre');
 
+/** Original text of a node, ignoring our own translation of it. */
+const src = (n: Text) => (shown.get(n) === n.nodeValue && original.has(n) ? original.get(n)! : n.nodeValue || "");
+
+/**
+ * React writes `{n} sources` as two text nodes ("8", " sources"), which mean nothing on their own.
+ * When an element holds only text, translate the joined sentence and put it in the first node.
+ */
+function doGroup(parent: Element): boolean {
+  const nodes = Array.from(parent.childNodes);
+  if (nodes.length < 2 || !nodes.every((x) => x.nodeType === Node.TEXT_NODE)) return false;
+  const texts = nodes as Text[];
+  const parts = texts.map(src);
+  const whole = parts.join("");
+  const es = translate(whole);
+  texts.forEach((t, i) => original.set(t, parts[i]));
+  const out = es !== whole ? [es, ...parts.slice(1).map(() => "")] : texts.map((t) => translate(parts[texts.indexOf(t)]));
+  texts.forEach((t, i) => {
+    shown.set(t, out[i]);
+    if (t.nodeValue !== out[i]) t.nodeValue = out[i];
+  });
+  return true;
+}
+
 function doText(n: Text) {
   if (skip(n.parentElement)) return;
+  if (n.parentElement && doGroup(n.parentElement)) return;
   const cur = n.nodeValue || "";
   if (shown.get(n) === cur) return; // our own change
   original.set(n, cur);

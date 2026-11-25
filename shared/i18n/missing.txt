@@ -2,7 +2,9 @@ Google Analytics {0}
 Judgeme
 OAuth {0}
 OAuth
+Español
 Prototype with demo data (made-up customers). \u{0}cMy data\u{1}d shows what the founders see before they upload anything.
+Idioma
 (r)), post:
 (r)), patch:
 (r)), del:

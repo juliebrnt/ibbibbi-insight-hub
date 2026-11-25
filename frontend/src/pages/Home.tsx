@@ -178,7 +178,7 @@ function Today({ d }: { d: any }) {
         {d.kpis.slice(0, 3).map((k: any) => <KpiCard key={k.key} {...k} spark={undefined} help={undefined} compact />)}
       </div>
       <div className="mt-2 flex items-center justify-between gap-2 text-xs text-ink-3">
-        <span>{d.period.label} · refreshed <span className="num">{when(d.last_refresh)}</span></span>
+        <span><span>{d.period.label}</span> · <span>Updated</span> <span className="num">{when(d.last_refresh)}</span></span>
         <RefreshButton compact />
       </div>
       <div className="mt-4"><AlertsPanel data={d.alerts} limit={2} /></div>

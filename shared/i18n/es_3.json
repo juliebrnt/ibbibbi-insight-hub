@@ -693,7 +693,15 @@
   "Sep": "sept",
   "Oct": "oct",
   "Dec": "dic",
-  "Metrics available": "Métricas disponibles"
+  "Metrics available": "Métricas disponibles",
+  "{0} to {1}": "{0} a {1}",
+  "€{0} to €{1}": "{0} € a {1} €",
+  "{0}% to {1}%": "{0} % a {1} %",
+  "Updated": "Actualizado",
+  "up on previous period": "más que en el periodo anterior",
+  "down on previous period": "menos que en el periodo anterior",
+  "Review {0} decision: what did you learn?": "Revisa {0} decisión: ¿qué has aprendido?",
+  "Review {0} decisions: what did you learn?": "Revisa {0} decisiones: ¿qué has aprendido?"
  },
  "patterns": {
   "Fetched the latest data: {x} new records.": "Se descargaron los datos más recientes: {x} registros nuevos.",
@@ -716,6 +724,8 @@
   "{x}: {y}": "{x}: {y}",
   "{0} sources feeding your dashboards. Last refresh: {z}.": "{0} fuentes alimentan tus paneles. Última actualización: {z}.",
   "{0} source feeding your dashboards. Last refresh: {z}.": "{0} fuente alimenta tus paneles. Última actualización: {z}.",
-  "Every number comes from your uploaded data. Generated {z}.": "Cada cifra sale de los datos que has subido. Generado el {z}."
+  "Every number comes from your uploaded data. Generated {z}.": "Cada cifra sale de los datos que has subido. Generado el {z}.",
+  "{x} up {0}% ({y}).": "{x}: +{0} % ({y}).",
+  "{x} down {0}% ({y}).": "{x}: -{0} % ({y})."
  }
 }

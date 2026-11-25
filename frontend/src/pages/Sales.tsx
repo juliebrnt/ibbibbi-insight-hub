@@ -16,7 +16,7 @@ export function Sales() {
     <>
       <PageHeader title="Sales and customers"
         what={!s.empty ? s.revenue_chart.title + "." : w.trend.title + "."}
-        why={!s.empty ? s.loyalty.title + ". A second purchase costs far less to win than a new customer." : undefined}
+        why={!s.empty ? (s.loyalty.rows.length ? s.loyalty.title + ". A second purchase costs far less to win than a new customer." : "Every sale in your files is counted here. Add more months to compare periods and spot trends.") : undefined}
         todo={!s.empty ? "Plan stock and content for October early, and send a care-first follow-up email 30 days after purchase." : undefined}
         right={<div className="hidden sm:block"><Segmented label="Section" value={tab} onChange={setTab} options={[{ value: "sales", label: "Sales" }, { value: "customers", label: "Customers" }, { value: "web", label: "Website" }]} /></div>} />
       <div className="sm:hidden mb-4 scroll-x"><Segmented label="Section" value={tab} onChange={setTab} options={[{ value: "sales", label: "Sales" }, { value: "customers", label: "Customers" }, { value: "web", label: "Website" }]} /></div>
@@ -61,9 +61,9 @@ export function Sales() {
 
       {tab === "customers" && !s.empty ? (
         <div className="grid lg:grid-cols-2 gap-4">
-          <ChartCard title={s.loyalty.title} subtitle={s.loyalty.subtitle} table={s.loyalty.rows} columns={[{ key: "grp", label: "Group" }, { key: "customers", label: "Customers" }]}>
+          {s.loyalty.rows.length ? <ChartCard title={s.loyalty.title} subtitle={s.loyalty.subtitle} table={s.loyalty.rows} columns={[{ key: "grp", label: "Group" }, { key: "customers", label: "Customers" }]}>
             <Bars rows={s.loyalty.rows} x="grp" y="customers" height={240} label="customers" />
-          </ChartCard>
+          </ChartCard> : <div className="card p-5 text-sm text-ink-2">{s.loyalty.title}. Names are never stored, so add an email or customer number column to count returning customers anonymously.</div>}
           <ChartCard title={s.cohorts.title} subtitle={s.cohorts.subtitle} help="Each row is a month's new customers. Each square shows the share who bought again 1 to 6 months later.">
             <Heatmap xLabels={["+1m", "+2m", "+3m", "+4m", "+5m", "+6m"]} yLabels={s.cohorts.rows.map((r: any) => fmt.month(r.cohort))}
               data={s.cohorts.rows.flatMap((r: any, y: number) => r.retention.map((v: number | null, x: number) => [x, y, v]))} height={340} max={0.2} />

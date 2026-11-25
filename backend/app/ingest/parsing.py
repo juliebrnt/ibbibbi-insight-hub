@@ -61,7 +61,10 @@ def number_series(s: pd.Series) -> pd.Series:
         def eu(v):
             if v is None or (isinstance(v, float) and pd.isna(v)):
                 return None
-            t = _NUM_CLEAN.sub("", str(v)).replace(".", "").replace(",", ".")
+            t = _NUM_CLEAN.sub("", str(v))
+            if "," not in t and not re.fullmatch(r"-?\d{1,3}(\.\d{3})+", t):
+                return parse_number(v)  # '24.50' in a mostly '24,50' column is still 24.50
+            t = t.replace(".", "").replace(",", ".")
             try:
                 return float(t) if t not in {"", "-", "."} else None
             except ValueError:

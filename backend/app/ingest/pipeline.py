@@ -14,7 +14,7 @@ from ..analytics import text as tx
 from ..config import STAGING_DIR, UPLOAD_DIR
 from ..privacy import pii
 from . import transform as tf
-from .classify import classify, fingerprint, source_label
+from .classify import classify, fingerprint, source_label, text_stats
 from .parsing import date_rate, date_series, number_rate, number_series
 from .readers import RawTable, ReadError, read_file
 from .registry import TYPES
@@ -277,10 +277,18 @@ def import_flexible(dataset_id: str, rt: RawTable, df: pd.DataFrame, ws: str, pr
         dataset_id, ws, rt.file_name, rt.sheet, "flexible", "Your own data", 0.0, fingerprint(list(df.columns)), len(df), len(df), 0, 0,
         dmin, dmax, 1.0, datetime.now(), json.dumps({}), json.dumps({"notes": ["Stored as a flexible dataset."], "issues": []}), True,
         json.dumps(config), "active"])
+    # show it straight away: a monthly trend of the main number, and long text as feedback
+    auto_trend = None
+    if suggestion["date"] and suggestion["value"]:
+        vl = next(c["label"] for c in cols if c["column"] == suggestion["value"])
+        auto_trend = {"date": suggestion["date"], "value": suggestion["value"], "label": config["title"], "value_label": vl}
+    long_text = [c for c in text_cols if text_stats(typed[c["column"]].dropna().astype(str)) >= 25]
+    if auto_trend or long_text:
+        config = configure_flexible(dataset_id, auto_trend, long_text[0]["column"] if long_text else None)["config"]
     return {"ok": True, "dataset_id": dataset_id, "label": "Your own data", "table_type": "flexible", "flexible": True,
             "config": config, "profile": prof, "text_columns": text_cols,
             "report": {"rows_in": len(df), "imported": len(df), "skipped": 0, "fixed": 0, "duplicates": 0,
-                       "notes": ["Stored as a flexible dataset. Pick a date and a number to see it as a trend."], "issues": []}}
+                       "notes": ["We did not recognise this as a standard export, so it is saved as your own dataset."], "issues": []}}
 
 
 def configure_flexible(dataset_id: str, trend: dict | None = None, text_column: str | None = None, title: str | None = None) -> dict:

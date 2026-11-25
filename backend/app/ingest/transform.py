@@ -112,7 +112,12 @@ def to_orders(df, m, report: Report, first_row: int) -> dict[str, pd.DataFrame]:
     rows = base_rows(df, first_row)
     oid = texts(df, m, "order_id")
     if oid.isna().all():
-        raise ValueError("No order numbers found")
+        # hand-kept sales logs often have no order number: each row is one sale, with an id made from its contents
+        # so that uploading the same file again is still recognised as a duplicate
+        sig = pd.Series([key_of(*vals) for vals in zip(*(df[c["column"]].astype(str) for c in m.values() if c.get("column") in df.columns))],
+                        index=df.index) if m else pd.Series(df.index.astype(str), index=df.index)
+        oid = "row-" + sig.astype(str) + "-" + sig.groupby(sig).cumcount().astype(str)
+        report.notes.append("There is no order number, so each row is counted as one sale.")
     oid = oid.ffill()
     d = dates(df, m, "date", report)
     # fill dates within the same order

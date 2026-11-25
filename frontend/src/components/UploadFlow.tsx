@@ -1,4 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
+import { FileStatus } from "./FileStatus";
 import { motion } from "framer-motion";
 import { Camera, Check, ClipboardPaste, FileUp, Loader2, ShieldCheck, Sparkles, TriangleAlert } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -300,7 +301,8 @@ function Report({ r, onUndo }: { r: any; onUndo: (id: string) => void }) {
       <ul className="mt-2 list-disc pl-5 text-ink-2 space-y-0.5">{(rep.notes || []).map((n: string, i: number) => <li key={i}>{n}</li>)}</ul>
       {rep.issues?.length ? <details className="mt-2 text-ink-3"><summary className="cursor-pointer">{rep.issues.length} rows to look at</summary>
         <ul className="mt-1">{rep.issues.slice(0, 10).map((x: any, i: number) => <li key={i}>Row {x.row}: {x.problem}</li>)}</ul></details> : null}
-      {r.flexible ? <Link to="/data" className="btn-soft mt-3">Turn it into a trend</Link> : null}
+      <FileStatus e={r.explain} />
+      {r.flexible && r.explain?.status === "not_shown" ? <Link to="/data" className="btn-soft mt-3">Open Uploaded files</Link> : null}
     </div>
   );
 }

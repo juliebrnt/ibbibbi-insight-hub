@@ -49,7 +49,9 @@ def overview(ws: str, p: Period) -> dict:
     cur_series = series(ws, p.start, p.end, bucket)
     ly_series = series(ws, p.ly_start, p.ly_end, bucket)
     spark = series(ws, p.end - timedelta(days=7 * 12 - 1), p.end, "week")
-    src = "Shopify orders"
+    labels = [r["source_label"] for r in db.rows(
+        "SELECT DISTINCT source_label FROM datasets WHERE ws = ? AND table_type = 'orders' AND coalesce(status, 'active') = 'active'", [ws])]
+    src = " and ".join(labels) if labels and len(labels) <= 2 else "Your sales data"
 
     rev_change = pct_change(cur["revenue"], prev["revenue"])
     if rev_change is None:
@@ -101,7 +103,8 @@ def overview(ws: str, p: Period) -> dict:
         season_title = f"{months[peak['m'] - 1]} ({prof.key_date(ws, peak['m'])}) is your busiest month"
     total_c = sum(r["customers"] for r in dist) or 1
     one = next((r["customers"] for r in dist if r["grp"] == "One order"), 0)
-    dist_title = f"{one / total_c * 100:.0f}% of customers have bought only once"
+    dist_title = (f"{one / total_c * 100:.0f}% of customers have bought only once" if dist else
+                  "Repeat customers need a customer email or id in your sales file")
 
     return {
         "period": {"label": p.label, "start": p.start.isoformat(), "end": p.end.isoformat()},
@@ -127,7 +130,7 @@ def overview(ws: str, p: Period) -> dict:
                         "rows": [{"month": months[r["m"] - 1][:3], **r} for r in seasonality],
                         "awareness": {months[d["month"] - 1][:3]: d["label"] for d in prof.get(ws)["key_dates"]},
                         "attribute_label": prof.get(ws)["attribute_label"]},
-        "loyalty": {"title": dist_title, "subtitle": "All customers to date · Shopify orders", "rows": dist},
+        "loyalty": {"title": dist_title, "subtitle": f"All customers to date · {src}", "rows": dist},
         "cohorts": cohorts(ws, p.end),
         "gift": {"value": cur["gift_share"]},
     }

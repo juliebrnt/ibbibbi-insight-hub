@@ -35,9 +35,9 @@ def _t(t: TableType):
     TYPES[t.key] = t
 
 
-_t(TableType("orders", "Shopify orders", "One row per order or per line item",
+_t(TableType("orders", "Orders and sales", "One row per order or per line item",
     [F("order_id", "Order number", "id", ["name", "order", "order id", "order number", "order name", "nombre", "pedido", "numero de pedido",
-                                           "n pedido", "comanda", "id pedido", "order no"], True),
+                                           "n pedido", "comanda", "id pedido", "order no"]),
      F("date", "Order date", "date", ["created at", "creado el", "fecha", "date", "order date", "fecha del pedido", "data",
                                       "processed at", "fecha de creacion"], True),
      F("total", "Order total", "number", ["total", "importe total", "total price", "order total", "amount", "importe", "total eur"], True),

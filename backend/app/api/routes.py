@@ -20,6 +20,7 @@ from ..analytics import text as tx
 from ..config import DEMO_DIR, MAX_UPLOAD_MB, STAGING_DIR
 from ..demo import loader
 from ..ingest import pipeline, vision
+from ..ingest.explain import explain as explain_dataset
 from ..ingest.readers import ReadError
 from ..insights import briefing, plan, rules
 from ..models import connectors
@@ -287,7 +288,12 @@ class ImportBody(BaseModel):
 def do_import(b: ImportBody):
     _ws(b.ws)
     try:
-        return pipeline.confirm(b.upload_id, b.index, b.table_type, b.mapping, b.privacy, b.mode, b.save_recipe, b.flexible, b.ws)
+        res = pipeline.confirm(b.upload_id, b.index, b.table_type, b.mapping, b.privacy, b.mode, b.save_recipe, b.flexible, b.ws)
+        if res.get("ok") and res.get("dataset_id"):
+            ds = db.rows("SELECT * FROM datasets WHERE id = ?", [res["dataset_id"]])
+            if ds:
+                res["explain"] = explain_dataset(ds[0])
+        return res
     except ReadError as e:
         return {"ok": False, "error": str(e)}
 
@@ -299,6 +305,7 @@ def datasets(ws: str = WS):
     for r in rows:
         r["report"] = json.loads(r["report"]) if r["report"] else None
         r["flex_config"] = json.loads(r["flex_config"]) if r["flex_config"] else None
+        r["explain"] = explain_dataset(r)
     present = {r["table_type"] for r in rows}
     labels = {r["source_label"] for r in rows}
     missing = []

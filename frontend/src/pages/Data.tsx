@@ -1,4 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
+import { FileStatus } from "@/components/FileStatus";
 import { BookOpen, FileSpreadsheet, ShieldCheck, TrendingUp, Undo2, Upload } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -55,8 +56,8 @@ export function Data() {
               <div className="h-10 w-10 rounded-xl bg-primary-soft text-primary grid place-items-center shrink-0"><FileSpreadsheet className="h-5 w-5" /></div>
               <div className="min-w-0 flex-1">
                 <div className="font-medium truncate">{x.file_name}{x.sheet ? <span className="text-ink-3"> · {x.sheet}</span> : null}</div>
-                <div className="text-sm text-ink-2">{x.flexible ? "Your own dataset" : x.source_label} · {x.rows_imported.toLocaleString("en-GB")} rows{x.date_min ? ` · ${fmt.date(String(x.date_min))} to ${fmt.date(String(x.date_max))}` : ""}</div>
-                <div className="text-xs text-ink-3">Added {fmt.date(String(x.created_at).slice(0, 10))}</div>
+                <div className="text-sm text-ink-2">{x.flexible ? "Your own dataset" : x.source_label} · {x.rows_imported.toLocaleString("en-GB")} rows{x.date_min ? ` · ${fmt.date(String(x.date_min))} – ${fmt.date(String(x.date_max))}` : ""}</div>
+                <div className="text-xs text-ink-3"><span>Added</span> <span>{fmt.date(String(x.created_at).slice(0, 10))}</span></div>
               </div>
               <span className={cx("chip", x.quality >= 0.95 ? "bg-good-soft text-good" : "bg-warn-soft text-warn")}>Quality {Math.round(x.quality * 100)}%</span>
               <div className="flex gap-1">
@@ -64,6 +65,7 @@ export function Data() {
                 <button className="btn-ghost !min-h-[38px]" onClick={() => undo(x.id, x.file_name)} title="Undo import"><Undo2 className="h-4 w-4" /><span className="sr-only">Undo import</span></button>
               </div>
             </div>
+            <FileStatus e={x.explain} onMakeTrend={x.flexible && x.explain?.fixes?.some((f: string) => f.includes("Make a trend")) ? () => setFlex(x) : undefined} />
           </Card>
         ))}
       </div>

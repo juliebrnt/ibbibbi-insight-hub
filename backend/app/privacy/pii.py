@@ -34,6 +34,17 @@ EXPLAIN = {
     "hash": "Replaced by an anonymous id so we can count repeat customers without storing the real value.",
     "keep": "Stored as is on this computer. Only choose this if you truly need it.",
 }
+# a column simply called "Cliente" or "Customer" holds names in hand-kept files (exact header only)
+CUSTOMER_NAME_HEADERS = {"cliente", "clienta", "clientes", "client", "clients", "customer", "comprador", "compradora", "buyer",
+                         "nombre cliente", "nombre del cliente", "nom client", "nom del client", "customer full name"}
+
+
+def sample_is_ids(s: pd.Series) -> bool:
+    """True when a customer column holds ids or emails rather than names."""
+    v = s.dropna().astype(str).head(200)
+    return bool(len(v)) and (v.str.contains(EMAIL_RE).mean() > 0.5 or v.str.fullmatch(r"[A-Za-z_-]{0,4}\d+").mean() > 0.5)
+
+
 # columns that are product or order names, not people
 NOT_PII = {"nombre del articulo", "lineitem name", "product name", "nombre", "name"}
 
@@ -46,7 +57,9 @@ def detect(df: pd.DataFrame, mapping: dict[str, dict] | None = None) -> list[dic
         n = norm(col)
         canonical = mapped.get(col)
         kind = None
-        if canonical in {"customer_email"}:
+        if n in CUSTOMER_NAME_HEADERS and canonical not in {"customer_email"} and not sample_is_ids(df[col]):
+            kind = "name"  # "Cliente: Laura Pérez" is a person's name, even when it was matched as the customer column
+        elif canonical in {"customer_email"}:
             kind = "email"
         elif canonical in {"username"}:
             kind = "username"

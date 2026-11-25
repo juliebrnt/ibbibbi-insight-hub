@@ -338,9 +338,14 @@
   "Online store": "Tienda online",
   "In person (markets)": "En persona (mercadillos)",
   "Wholesale (pharmacies)": "Mayorista (farmacias)",
-  "Manual order": "Pedido manual"
+  "Manual order": "Pedido manual",
+  "By month": "Por mes"
  },
  "patterns": {
+  "By month · {z} (your own file)": "Por mes · {z} (tu propio archivo)",
+  "{z} reached {x} in the last {1} days, against {y} in the {3} days before and +{4}% on the same months last year.": "{z} llegó a {x} en los últimos {1} días, frente a {y} en los {3} días anteriores y +{4} % frente a los mismos meses del año pasado.",
+  "{z} reached {x} in the last {1} days, against {y} in the {3} days before and -{4}% on the same months last year.": "{z} llegó a {x} en los últimos {1} días, frente a {y} en los {3} días anteriores y -{4} % frente a los mismos meses del año pasado.",
+  "{z} reached {x} in the last {1} days, against {y} in the {3} days before.": "{z} llegó a {x} en los últimos {1} días, frente a {y} en los {3} días anteriores.",
   "{x}: {z} up {0}% in the last three months": "{x}: {z} sube un {0} % en los últimos tres meses",
   "{x}: {z} down {0}% in the last three months": "{x}: {z} baja un {0} % en los últimos tres meses",
   "{x} is your best-loved fabric ({0} out of {1})": "{x} es tu tejido mejor valorado ({0} de {1})",

@@ -701,7 +701,8 @@
   "up on previous period": "más que en el periodo anterior",
   "down on previous period": "menos que en el periodo anterior",
   "Review {0} decision: what did you learn?": "Revisa {0} decisión: ¿qué has aprendido?",
-  "Review {0} decisions: what did you learn?": "Revisa {0} decisiones: ¿qué has aprendido?"
+  "Review {0} decisions: what did you learn?": "Revisa {0} decisiones: ¿qué has aprendido?",
+  "Market stalls": "Puestos de mercado"
  },
  "patterns": {
   "Fetched the latest data: {x} new records.": "Se descargaron los datos más recientes: {x} registros nuevos.",

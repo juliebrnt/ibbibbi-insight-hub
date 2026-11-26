@@ -16,6 +16,7 @@ const WORDS: Record<string, string> = {};
 MONTHS_EN.forEach((m, i) => (WORDS[m] = MONTHS_ES[i]));
 ABBR_EN.forEach((m, i) => (WORDS[m] = ABBR_ES[i]));
 DAYS_EN.forEach((m, i) => (WORDS[m] = DAYS_ES[i]));
+WORDS.May = "mayo"; // the full name and the abbreviation are the same word in English
 
 const TOKEN = new RegExp(`\\d[\\d,.]*\\d|\\d|\\b(?:${[...MONTHS_EN, ...DAYS_EN].join("|")})\\b|\\b(?:${ABBR_EN.join("|")})\\b(?!\\w)`, "g");
 const esc = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");

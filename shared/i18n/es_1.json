@@ -342,6 +342,15 @@
   "By month": "Por mes"
  },
  "patterns": {
+  "Orders are {0}% higher in the two days after a {x} post": "Los pedidos son un {0} % más altos en los dos días después de una publicación de tipo {x}",
+  "Post more {x} posts that show a product in use, and point to the shop in the caption and Stories.": "Publica más contenido de tipo {x} que muestre un producto en uso, y lleva a la tienda desde el texto y las Stories.",
+  "{z} posts bring no extra orders: use them for community, not selling.": "Las publicaciones de tipo {z} no traen pedidos extra: úsalas para comunidad, no para vender.",
+  "Fix {x} first ({y}): it sells, but disappoints some buyers.": "Mejora primero {x} ({y}): se vende, pero decepciona a algunos compradores.",
+  "Fix {x} first: it sells, but disappoints some buyers.": "Mejora primero {x}: se vende, pero decepciona a algunos compradores.",
+  "Give {x} more stock and more posts.": "Dale a {x} más stock y más publicaciones.",
+  "{x} comes up most in reviews: fix that before ordering more.": "{x} es lo que más sale en las reseñas: arréglalo antes de pedir más.",
+  "This month: {x} ({0} people).": "Este mes: {x} ({0} personas).",
+  "In {0}, order stock for {1}, above all {x} (about {2} sold in a usual {3}), and plan posts and partners ahead.": "En {0}, pide stock para {1}, sobre todo {x} (unas {2} unidades en un {3} habitual), y planifica publicaciones y colaboraciones con tiempo.",
   "Add next: {x}.": "Añade ahora: {x}.",
   "Still to add: {z}.": "Falta añadir: {z}.",
   "{x} fell {0}% in the last {1} days compared with the {2} days before.": "{x} bajó un {0} % en los últimos {1} días frente a los {2} días anteriores.",

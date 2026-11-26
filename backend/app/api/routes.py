@@ -15,7 +15,7 @@ from .. import db
 from ..ai import ask as ask_mod
 from ..ai import client as ai_client
 from ..ai import narrate
-from ..analytics import common, cross, feedback, metrics, sales, social
+from ..analytics import common, cross, decisions, feedback, metrics, sales, social
 from ..analytics import text as tx
 from ..config import DEMO_DIR, MAX_UPLOAD_MB, STAGING_DIR
 from ..demo import loader
@@ -109,7 +109,9 @@ def sales_page(ws: str = WS, range: str = "90d"):
         cfg = json.loads(ds["flex_config"] or "{}")
         if cfg.get("trend"):
             flex.append({"id": ds["id"], "title": cfg.get("title"), "trend": cfg["trend"], "series": flex_series(ds["id"])["rows"]})
-    return {"sales": sales.overview(ws, p), "web": sales.web(ws, p), "email": sales.email(ws, p), "flex": flex}
+    end = common.latest_date(ws)
+    plan = {"products": decisions.product_map(ws, end), "segments": decisions.segments(ws, end), "seasonal": decisions.seasonal(ws, end)}
+    return {"sales": sales.overview(ws, p), "web": sales.web(ws, p), "email": sales.email(ws, p), "flex": flex, "decide": plan}
 
 
 @router.get("/feedback")
@@ -122,6 +124,7 @@ def social_page(ws: str = WS, range: str = "90d", platform: str | None = None):
     p = common.period(ws, range)
     out = social.overview(ws, p, platform)
     out["account"] = social.account(ws, p)
+    out["ig_sales"] = decisions.instagram_sales(ws, common.latest_date(ws))
     if not out.get("empty"):
         out["cross"] = cross.mission_effect(ws)
     return out

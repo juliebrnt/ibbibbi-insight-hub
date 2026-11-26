@@ -1,3 +1,4 @@
+import { InstagramSales } from "@/components/Decide";
 import { Inbox, TriangleAlert } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Bars, CalendarHeat, GroupedBars, Heatmap, Lines } from "@/charts/charts";
@@ -31,6 +32,7 @@ export function Social() {
         <PageHeader title="What content works" what={a.title + "."} why="These are your account figures from Meta Business Suite."
           todo={a.warnings[0]?.todo || "Add your Instagram posts export to see which posts cause the peaks."} />
         <Account a={a} />
+        {d.ig_sales ? <div className="mt-4"><InstagramSales d={d.ig_sales} /></div> : null}
         <Card className="mt-4">
           <h3 className="h-card">See which posts work</h3>
           <p className="mt-1 text-sm text-ink-2">Add your Instagram posts export (Meta Business Suite → Insights → Content → Export data) to compare formats and topics and see which post caused each peak.</p>
@@ -58,6 +60,7 @@ export function Social() {
         </div>
       ) : null}
       {d.account ? <div className="mb-6"><Account a={d.account} /></div> : null}
+      {d.ig_sales ? <div className="mb-6"><InstagramSales d={d.ig_sales} /></div> : null}
       {d.account ? <h2 className="font-display text-xl font-semibold mb-2">Your posts</h2> : null}
       <div className="mb-3 flex items-center gap-2 text-sm text-ink-2">
         <PlatformIcon icon={ICON[d.platform]} name={d.platform} size={28} />

@@ -20,6 +20,7 @@ ABBR_ES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sept", "oct"
 DAYS_EN = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 DAYS_ES = ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"]
 WORDS = {**dict(zip(MONTHS_EN, MONTHS_ES)), **dict(zip(ABBR_EN, ABBR_ES)), **dict(zip(DAYS_EN, DAYS_ES))}
+WORDS["May"] = "mayo"  # the full name and the abbreviation are the same word in English
 
 TOKEN = re.compile(r"\d[\d,.]*\d|\d|\b(?:" + "|".join(MONTHS_EN + DAYS_EN) + r")\b|\b(?:" + "|".join(ABBR_EN) + r")\b(?!\w)")
 CATALOG_DIR = Path(__file__).resolve().parent / "i18n"

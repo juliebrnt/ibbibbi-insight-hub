@@ -1,3 +1,4 @@
+import { CustomerGroups, ProductMap, SeasonalPlan } from "@/components/Decide";
 import { Link } from "react-router-dom";
 import { tr } from "@/lib/i18n";
 import { useState } from "react";
@@ -30,6 +31,12 @@ export function Sales() {
             <KpiCard label="Average order" value={s.kpis.aov.value} unit="eur" change={s.kpis.aov.change} help="aov" />
             <KpiCard label="Gifts" value={s.kpis.gift_share.value} unit="pct" help="gift_share" />
           </div>
+          {data.decide?.products || data.decide?.seasonal ? (
+            <div className="mt-5 grid lg:grid-cols-2 gap-4">
+              <ProductMap d={data.decide.products} />
+              <SeasonalPlan d={data.decide.seasonal} />
+            </div>
+          ) : null}
           <div className="mt-5 grid lg:grid-cols-2 gap-4">
             <ChartCard title={s.revenue_chart.title} subtitle={s.revenue_chart.subtitle} className="lg:col-span-2" table={s.revenue_chart.current}
               columns={[{ key: "period", label: "Period", fmt: fmt.date }, { key: "orders", label: "Orders" }, { key: "revenue", label: "Revenue", fmt: fmt.eur }]}>
@@ -62,6 +69,7 @@ export function Sales() {
 
       {tab === "customers" && !s.empty ? (
         <div className="grid lg:grid-cols-2 gap-4">
+          <CustomerGroups d={data.decide?.segments} />
           {s.loyalty.rows.length ? <ChartCard title={s.loyalty.title} subtitle={s.loyalty.subtitle} table={s.loyalty.rows} columns={[{ key: "grp", label: "Group" }, { key: "customers", label: "Customers" }]}>
             <Bars rows={s.loyalty.rows} x="grp" y="customers" height={240} label="customers" />
           </ChartCard> : <div className="card p-5 text-sm text-ink-2">{s.loyalty.title}. Names are never stored, so add an email or customer number column to count returning customers anonymously.</div>}

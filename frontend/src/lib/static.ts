@@ -26,7 +26,8 @@ export async function staticPost(path: string, data: any) {
   const s = await snapshot();
   if (path === "/ask") {
     const q = String(data?.question || "").trim().toLowerCase().replace(/[?.!]+$/, "");
-    const hit = Object.entries(s.__answers as Record<string, any>).find(([k]) => k.toLowerCase().replace(/[?.!]+$/, "") === q);
+    const answers = (data?.ws === "mine" && s.__answers_mine) || s.__answers;
+    const hit = Object.entries(answers as Record<string, any>).find(([k]) => k.toLowerCase().replace(/[?.!]+$/, "") === q);
     if (hit) return structuredClone(hit[1]);
     return { ok: false, answer: "In this preview you can try the suggested questions. In the real app you can ask anything about your own data.", followups: s.__suggested };
   }

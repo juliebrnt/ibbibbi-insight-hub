@@ -10,7 +10,7 @@ import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useIsMobile, useLoadDemo, useProfile, useStatus } from "@/hooks/useData";
 import { RANGE_LABEL, useApp, type Range } from "@/lib/store";
 import { brand } from "@/theme/tokens";
-import { cx, Segmented } from "./ui";
+import { cx, Segmented, Sheet } from "./ui";
 import { STATIC } from "@/lib/static";
 import { UploadFlow } from "./UploadFlow";
 import { QuickCapture } from "./QuickCapture";
@@ -89,7 +89,7 @@ export function Shell({ children }: { children: ReactNode }) {
     <div className="min-h-screen md:pl-[232px]">
       {!mobile ? <Sidebar /> : null}
       <TopBar />
-      {ws === "demo" ? <DemoBanner /> : null}
+      {STATIC ? <ProtoBanner /> : ws === "demo" ? <DemoBanner /> : null}
       <main id="main" className={cx("mx-auto max-w-[1240px] px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6", mobile ? "pb-32" : "pb-16")}>
         <div key={loc.pathname} className="page-in">{children}</div>
       </main>
@@ -154,7 +154,8 @@ function TopBar() {
           </div>
         ) : null}
         <div data-tour="workspace">
-          <Segmented size="sm" label="Workspace" value={ws} onChange={setWs} options={[{ value: "demo", label: mobile ? "Demo" : "Demo data" }, { value: "mine", label: mobile ? "Mine" : "My data" }]} />
+          <Segmented size="sm" label="Workspace" value={ws} onChange={setWs} options={STATIC ? [{ value: "demo", label: mobile ? "Full" : "Full potential" }, { value: "mine", label: "Today" }]
+            : [{ value: "demo", label: mobile ? "Demo" : "Demo data" }, { value: "mine", label: mobile ? "Mine" : "My data" }]} />
         </div>
         {!mobile ? (
           <label className="relative">
@@ -174,6 +175,44 @@ function TopBar() {
           {theme === "light" ? <Sun className="h-[18px] w-[18px]" /> : theme === "dark" ? <Moon className="h-[18px] w-[18px]" /> : <Monitor className="h-[18px] w-[18px]" />}
         </button> : null}
       </div>
+    </div>
+  );
+}
+
+/** What 'Full potential' adds on top of 'Today', and the data each part needs. */
+export const UNLOCKS = [
+  { data: "TikTok analytics", gives: "Compare Instagram and TikTok, and see which platform is growing faster." },
+  { data: "Google Analytics 4 (website visits)", gives: "See which posts and channels bring visitors to the shop, and how many of them buy." },
+  { data: "Klaviyo email campaigns", gives: "See which emails bring sales and which are ignored." },
+  { data: "Instagram comments and shop messages (WhatsApp)", gives: "Questions and partnership requests waiting for a reply, and what people ask for most." },
+  { data: "Market and pop-up sales", gives: "Compare online sales with markets, to decide where to sell next." },
+];
+
+/** Prototype only: says which version is shown and links the two. */
+function ProtoBanner() {
+  const { ws, setWs } = useApp();
+  const [open, setOpen] = useState(false);
+  const today = ws === "mine";
+  return (
+    <div className={cx("border-b border-line/60 no-print", today ? "bg-primary-soft" : "bg-accent-soft")} role="status">
+      <div className="mx-auto max-w-[1240px] px-4 sm:px-6 lg:px-8 py-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+        <span className={cx("chip bg-surface font-semibold", today ? "text-primary" : "text-accent")}>{today ? "Today" : "Full potential"}</span>
+        <span className="order-last basis-full sm:order-none sm:basis-auto sm:flex-1 min-w-0">{today
+          ? "What iBBIBBI can see now, with the data it already has: Shopify, Instagram, the feedback form and website reviews."
+          : "Everything iBBIBBI could see once it adds TikTok, Google Analytics, email campaigns, messages and market sales."}</span>
+        <span className="flex-1 sm:hidden" />
+        {today ? <button className="btn-soft !min-h-[32px] !px-3" onClick={() => setOpen(true)}>What more data adds</button>
+          : <button className="btn-soft !min-h-[32px] !px-3" onClick={() => setWs("mine")}>See Today</button>}
+      </div>
+      <p className="mx-auto max-w-[1240px] px-4 sm:px-6 lg:px-8 pb-2 -mt-1 text-xs text-ink-3">Example data with made-up customers, shaped like iBBIBBI's real exports.</p>
+      <Sheet open={open} onOpenChange={setOpen} title="What more data adds" description="Each extra source unlocks new answers. This is what the Full potential version shows.">
+        <ul className="space-y-3">
+          {UNLOCKS.map((u) => (
+            <li key={u.data} className="rounded-2xl bg-sunken p-3"><div className="font-medium">{u.data}</div><p className="text-sm text-ink-2">{u.gives}</p></li>
+          ))}
+        </ul>
+        <button className="btn-primary w-full mt-5" onClick={() => { setOpen(false); setWs("demo"); }}>See Full potential</button>
+      </Sheet>
     </div>
   );
 }

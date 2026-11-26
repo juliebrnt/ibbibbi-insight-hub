@@ -1,7 +1,7 @@
 """Build a self-contained, shareable prototype of the app with demo data.
 
 1. Loads the demo data into a throwaway database (including the market-stall file as a trend).
-2. Records every screen's data for the Demo and the empty 'My data' workspace.
+2. Records every screen's data for 'Full potential' (all demo files) and 'Today' (only the sources iBBIBBI has now).
 3. Builds the frontend in prototype mode and packs JS, CSS and fonts into one page.
 
 Output: prototype/index.html (+ prototype-data.json) for a Claude artifact, and docs/index.html for GitHub Pages
@@ -29,6 +29,29 @@ from app.ai.ask import SUGGESTED  # noqa: E402
 from app.main import app  # noqa: E402
 
 
+# 'Today': only the sources iBBIBBI has now (Shopify, Instagram, the feedback form, website reviews).
+# TikTok, Google Analytics, Klaviyo, Instagram comments, shop messages and market sales stay in 'Full potential'.
+TODAY_FILES = ["products_export.csv", "customers_export.csv", "shopify_orders_export_2025.csv", "pedidos_shopify_2026.csv",
+               "judgeme_reviews_export.csv", "instagram_posts_meta_export.csv", "instagram_resumen_meta.zip", "encuesta_nps_y_mensajes.xlsx"]
+TODAY_SKIP_SHEETS = {"Mensajes tienda"}  # shop messages are not part of the feedback form
+
+
+def load_today(c) -> None:
+    from app.ingest import pipeline
+    from app import profile
+    from app.insights import plan
+    profile.save("mine", profile.DEMO)  # same business, so wording, key dates and care rules match
+    for name in TODAY_FILES:
+        st = pipeline.stage(name, (ROOT / "demo_data" / name).read_bytes(), "mine")
+        for t in st["tables"]:
+            if t["kind"] != "table" or (t.get("sheet") in TODAY_SKIP_SHEETS):
+                continue
+            res = pipeline.confirm(st["upload_id"], t["index"], t["table_type"], t["mapping"], t["privacy"],
+                                   flexible=t["flexible_suggested"], ws="mine")
+            assert res.get("ok"), (name, res)
+    plan.seed_demo_plan("mine")
+
+
 def record() -> dict:
     c = TestClient(app)
     assert c.post("/api/demo/load").json()["ok"]
@@ -39,6 +62,7 @@ def record() -> dict:
     caja = next(col["column"] for col in res["config"]["columns"] if col["label"].startswith("Caja"))
     c.post(f"/api/datasets/{res['dataset_id']}/flex", json={"trend": {"date": res["config"]["suggestion"]["date"], "value": caja,
                                                                       "label": "Market stalls", "value_label": "Caja (€)"}})
+    load_today(c)
     snap: dict = {}
 
     def get(path: str):
@@ -62,12 +86,15 @@ def record() -> dict:
     get("/ask/suggestions")
     get("/reviews/examples")
     snap["__refreshed"] = c.post("/api/refresh", json={"ws": "demo"}).json()["refreshed_at"]
+    c.post("/api/refresh", json={"ws": "mine"})
     for ws in ("demo", "mine"):  # pick up the refresh time
         for rng in ("28d", "90d", "365d", "all"):
             get(f"/home?ws={ws}&range={rng}")
         get(f"/integrations?ws={ws}")
+        get(f"/status?ws={ws}")
     snap["__suggested"] = SUGGESTED[:4]
     snap["__answers"] = {q: c.post("/api/ask", json={"question": q, "ws": "demo"}).json() for q in SUGGESTED}
+    snap["__answers_mine"] = {q: c.post("/api/ask", json={"question": q, "ws": "mine"}).json() for q in SUGGESTED}
     snap["__qr"] = "data:image/svg+xml;charset=utf-8," + c.get("/api/collect/qr?url=https://your-shop.example/feedback").text.replace("#", "%23")
     return snap
 

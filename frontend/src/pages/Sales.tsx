@@ -1,7 +1,8 @@
+import { Link } from "react-router-dom";
 import { tr } from "@/lib/i18n";
 import { useState } from "react";
 import { Bars, Funnel, Heatmap, Lines } from "@/charts/charts";
-import { ChartCard, KpiCard, PageHeader, PageSkeleton, Segmented } from "@/components/ui";
+import { Card, ChartCard, KpiCard, PageHeader, PageSkeleton, Segmented } from "@/components/ui";
 import { usePage } from "@/hooks/useData";
 import { fmt } from "@/lib/format";
 import { NoData } from "./Home";
@@ -101,7 +102,13 @@ export function Sales() {
           </div>
         </>
       ) : null}
-      {(tab === "web" && w.empty) || (tab !== "web" && s.empty) ? <NoData page="sales" /> : null}
+      {tab === "web" && w.empty && !s.empty ? (
+        <Card>
+          <h3 className="h-card">Website visits need Google Analytics</h3>
+          <p className="mt-1 text-sm text-ink-2">Add a Google Analytics 4 export to see where website visitors come from, which pages they land on, and how many of them buy.</p>
+          <Link to="/data" className="btn-soft mt-3 inline-flex !min-h-[36px]">Open What to add</Link>
+        </Card>
+      ) : (tab === "web" && w.empty) || (tab !== "web" && s.empty) ? <NoData page="sales" /> : null}
 
       {data.flex.length ? (
         <div className="mt-6 grid lg:grid-cols-2 gap-4">

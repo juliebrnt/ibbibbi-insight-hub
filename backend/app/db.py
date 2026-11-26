@@ -34,6 +34,7 @@ SCHEMA = {
         follows DOUBLE, hashtags INTEGER, caption_length INTEGER""",
     "social_comments": f"""{PROV}, platform VARCHAR, post_id VARCHAR, date DATE, text VARCHAR, author_id VARCHAR,
         language VARCHAR, sentiment VARCHAR, category VARCHAR, replied BOOLEAN, likes DOUBLE, distress BOOLEAN""",
+    "social_daily": f"""{PROV}, platform VARCHAR, metric VARCHAR, date DATE, value DOUBLE""",
     "web_sessions": f"""{PROV}, date DATE, source VARCHAR, medium VARCHAR, landing_page VARCHAR, device VARCHAR,
         sessions DOUBLE, users DOUBLE, conversions DOUBLE, revenue DOUBLE""",
     "email_campaigns": f"""{PROV}, date DATE, campaign VARCHAR, recipients DOUBLE, opens DOUBLE, clicks DOUBLE,

@@ -106,6 +106,8 @@ def analyse_table(rt: RawTable, index: int) -> dict:
     recipe = db.rows("SELECT * FROM recipes WHERE fingerprint = ?", [fp])
     top = cands[0]
     chosen_type, mapping = top.table_type, top.mapping
+    if recipe and recipe[0]["table_type"] == "social_daily" and top.table_type != "social_daily":
+        recipe = []  # same two columns, but not a figure we can name: do not reuse the recipe
     if recipe:
         chosen_type = recipe[0]["table_type"]
         mapping = json.loads(recipe[0]["mapping"]) if isinstance(recipe[0]["mapping"], str) else recipe[0]["mapping"]
@@ -182,7 +184,7 @@ def confirm(upload_id: str, index: int, table_type: str | None, mapping: dict | 
             elif existing:
                 frame = frame[~frame["_key"].isin(existing)]
             dup = before - len(frame)
-            if table in ("orders", "feedback", "social_posts", "web_sessions", "email_campaigns", "social_comments"):
+            if table in ("orders", "feedback", "social_posts", "social_daily", "web_sessions", "email_campaigns", "social_comments"):
                 report.duplicates += dup
             frame = frame.assign(ws=ws, dataset_id=dataset_id)
             cols = [x.split()[0] for x in db.SCHEMA[table].replace("\n", " ").split(",")]

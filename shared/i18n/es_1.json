@@ -342,6 +342,17 @@
   "By month": "Por mes"
  },
  "patterns": {
+  "Add next: {x}.": "Añade ahora: {x}.",
+  "Still to add: {z}.": "Falta añadir: {z}.",
+  "{x} fell {0}% in the last {1} days compared with the {2} days before.": "{x} bajó un {0} % en los últimos {1} días frente a los {2} días anteriores.",
+  "Your last busy day was {0} {1}.": "Tu último día con actividad fue el {0} de {1}.",
+  "How to download: {x}": "Cómo descargar: {x}",
+  "You will get: {z}": "Recibirás: {z}",
+  "It looks like {x}, but something is missing": "Parece {x}, pero falta algo",
+  "Add it to the file and upload it again, or choose {x} above and pick the column yourself.": "Añádela al archivo y vuelve a subirlo, o elige {x} arriba y selecciona tú la columna.",
+  "We will show \"{z}\" over time, by month, on Sales: your own files.": "Mostraremos «{z}» a lo largo del tiempo, por mes, en Ventas: tus propios archivos.",
+  "We will read \"{z}\" as customer comments on Feedback.": "Leeremos «{z}» como comentarios de clientes en Opiniones.",
+  "{x} per day": "{x} por día",
   "By month · {z} (your own file)": "Por mes · {z} (tu propio archivo)",
   "{z} reached {x} in the last {1} days, against {y} in the {3} days before and +{4}% on the same months last year.": "{z} llegó a {x} en los últimos {1} días, frente a {y} en los {3} días anteriores y +{4} % frente a los mismos meses del año pasado.",
   "{z} reached {x} in the last {1} days, against {y} in the {3} days before and -{4}% on the same months last year.": "{z} llegó a {x} en los últimos {1} días, frente a {y} en los {3} días anteriores y -{4} % frente a los mismos meses del año pasado.",

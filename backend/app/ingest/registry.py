@@ -150,6 +150,36 @@ _t(TableType("social_comments", "Social media comments", "Comments left on your 
      F("replied", "Replied by you", "bool", ["replied by brand", "replied", "respondido", "answered"]),
      ], ["comment", "comentario", "instagram"], ["post_id", "date", "text"]))
 
+_t(TableType("social_daily", "Instagram daily figures", "One figure per day from Meta Business Suite (reach, views, visits...)",
+    [F("date", "Date", "date", ["fecha", "date", "data", "dia", "day"], True),
+     F("value", "Value", "number", ["primary", "value", "valor", "total"], True),
+     ], ["alcance", "reach", "visualizaciones", "views", "seguidores", "follows", "visitas", "interacciones", "clics", "instagram"],
+    ["date"]))
+
+# The daily figures Meta exports, one file each. Order matters: the most specific names first.
+DAILY_METRICS = [
+    ("link_clicks", "Link clicks", ["clics en el enlace", "link clicks", "clicks en el enlace", "clics al enlace", "toques en el enlace",
+                                    "external link taps", "website clicks", "clics en el sitio web", "clics"]),
+    ("profile_visits", "Profile visits", ["visitas al perfil", "profile visits", "visites al perfil", "visitas", "visits"]),
+    ("follows", "Follows", ["seguidores", "follows", "followers", "nuevos seguidores", "seguidors", "new followers"]),
+    ("interactions", "Interactions", ["interacciones", "interactions", "content interactions", "interaccions", "engagement"]),
+    ("reach", "Reach", ["alcance", "reach", "abast", "cuentas alcanzadas", "accounts reached"]),
+    ("views", "Views", ["visualizaciones", "views", "impresiones", "impressions", "visualitzacions", "reproducciones"]),
+]
+DAILY_LABELS = {k: lab for k, lab, _ in DAILY_METRICS}
+
+
+def daily_metric(*texts: str | None) -> tuple[str | None, str]:
+    """Which Meta daily figure a file holds, from its title line or file name, and the platform."""
+    from .parsing import norm
+    t = " ".join(norm(x) for x in texts if x)
+    platform = "Facebook" if "facebook" in t else "Instagram"
+    for key, _, syns in DAILY_METRICS:
+        if any(f" {norm(s)} " in f" {t} " for s in syns):
+            return key, platform
+    return None, platform
+
+
 _t(TableType("web_sessions", "Website visits", "Google Analytics or similar traffic report",
     [F("date", "Date", "date", ["date", "fecha", "day", "dia"], True),
      F("sessions", "Sessions", "number", ["sessions", "sesiones", "visits", "visitas"], True),

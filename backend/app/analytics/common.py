@@ -30,8 +30,8 @@ class Period:
 def latest_date(ws: str) -> date:
     d = db.one("""SELECT max(d) FROM (
         SELECT max(date) d FROM orders WHERE ws = ? UNION ALL SELECT max(date) FROM feedback WHERE ws = ?
-        UNION ALL SELECT max(date) FROM social_posts WHERE ws = ? UNION ALL SELECT max(date) FROM web_sessions WHERE ws = ?)""",
-               [ws, ws, ws, ws])
+        UNION ALL SELECT max(date) FROM social_posts WHERE ws = ? UNION ALL SELECT max(date) FROM web_sessions WHERE ws = ? UNION ALL SELECT max(date) FROM social_daily WHERE ws = ?)""",
+               [ws, ws, ws, ws, ws])
     today = date.today()
     return min(d, today) if d else today
 
@@ -39,8 +39,8 @@ def latest_date(ws: str) -> date:
 def earliest_date(ws: str) -> date | None:
     return db.one("""SELECT min(d) FROM (
         SELECT min(date) d FROM orders WHERE ws = ? UNION ALL SELECT min(date) FROM feedback WHERE ws = ?
-        UNION ALL SELECT min(date) FROM social_posts WHERE ws = ? UNION ALL SELECT min(date) FROM web_sessions WHERE ws = ?)""",
-                  [ws, ws, ws, ws])
+        UNION ALL SELECT min(date) FROM social_posts WHERE ws = ? UNION ALL SELECT min(date) FROM web_sessions WHERE ws = ? UNION ALL SELECT min(date) FROM social_daily WHERE ws = ?)""",
+                  [ws, ws, ws, ws, ws])
 
 
 def period(ws: str, rng: str = "90d") -> Period:

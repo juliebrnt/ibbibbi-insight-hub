@@ -110,6 +110,11 @@ def grid_to_df(grid: list[list[str]]) -> pd.DataFrame:
         first = df.iloc[:, 0].astype(str).str.strip().str.lower()
         df = df[~first.isin({"total", "totales", "totals", "suma", "sum", "grand total", "total general"})]
     df.attrs["header_row"] = h
+    # a title line above the header (Meta exports put the figure's name there, e.g. "Alcance")
+    titles = [c for r in grid[:h] for c in [str(x).strip() for x in r if str(x).strip()]
+              if len([x for x in r if str(x).strip()]) == 1 and not c.lower().startswith("sep=")]
+    if titles:
+        df.attrs["title"] = titles[-1][:120]
     df.attrs["first_data_row"] = h + 2  # 1-based line number of first data row
     return df.reset_index(drop=True)
 

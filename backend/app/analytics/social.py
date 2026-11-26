@@ -270,3 +270,104 @@ def er_value(ws, a, b):
 
 
 __all__ = ["overview", "consistency", "weekly_series", "div"]
+
+
+# --------------------------------------------------------------------------------------
+# Account figures (Meta's daily exports: reach, views, interactions, profile visits, follows, link clicks)
+# --------------------------------------------------------------------------------------
+ACCOUNT_ORDER = ["views", "reach", "interactions", "profile_visits", "follows", "link_clicks"]
+ACCOUNT_LABELS = {"views": "Views", "reach": "Reach", "interactions": "Interactions", "profile_visits": "Profile visits",
+                  "follows": "New followers", "link_clicks": "Link clicks"}
+ALL_ACCOUNT_FILES = {"views": "Visualizaciones (Views)", "reach": "Alcance (Reach)", "interactions": "Interacciones (Interactions)",
+                     "profile_visits": "Visitas (Profile visits)", "follows": "Seguidores (Follows)",
+                     "link_clicks": "Clics en el enlace (Link clicks)"}
+
+
+def account(ws: str, p: Period, platform: str = "Instagram") -> dict | None:
+    """Daily account figures: totals, a daily chart, the funnel from reach to link clicks, best days and warnings."""
+    have = [r["metric"] for r in db.rows("SELECT DISTINCT metric FROM social_daily WHERE ws = ? AND platform = ?", [ws, platform])]
+    if not have:
+        return None
+    metrics = [m for m in ACCOUNT_ORDER if m in have]
+    first, last = db.rows("SELECT min(date) a, max(date) b FROM social_daily WHERE ws = ? AND platform = ?", [ws, platform])[0].values()
+    a, b = max(p.start, first), min(p.end, last)
+    if a > b:
+        a, b = first, last
+    days = (b - a).days + 1
+    prev_b = a - timedelta(days=1)
+    prev_a = prev_b - timedelta(days=days - 1)
+
+    def totals(x, y):
+        rows = db.rows("SELECT metric, sum(value) v, count(*) n FROM social_daily WHERE ws = ? AND platform = ? AND date BETWEEN ? AND ? GROUP BY 1",
+                       [ws, platform, x, y])
+        return {r["metric"]: r["v"] for r in rows}
+    cur, prev = totals(a, b), totals(prev_a, prev_b)
+    has_prev = prev_a >= first  # compare only when the whole previous period has data
+    kpis = [{"metric": m, "label": ACCOUNT_LABELS[m], "value": cur.get(m, 0) or 0,
+             "change": pct_change(cur.get(m, 0) or 0, prev.get(m)) if has_prev else None} for m in metrics]
+
+    # daily series, with missing days as 0 (Meta leaves them out)
+    raw = db.rows("SELECT date, metric, value FROM social_daily WHERE ws = ? AND platform = ? AND date BETWEEN ? AND ?", [ws, platform, a, b])
+    by_day: dict = {}
+    for r in raw:
+        by_day.setdefault(r["date"], {})[r["metric"]] = r["value"]
+    series = []
+    for i in range(days):
+        d = a + timedelta(days=i)
+        series.append({"date": d, **{m: by_day.get(d, {}).get(m, 0) or 0 for m in metrics}})
+
+    # funnel: people reached -> profile visits -> new followers -> link clicks
+    steps = [m for m in ["reach", "profile_visits", "follows", "link_clicks"] if m in metrics]
+    if "reach" not in steps and "views" in metrics:
+        steps.insert(0, "views")
+    funnel = []
+    for i, m in enumerate(steps):
+        v = cur.get(m, 0) or 0
+        # follows and link clicks both come from people who opened the profile, so both are measured against visits
+        base = "profile_visits" if m in ("follows", "link_clicks") and "profile_visits" in steps else (steps[i - 1] if i else None)
+        funnel.append({"metric": m, "label": ACCOUNT_LABELS[m], "value": v, "rate": div(v, cur.get(base, 0) or 0, 4) if base else None,
+                       "of": ACCOUNT_LABELS[base].lower() if base else None})
+
+    lead = "views" if "views" in metrics else ("reach" if "reach" in metrics else metrics[0])
+    best = sorted(series, key=lambda r: -r[lead])[:3]
+    best = [r for r in best if r[lead] > 0]
+
+    warnings = []
+    if days >= 14:
+        last7 = sum(r[lead] for r in series[-7:])
+        before7 = sum(r[lead] for r in series[-14:-7])
+        drop = pct_change(last7, before7)
+        if drop is not None and drop <= -40:
+            avg = sum(r[lead] for r in series) / days
+            busy = [r["date"] for r in series if r[lead] >= avg]
+            when = f" Your last busy day was {busy[-1]:%-d %b}." if busy else ""
+            warnings.append({"kind": "drop", "text": f"{ACCOUNT_LABELS[lead]} fell {abs(drop):.0f}% in the last 7 days compared with the 7 days before.{when}",
+                             "todo": "Post again: a quiet week usually means fewer posts, and the figures follow."})
+    if "link_clicks" in metrics and not (cur.get("link_clicks") or 0) and days >= 7:
+        warnings.append({"kind": "link", "text": f"No one clicked the link on your profile in these {days} days.",
+                         "todo": "Check there is a shop link in your bio, and say \"link in bio\" in posts that show a product."})
+    if "follows" in metrics and "profile_visits" in metrics and (cur.get("profile_visits") or 0) >= 30:
+        rate = (cur.get("follows") or 0) / cur["profile_visits"]
+        if rate < 0.05:
+            warnings.append({"kind": "follow", "text": f"Only {rate * 100:.0f}% of profile visitors followed you.",
+                             "todo": "Make the first lines of your bio and your pinned posts say clearly what you make and why it matters."})
+
+    # what was posted on the best days, when posts are uploaded too
+    for r in best:
+        posts = db.rows("""SELECT date, format, caption FROM social_posts WHERE ws = ? AND platform = ? AND date BETWEEN ? AND ?
+            ORDER BY date DESC LIMIT 2""", [ws, platform, r["date"] - timedelta(days=1), r["date"]])
+        r["posts"] = [{"date": x["date"], "format": x["format"], "caption": (x["caption"] or "")[:90]} for x in posts]
+
+    reach_v, visits_v, fol_v = cur.get("reach"), cur.get("profile_visits"), cur.get("follows")
+    if reach_v and visits_v is not None and fol_v is not None:
+        title = f"{fmt_int(reach_v)} people reached, {fmt_int(visits_v)} visited your profile and {fmt_int(fol_v)} followed you"
+    else:
+        title = ", ".join(f"{fmt_int(k['value'])} {k['label'].lower()}" for k in kpis[:3])
+    missing = [ALL_ACCOUNT_FILES[m] for m in ACCOUNT_ORDER if m not in metrics]
+    return {"platform": platform, "title": title, "subtitle": f"{a:%-d %b %Y} to {b:%-d %b %Y} · {platform} account figures",
+            "days": days, "metrics": metrics, "kpis": kpis, "series": series, "funnel": funnel, "lead": lead,
+            "best_days": best, "warnings": warnings, "missing_files": missing, "has_posts": bool(has("social_posts", ws))}
+
+
+def fmt_int(v) -> str:
+    return f"{int(round(v or 0)):,}"

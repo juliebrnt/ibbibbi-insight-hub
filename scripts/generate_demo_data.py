@@ -13,6 +13,7 @@ import csv
 import json
 import math
 import random
+import zipfile
 from dataclasses import dataclass, field
 from datetime import date, datetime, timedelta
 from pathlib import Path
@@ -453,6 +454,9 @@ def generate(out: Path, seed: int = 7, orders_per_day: float = 3.2, sessions_per
                         f"{p['date'].strftime('%m/%d/%Y')} {p['time']}", f"https://www.instagram.com/p/{p['id'][-8:]}/", p["format"],
                         "Lifetime", p["views"], p["reach"], p["likes"], p["shares"], p["follows"], p["comments"], p["saves"]])
 
+    # ---------------- Instagram account figures (Meta Business Suite daily export: one CSV per figure, in a ZIP) ----------------
+    write_account_figures(out, posts, random.Random(seed + 101))
+
     comment_bank = [
         ("praise", 40, ["¡Qué bonito! 😍", "Me encanta, lo tengo en negro y es comodísimo", "Preciós! 💛", "Love this!", "Gracias por visibilizar 🙏"]),
         ("request", 12, ["¿Lo vais a sacar en verde?", "¿Tenéis algún modelo en estampado de flores?", "Would love this in navy!",
@@ -599,6 +603,40 @@ def generate(out: Path, seed: int = 7, orders_per_day: float = 3.2, sessions_per
 
     print(f"Wrote demo data to {out}: {len(orders)} orders, {len(customers)} customers, {len(reviews)} reviews, "
           f"{len(posts)} posts, {len(comments)} comments")
+
+
+def write_account_figures(out: Path, posts: list[dict], rng: random.Random, days: int = 120) -> None:
+    """Daily views, reach, interactions, profile visits, follows and link clicks, built from the posts so peaks line up."""
+    first = END - timedelta(days=days - 1)
+    fig = {k: {first + timedelta(days=i): 0.0 for i in range(days)} for k in
+           ("views", "reach", "interactions", "visits", "follows", "clicks")}
+    for d in fig["reach"]:
+        base = rng.uniform(20, 60)
+        fig["reach"][d] += base
+        fig["views"][d] += base * rng.uniform(1.6, 2.4)
+    for p in posts:
+        for lag, share in ((0, 0.55), (1, 0.3), (2, 0.15)):
+            d = p["date"] + timedelta(days=lag)
+            if d in fig["reach"]:
+                fig["reach"][d] += p["reach"] * share
+                fig["views"][d] += max(p["views"], p["reach"] * 1.8) * share
+                fig["interactions"][d] += (p["likes"] + p["comments"] + p["saves"] + p["shares"]) * share
+                fig["follows"][d] += p["follows"] * share
+    for d in fig["reach"]:
+        fig["visits"][d] = fig["reach"][d] * rng.uniform(0.03, 0.06)
+        fig["clicks"][d] = fig["visits"][d] * rng.uniform(0.05, 0.15)
+    files = [("Visualizaciones", "Visualizaciones", "views"), ("Alcance", "Alcance", "reach"),
+             ("Interacciones", "Interacciones con el contenido", "interactions"), ("Visitas", "Visitas al perfil de Instagram", "visits"),
+             ("Seguidores", "Seguidores de Instagram", "follows"), ("Clics en el enlace", "Clics en el enlace de Instagram", "clicks")]
+    with zipfile.ZipFile(out / "instagram_resumen_meta.zip", "w") as z:
+        for fname, title, key in files:
+            lines = ["sep=,", f'"{title}"', '"Fecha","Primary"']
+            for d, v in fig[key].items():
+                n = round(v)
+                if key == "follows" and n == 0:
+                    continue  # Meta leaves out days with no new followers
+                lines.append(f'"{d.isoformat()}T00:00:00","{n}"')
+            z.writestr(f"{fname}.csv", "\n".join(lines) + "\n\n")
 
 
 def poisson(rng: random.Random, lam: float) -> int:

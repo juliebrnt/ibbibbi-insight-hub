@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { FileStatus } from "@/components/FileStatus";
-import { BookOpen, FileSpreadsheet, ShieldCheck, TrendingUp, Undo2, Upload } from "lucide-react";
+import { BookOpen, CheckCircle2, CircleDashed, Clock, FileSpreadsheet, ShieldCheck, TrendingUp, Undo2, Upload } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Card, cx, PageHeader, PageSkeleton, Sheet } from "@/components/ui";
@@ -9,13 +9,16 @@ import { api } from "@/lib/api";
 import { fmt } from "@/lib/format";
 import { useApp } from "@/lib/store";
 
-export const GUIDES: Record<string, { name: string; steps: string[] }> = {
-  shopify: { name: "Shopify", steps: ["Shopify admin → Orders", "Click Export, choose a date range", "Pick 'CSV for Excel', then Export orders", "Drop the file here. Do the same for Products, Customers and your reviews app."] },
-  instagram: { name: "Instagram Insights", steps: ["Open Meta Business Suite → Insights → Content", "Choose posts and a date range", "Click Export data → CSV", "Or take a screenshot of Insights on your phone and upload it (AI reads it)."] },
+export const GUIDES: Record<string, { name: string; steps: string[]; file?: string }> = {
+  shopify: { name: "Shopify orders", file: "orders_export.csv", steps: ["Shopify admin → Orders", "Click Export (top right)", "Choose the dates (the first time, the last 12 months or more)", "Pick 'CSV for Excel, Numbers, or other spreadsheet programs', then Export orders. Large exports arrive by email.", "Upload the file here as it is. Do not open and re-save it first.", "Sales from markets kept in your own Excel also work: one row per sale with the date, the product and the amount."] },
+  shopify_products: { name: "Shopify products", file: "products_export.csv", steps: ["Shopify admin → Products", "Click Export (top right)", "Choose All products and 'CSV for Excel, Numbers, or other spreadsheet programs'", "Click Export products and upload the file here."] },
+  instagram: { name: "Instagram posts", file: "one CSV with a row per post", steps: ["Open Meta Business Suite on a computer (business.facebook.com)", "Insights → Content", "Choose Instagram, posts and the dates", "Click Export data → CSV", "Upload the file here. Or take a screenshot of Insights on your phone and upload it (AI reads it)."] },
+  instagram_daily: { name: "Instagram account figures", file: "6 files: Visualizaciones, Alcance, Interacciones, Visitas, Seguidores, Clics en el enlace", steps: ["Open Meta Business Suite on a computer (business.facebook.com)", "Insights → Overview, and choose Instagram", "Pick the dates (the first time, as far back as it allows)", "Click Export data and choose CSV", "You get one file per figure: Visualizaciones, Alcance, Interacciones, Visitas, Seguidores and Clics en el enlace. Upload all six together, or the ZIP, without changing them."] },
+  judgeme: { name: "Judge.me reviews", file: "a CSV of reviews", steps: ["Shopify admin → Apps → Judge.me", "Open Manage reviews", "Click Export reviews and choose CSV", "Upload the file here."] },
   tiktok: { name: "TikTok", steps: ["TikTok Studio on a computer → Analytics", "Pick Content and a date range", "Click Download data (XLSX)"] },
   ga4: { name: "Google Analytics 4", steps: ["Reports → Acquisition → Traffic acquisition", "Add 'Date' and 'Landing page' as secondary dimensions", "Share this report (top right) → Download file → CSV"] },
   klaviyo: { name: "Klaviyo", steps: ["Analytics → Campaigns", "Choose the last 12 months", "Export → CSV"] },
-  forms: { name: "Google Forms", steps: ["Open the form → Responses", "Click the green Sheets icon", "File → Download → CSV or Excel", "Or use the built-in form in Collect: answers arrive here automatically."] },
+  forms: { name: "Customer survey", steps: ["Open the form → Responses", "Click the green Sheets icon", "File → Download → CSV or Excel", "Or use the built-in form in Collect: answers arrive here automatically."] },
 };
 
 export function Data() {
@@ -34,20 +37,10 @@ export function Data() {
     <>
       <PageHeader title="Your data"
         what={`${d.datasets.length} files imported.`} why="The more sources you add, the more reliable the insights become."
-        todo={d.missing[0]?.message || "Refresh your exports once a month."}
+        todo={d.next ? <><span>{d.next.title}</span> <span>{d.next.todo}</span></> : "Everything is added. Download the latest exports once a month."}
         right={<button className="btn-primary hidden md:inline-flex" onClick={() => setUploadOpen(true)}><Upload className="h-4 w-4" />Upload</button>} />
 
-      {d.missing.length ? (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-6">
-          {d.missing.map((m: any) => (
-            <button key={m.name} onClick={() => setGuide(m.guide)} className="card text-left p-4 hover:border-primary transition-colors">
-              <div className="flex items-center gap-2 font-medium"><BookOpen className="h-4 w-4 text-accent" />{m.name}</div>
-              <p className="mt-1 text-sm text-ink-2">{m.message}</p>
-              <span className="mt-2 inline-block text-sm text-primary font-medium">How to export it →</span>
-            </button>
-          ))}
-        </div>
-      ) : null}
+      <WhatToAdd items={d.checklist || []} onGuide={setGuide} />
 
       <div className="space-y-3">
         {d.datasets.map((x: any) => (
@@ -80,7 +73,7 @@ export function Data() {
           <li>Export or delete everything at any time in Settings.</li>
         </ul>
       </Card>
-      <Sheet open={!!guide} onOpenChange={() => setGuide(null)} title={guide ? `How to export from ${GUIDES[guide].name}` : ""}>
+      <Sheet open={!!guide} onOpenChange={() => setGuide(null)} title={guide ? `How to download: ${GUIDES[guide].name}` : ""} description={guide && GUIDES[guide].file ? `You will get: ${GUIDES[guide].file}` : undefined}>
         {guide ? <ol className="space-y-3">{GUIDES[guide].steps.map((s, i) => <li key={i} className="flex gap-3"><span className="h-7 w-7 shrink-0 rounded-full bg-primary-soft text-primary grid place-items-center text-sm font-semibold">{i + 1}</span><span className="pt-0.5">{s}</span></li>)}</ol> : null}
         <button className="btn-primary w-full mt-5" onClick={() => { setGuide(null); setUploadOpen(true); }}>I have the file, upload it</button>
       </Sheet>
@@ -117,5 +110,44 @@ function FlexSheet({ ds, onClose }: { ds: any; onClose: () => void }) {
         <button className="btn-primary w-full" onClick={save} disabled={!d || !v}>Save</button>
       </div>
     </Sheet>
+  );
+}
+
+const STATUS: Record<string, { icon: any; cls: string; label: string }> = {
+  ok: { icon: CheckCircle2, cls: "text-good", label: "Added" },
+  partial: { icon: Clock, cls: "text-warn", label: "Part added" },
+  old: { icon: Clock, cls: "text-warn", label: "Out of date" },
+  missing: { icon: CircleDashed, cls: "text-ink-3", label: "Not added" },
+};
+
+/** The exact files that make the hub work, and what to download next for each. */
+function WhatToAdd({ items, onGuide }: { items: any[]; onGuide: (g: string) => void }) {
+  if (!items.length) return null;
+  const done = items.filter((i) => i.status === "ok").length;
+  return (
+    <Card className="mb-6">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <h2 className="h-card flex items-center gap-2"><BookOpen className="h-5 w-5 text-accent" />What to add</h2>
+        <span className="text-sm text-ink-2 num"><span>{done}</span> <span>of</span> <span>{items.length}</span> <span>added</span></span>
+      </div>
+      <p className="mt-1 text-sm text-ink-2">These are the files the hub reads best. Download each one exactly as the platform gives it and upload it without changes.</p>
+      <ul className="mt-3 divide-y divide-line">
+        {items.map((it) => {
+          const st = STATUS[it.status];
+          const Icon = st.icon;
+          return (
+            <li key={it.key} className="py-3 flex flex-wrap items-start gap-3">
+              <Icon className={cx("h-5 w-5 shrink-0 mt-0.5", st.cls)} />
+              <div className="min-w-0 flex-1">
+                <div className="font-medium"><span>{it.name}</span>{it.essential ? null : <span className="ml-2 chip bg-sunken text-ink-3">Optional</span>}</div>
+                <div className="text-sm text-ink-2">{it.shows}</div>
+                <div className={cx("mt-0.5 text-sm", it.status === "ok" ? "text-ink-3" : "text-ink")}>{it.status === "missing" ? it.todo : <><span>{it.detail}</span> <span>{it.todo}</span></>}</div>
+              </div>
+              <button className="btn-soft !min-h-[36px]" onClick={() => onGuide(it.guide)}>{it.status === "missing" ? "How to download it" : "Get the latest"}</button>
+            </li>
+          );
+        })}
+      </ul>
+    </Card>
   );
 }

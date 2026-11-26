@@ -1,4 +1,5 @@
-import { Inbox } from "lucide-react";
+import { Inbox, TriangleAlert } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Bars, CalendarHeat, GroupedBars, Heatmap, Lines } from "@/charts/charts";
 import { Card, ChartCard, cx, KpiCard, PageHeader, PageSkeleton, Segmented, ShareBarsLite } from "@/components/ui";
 import { useQuery } from "@tanstack/react-query";
@@ -22,7 +23,22 @@ export function Social() {
     queryFn: () => api.get(`/social?ws=${ws}&range=${range}${plat ? `&platform=${encodeURIComponent(plat)}` : ""}`),
   });
   if (isLoading || !d) return <PageSkeleton />;
-  if (d.empty) return <><PageHeader title="What content works" /><NoData page="social" /></>;
+  if (d.empty && !d.account) return <><PageHeader title="What content works" /><NoData page="social" /></>;
+  if (d.empty) {
+    const a = d.account;
+    return (
+      <>
+        <PageHeader title="What content works" what={a.title + "."} why="These are your account figures from Meta Business Suite."
+          todo={a.warnings[0]?.todo || "Add your Instagram posts export to see which posts cause the peaks."} />
+        <Account a={a} />
+        <Card className="mt-4">
+          <h3 className="h-card">See which posts work</h3>
+          <p className="mt-1 text-sm text-ink-2">Add your Instagram posts export (Meta Business Suite → Insights → Content → Export data) to compare formats and topics and see which post caused each peak.</p>
+          <Link to="/data" className="btn-soft mt-3 inline-flex !min-h-[36px]">Open What to add</Link>
+        </Card>
+      </>
+    );
+  }
   const k = d.kpis;
   const has = (m: string) => (d.available || []).includes(m);
   const summary = (d.platform_summary || []).find((x: any) => x.platform === d.platform);
@@ -41,6 +57,8 @@ export function Social() {
           <span className="text-xs text-ink-3">Only connected platforms are shown, each with the metrics it actually provides.</span>
         </div>
       ) : null}
+      {d.account ? <div className="mb-6"><Account a={d.account} /></div> : null}
+      {d.account ? <h2 className="font-display text-xl font-semibold mb-2">Your posts</h2> : null}
       <div className="mb-3 flex items-center gap-2 text-sm text-ink-2">
         <PlatformIcon icon={ICON[d.platform]} name={d.platform} size={28} />
         <span><b>{d.platform}</b>{summary?.first ? <><span> · </span><span>Since</span> <span>{fmt.date(String(summary.first))}</span></> : null}
@@ -138,6 +156,78 @@ function CommentAnalysis({ a }: { a: any }) {
           {a.needs_examples.length ? <><div className="label mt-4 mb-1">What people ask for</div><ul className="space-y-1 text-sm text-ink-2">{a.needs_examples.map((t: string) => <li key={t} translate="no">“{t}”</li>)}</ul></> : null}
         </Card>
       </div>
+    </section>
+  );
+}
+
+/** Daily account figures from Meta Business Suite: totals, funnel, daily charts, best days, warnings. */
+function Account({ a }: { a: any }) {
+  const x = a.series.map((r: any) => fmt.short(String(r.date)));
+  const big = ["views", "reach", "interactions"].filter((m) => a.metrics.includes(m));
+  const small = ["profile_visits", "follows", "link_clicks"].filter((m) => a.metrics.includes(m));
+  const label = (m: string) => a.kpis.find((k: any) => k.metric === m)?.label || m;
+  const list = (ms: string[]) => { const l = ms.map((m, i) => (i ? label(m).toLowerCase() : label(m))); return l.length > 1 ? `${l.slice(0, -1).join(", ")} and ${l[l.length - 1]}` : l[0]; };
+  return (
+    <section>
+      <h2 className="font-display text-xl font-semibold flex items-center gap-2"><PlatformIcon icon={ICON[a.platform]} name={a.platform} size={24} /><span>{`${a.platform} account`}</span></h2>
+      <p className="text-sm text-ink-2"><span>{a.title}</span>. <span>{a.subtitle}</span></p>
+      {a.warnings.length ? (
+        <div className="mt-3 grid md:grid-cols-2 gap-3">
+          {a.warnings.map((w: any) => (
+            <div key={w.kind} className="rounded-2xl bg-warn-soft p-3 text-sm">
+              <div className="flex gap-2 font-medium text-warn"><TriangleAlert className="h-4 w-4 shrink-0 mt-0.5" /><span>{w.text}</span></div>
+              <p className="mt-1 pl-6 text-ink-2">{w.todo}</p>
+            </div>
+          ))}
+        </div>
+      ) : null}
+      <div className="mt-3 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
+        {a.kpis.map((k: any) => <KpiCard key={k.metric} label={k.label} value={k.value} unit="count" change={k.change} compact />)}
+      </div>
+      <div className="mt-4 grid lg:grid-cols-2 gap-4">
+        {a.funnel.length > 1 ? (
+          <Card>
+            <h3 className="h-card">From seeing you to following or clicking</h3>
+            <p className="mt-1 text-xs text-ink-3">{a.subtitle}</p>
+            <ol className="mt-3 space-y-2">
+              {a.funnel.map((f: any, i: number) => (
+                <li key={f.metric} className="flex items-center gap-3">
+                  <div className="rounded-xl bg-primary-soft text-primary px-3 py-2 min-w-[96px] text-right font-display text-lg font-semibold num">{fmt.num(f.value)}</div>
+                  <div className="text-sm"><div className="font-medium">{f.label}</div>
+                    {i ? <div className="text-ink-3 num"><span>{f.rate == null ? "n/a" : fmt.pct(f.rate, 1)}</span> <span>of</span> <span>{f.of}</span></div> : null}</div>
+                </li>
+              ))}
+            </ol>
+          </Card>
+        ) : null}
+        <Card>
+          <h3 className="h-card">Best days</h3>
+          <p className="mt-1 text-xs text-ink-3"><span>By</span> <span>{label(a.lead).toLowerCase()}</span></p>
+          <ul className="mt-3 space-y-3 text-sm">
+            {a.best_days.map((r: any) => (
+              <li key={String(r.date)}>
+                <div className="font-medium">{fmt.date(String(r.date))}</div>
+                <div className="text-ink-2">{a.metrics.filter((m: string) => r[m]).map((m: string, i: number) => <span key={m}>{i ? " · " : ""}<span className="num">{fmt.num(r[m])}</span> <span>{label(m).toLowerCase()}</span></span>)}</div>
+                {r.posts?.length ? r.posts.map((p: any, i: number) => <div key={i} className="text-ink-3"><span>Posted</span> <span>{fmt.date(String(p.date))}</span>{p.format ? <span> · {p.format}</span> : null}: <span translate="no">{p.caption}</span></div>) : null}
+              </li>
+            ))}
+          </ul>
+          {!a.has_posts ? <p className="mt-3 text-xs text-ink-3">Add your Instagram posts export to see which post caused each peak.</p> : null}
+        </Card>
+        {big.length ? (
+          <ChartCard title={`${list(big)} per day`} subtitle={a.subtitle} table={a.series} columns={[{ key: "date", label: "Date", fmt: (v) => fmt.date(String(v)) }, ...big.map((m) => ({ key: m, label: label(m), fmt: fmt.num }))]}>
+            <Lines x={x} series={big.map((m) => ({ name: label(m), data: a.series.map((r: any) => r[m]) }))} height={240} />
+          </ChartCard>
+        ) : null}
+        {small.length ? (
+          <ChartCard title={`${list(small)} per day`} subtitle={a.subtitle} table={a.series} columns={[{ key: "date", label: "Date", fmt: (v) => fmt.date(String(v)) }, ...small.map((m) => ({ key: m, label: label(m), fmt: fmt.num }))]}>
+            <Lines x={x} series={small.map((m) => ({ name: label(m), data: a.series.map((r: any) => r[m]) }))} height={240} area={false} />
+          </ChartCard>
+        ) : null}
+      </div>
+      {a.missing_files.length ? (
+        <p className="mt-3 text-sm text-ink-2"><span>Still to add from Meta Business Suite:</span> <span>{a.missing_files.join(", ")}</span>. <Link to="/data" className="text-primary font-medium">How to download them</Link></p>
+      ) : null}
     </section>
   );
 }

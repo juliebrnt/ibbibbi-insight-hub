@@ -8,7 +8,7 @@ import pandas as pd
 from rapidfuzz import fuzz
 
 from .parsing import date_rate, norm, number_rate
-from .registry import TYPES, TableType
+from .registry import DAILY_LABELS, TYPES, TableType, daily_metric
 
 MATCH_THRESHOLD = 78
 
@@ -134,6 +134,13 @@ def classify(df: pd.DataFrame, file_name: str, kind_hint: str | None = None) -> 
             conf -= 0.15
         if t.key == "social_posts" and not ({"reach", "likes", "views"} & set(mapping)):
             conf -= 0.3
+        if t.key == "social_daily":
+            # Meta's one-figure-per-day export: a date, one number, and the figure's name in the title or file name
+            metric, _ = daily_metric(df.attrs.get("title"), file_name)
+            if metric and not missing and len(df.columns) <= 3:
+                conf = max(conf, 0.9)
+            else:
+                conf = min(conf, 0.2)
         cands.append(Candidate(t.key, t.label, round(max(0.0, min(conf, 0.99)), 2), mapping, missing))
     cands.sort(key=lambda c: -c.confidence)
     return cands
@@ -148,6 +155,9 @@ def source_label(table_type: str, file_name: str, df: pd.DataFrame) -> str:
     if table_type in {"orders", "products", "customers"}:
         return "Shopify " + {"orders": "orders", "products": "products", "customers": "customers"}[table_type] if (
             "lineitem" in f or "shopify" in f or "handle" in f or "articulo" in f or "accepts email" in f) else TYPES[table_type].label
+    if table_type == "social_daily":
+        metric, platform = daily_metric(df.attrs.get("title"), file_name)
+        return f"{platform} {DAILY_LABELS[metric].lower()}" if metric else f"{platform} daily figures"
     if table_type == "web_sessions":
         return "Google Analytics 4" if "ga4" in f or "key events" in f or "session source" in f else "Website visits"
     if table_type == "email_campaigns":

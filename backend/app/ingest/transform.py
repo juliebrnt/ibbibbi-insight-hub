@@ -329,6 +329,27 @@ def to_email(df, m, report, first_row):
     return {"email_campaigns": e}
 
 
+def to_social_daily(df, m, report, first_row, source: str):
+    from .registry import daily_metric
+    metric, platform = daily_metric(source)
+    if not metric:
+        raise ValueError("we could not tell which figure this file holds (reach, views, profile visits...)")
+    d = pd.DataFrame({"date": dates(df, m, "date", report).dt.date, "value": nums(df, m, "value"), "row_num": base_rows(df, first_row)})
+    bad = d["date"].isna() | d["value"].isna()
+    report.skipped += int(bad.sum())
+    for r in d[bad]["row_num"].head(20):
+        report.issue(r, "Row without a readable date or number")
+    d = d[~bad].drop_duplicates("date", keep="last").copy()
+    d["platform"], d["metric"] = platform, metric
+    d["_key"] = [key_of(platform, metric, x) for x in d["date"]]
+    if len(d) >= 2:
+        span = (max(d["date"]) - min(d["date"])).days + 1
+        if span > len(d):
+            report.notes.append(f"{span - len(d)} days in this range are not in the file. Meta leaves out days with nothing to report, "
+                                "so they count as 0.")
+    return {"social_daily": d}
+
+
 def transform(table_type: str, df: pd.DataFrame, mapping: dict, report: Report, first_row: int, source: str) -> dict[str, pd.DataFrame]:
     report.rows_in = len(df)
     if table_type == "orders":
@@ -347,6 +368,8 @@ def transform(table_type: str, df: pd.DataFrame, mapping: dict, report: Report, 
         return to_social_posts(df, mapping, report, first_row, source)
     if table_type == "social_comments":
         return to_social_comments(df, mapping, report, first_row, source)
+    if table_type == "social_daily":
+        return to_social_daily(df, mapping, report, first_row, source)
     if table_type == "web_sessions":
         return to_web(df, mapping, report, first_row)
     if table_type == "email_campaigns":

@@ -19,7 +19,7 @@ from ..analytics import common, cross, feedback, metrics, sales, social
 from ..analytics import text as tx
 from ..config import DEMO_DIR, MAX_UPLOAD_MB, STAGING_DIR
 from ..demo import loader
-from ..ingest import pipeline, vision
+from ..ingest import checklist, pipeline, vision
 from ..ingest.explain import explain as explain_dataset
 from ..ingest.readers import ReadError
 from ..insights import briefing, plan, rules
@@ -119,8 +119,11 @@ def feedback_page(ws: str = WS, range: str = "90d"):
 
 @router.get("/social")
 def social_page(ws: str = WS, range: str = "90d", platform: str | None = None):
-    out = social.overview(ws, common.period(ws, range), platform)
-    out["cross"] = cross.mission_effect(ws)
+    p = common.period(ws, range)
+    out = social.overview(ws, p, platform)
+    out["account"] = social.account(ws, p)
+    if not out.get("empty"):
+        out["cross"] = cross.mission_effect(ws)
     return out
 
 
@@ -319,7 +322,8 @@ def datasets(ws: str = WS):
     for tt, lab, name, msg, guide in checks:
         if tt not in present or (lab and lab not in labels):
             missing.append({"type": tt, "name": name, "message": msg, "guide": guide})
-    return {"datasets": rows, "missing": missing}
+    items = checklist.checklist(ws)
+    return {"datasets": rows, "missing": missing, "checklist": items, "next": checklist.next_step(items)}
 
 
 @router.post("/datasets/{dataset_id}/undo")

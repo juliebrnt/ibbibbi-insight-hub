@@ -15,6 +15,7 @@ PAGES = {
     "survey_responses": [("Feedback", "/feedback"), ("Home", "/")],
     "social_posts": [("Social", "/social"), ("Home", "/")],
     "social_comments": [("Social: comments", "/social"), ("Feedback", "/feedback")],
+    "social_daily": [("Social: Instagram account", "/social")],
     "web_sessions": [("Sales: website", "/sales")],
     "email_campaigns": [("Sales: email", "/sales")],
 }
@@ -54,6 +55,14 @@ def explain(ds: dict) -> dict:
         cols = cfg.get("columns") or []
         has_date = any(c["type"] == "date" for c in cols)
         has_num = any(c["type"] == "number" for c in cols)
+        labels = {str(c.get("label", "")).strip().lower() for c in cols}
+        if labels == {"fecha", "primary"} or labels == {"date", "primary"}:
+            from .registry import daily_metric
+            if daily_metric(cfg.get("title"), ds.get("file_name"))[0]:
+                return {"status": "partial", "shown_on": [{"label": "Sales: your own files", "path": "/sales"}] if cfg.get("trend") else [],
+                        "reasons": ["This is an Instagram account figure, uploaded before the hub could read them, so it is not on Social."],
+                        "fixes": ["Undo this upload (the arrow on the right) and upload the same file again. It will then appear on Social."],
+                        "notes": notes}
         if cfg.get("trend"):
             shown.append({"label": "Sales: your own files", "path": "/sales"})
         if cfg.get("text_column"):

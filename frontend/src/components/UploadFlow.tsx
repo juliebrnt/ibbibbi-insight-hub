@@ -207,7 +207,7 @@ function CheckTable({ t, update }: { t: any; update: (p: any) => void }) {
       <div className="rounded-2xl bg-primary-soft p-4">
         <div className="text-sm text-ink-2">{t.name} · {t.rows.toLocaleString("en-GB")} rows{t.delimiter ? ` · ${t.delimiter}-separated` : ""}{t.header_row > 1 ? ` · headers found on row ${t.header_row}` : ""}</div>
         {t.useFlexible ? (
-          <div className="mt-1 font-display text-lg font-semibold">This looks like something new. We will keep it as your own dataset.</div>
+          <div className="mt-1 font-display text-lg font-semibold">We do not recognise this file</div>
         ) : (
           <div className="mt-1 font-display text-lg font-semibold">We think this is {t.label} <span className="chip bg-surface text-primary align-middle">{t.recipe ? "Saved recipe" : `${conf}% sure`}</span></div>
         )}
@@ -226,6 +226,8 @@ function CheckTable({ t, update }: { t: any; update: (p: any) => void }) {
           </select>
         </div>
       </div>
+
+      {t.useFlexible ? <Unrecognised t={t} /> : null}
 
       {!t.useFlexible ? (
         <details open={!t.recipe} className="rounded-2xl border border-line">
@@ -303,6 +305,43 @@ function Report({ r, onUndo }: { r: any; onUndo: (id: string) => void }) {
         <ul className="mt-1">{rep.issues.slice(0, 10).map((x: any, i: number) => <li key={i}>Row {x.row}: {x.problem}</li>)}</ul></details> : null}
       <FileStatus e={r.explain} />
       {r.flexible && r.explain?.status === "not_shown" ? <Link to="/data" className="btn-soft mt-3">Open Uploaded files</Link> : null}
+    </div>
+  );
+}
+
+const KNOWN = "Shopify orders, Instagram posts, Instagram account figures, Judge.me reviews, Shopify products or a survey";
+
+/** For a file we do not recognise: what is close, what will happen if it is kept, and exactly what to change. */
+function Unrecognised({ t }: { t: any }) {
+  const prof = t.profile || [];
+  const dates = prof.filter((p: any) => p.type === "date");
+  const nums = prof.filter((p: any) => p.type === "number");
+  const texts = prof.filter((p: any) => p.type === "text" && (p.avg_length || 0) >= 25);
+  const close = (t.candidates || []).find((c: any) => c.confidence >= 0.4 && c.missing_required?.length);
+  const missingLabels = close ? close.missing_required.map((m: string) => t.fields[close.table_type]?.find((f: any) => f.name === m)?.label || m) : [];
+  const will: string[] = [];
+  if (dates.length && nums.length) will.push(`We will show "${nums[nums.length - 1].column}" over time, by month, on Sales: your own files.`);
+  if (texts.length) will.push(`We will read "${texts[0].column}" as customer comments on Feedback.`);
+  const cannot: string[] = [];
+  if (!will.length) {
+    if (!dates.length) cannot.push("No column has dates, so nothing can be shown over time. Add a column with the date of each row, like 25/11/2026.");
+    if (!nums.length) cannot.push("No column has only numbers. Put amounts or counts in their own column, like 24,50.");
+  }
+  return (
+    <div className="rounded-2xl border border-line p-4 text-sm space-y-3">
+      {close ? (
+        <div><div className="font-medium">It looks like {close.label}, but something is missing</div>
+          <p className="mt-0.5 text-ink-2"><span>We could not find a column for:</span> <b>{missingLabels.join(", ")}</b></p>
+          <p className="text-ink-2">{`Add it to the file and upload it again, or choose ${close.label} above and pick the column yourself.`}</p></div>
+      ) : null}
+      <div><div className="font-medium">If you keep it as it is</div>
+        <ul className="mt-0.5 list-disc pl-5 text-ink-2 space-y-0.5">
+          {will.map((w) => <li key={w}>{w}</li>)}
+          {cannot.map((w) => <li key={w} className="text-warn">{w}</li>)}
+        </ul></div>
+      <div><div className="font-medium">Meant to add one of the usual files?</div>
+        <p className="mt-0.5 text-ink-2">{`The hub reads ${KNOWN}.`}</p>
+        <p className="text-ink-2">Download it again following the steps in Your data → What to add, and upload it exactly as the platform gives it, without opening and re-saving it.</p></div>
     </div>
   );
 }

@@ -271,6 +271,14 @@ def generate(out: Path, seed: int = 7, orders_per_day: float = 3.2, sessions_per
     def ig_boost(day: date) -> float:
         return sum(mission_by_day.get(day - timedelta(days=k), 0) for k in range(0, 7))
 
+    # product posts bring buyers on the day and the day after; carousels and Reels show more of the product than one image
+    sell_by_day: dict = {}
+    for p in posts:
+        if p["pillar"] == "product":
+            w = {"IG carousel": 1.0, "IG reel": 0.8, "IG image": 0.3}[p["format"]]
+            for k in (0, 1):
+                sell_by_day[p["date"] + timedelta(days=k)] = sell_by_day.get(p["date"] + timedelta(days=k), 0) + w
+
     # ---------------- orders and customers ----------------
     weights = [FABRIC_WEIGHT[p[1]] * (0.55 if p[2] == "children" else 1.0) for p in PRODUCTS]
     customers: list[Customer] = []
@@ -281,7 +289,7 @@ def generate(out: Path, seed: int = 7, orders_per_day: float = 3.2, sessions_per
         season = {10: 1.8, 11: 1.15, 12: 1.35, 8: 0.7, 1: 0.85}.get(day.month, 1.0)
         if day.month == 2 and day.day <= 6:  # World Cancer Day, 4 February
             season *= 1.4
-        lam = orders_per_day * (0.75 + 0.6 * t) * season * (1 + 0.04 * ig_boost(day))
+        lam = orders_per_day * (0.75 + 0.6 * t) * season * (1 + 0.04 * ig_boost(day)) * (1 + 0.3 * min(sell_by_day.get(day, 0), 1.5))
         n = poisson(rng, lam)
         for _ in range(n):
             eligible = [c for c in customers[-900:] if len(c.orders) < c.target_orders and c.last_order and (day - c.last_order).days > 25]

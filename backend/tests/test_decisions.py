@@ -22,11 +22,13 @@ def end():
     return common.latest_date(WS)
 
 
-def test_instagram_sales_removes_the_season():
+def test_instagram_sales_finds_the_built_in_link_and_not_the_season():
     d = decisions.instagram_sales(WS, end())
     assert d and d["title"] and d["todo"] and d["rows"]
-    # the made-up data has no post effect built in, so once busy weeks are accounted for no lift should look large
-    assert all(abs(r["lift"]) < 20 for r in d["rows"] if r["posts"] >= 20)
+    # the example data lifts orders after product posts (most for carousels); the season must not add to that
+    fmt = {r["label"]: r["lift"] for r in d["rows"] if r["kind"] == "format"}
+    assert max(fmt, key=fmt.get) == "Carousel" and 10 <= fmt["Carousel"] <= 35
+    assert fmt["Static image"] < fmt["Carousel"] - 10
     assert "not proof" in d["note"]
 
 

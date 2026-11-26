@@ -28,6 +28,41 @@ def clear(ws: str = "demo") -> None:
             c.execute(f"DELETE FROM {t} WHERE ws = ?", [ws])
 
 
+# 'Today': only the sources iBBIBBI has now (Shopify, Instagram, the feedback form, website reviews).
+# TikTok, Google Analytics, Klaviyo, Instagram comments, shop messages and market sales stay in 'Full potential'.
+TODAY_FILES = ["products_export.csv", "customers_export.csv", "shopify_orders_export_2025.csv", "pedidos_shopify_2026.csv",
+               "judgeme_reviews_export.csv", "instagram_posts_meta_export.csv", "instagram_resumen_meta.zip", "encuesta_nps_y_mensajes.xlsx"]
+TODAY_SKIP_SHEETS = {"Mensajes tienda"}  # shop messages are not part of the feedback form
+
+
+def load_today(ws: str = "mine") -> dict:
+    """Fill a workspace with the example files for the sources iBBIBBI has today, through the normal pipeline."""
+    from .. import profile
+    ensure_files()
+    clear(ws)
+    profile.save(ws, profile.DEMO)
+    results = []
+    for name in TODAY_FILES:
+        st = pipeline.stage(name, (DEMO_DIR / name).read_bytes(), ws)
+        for t in st["tables"]:
+            if t["kind"] != "table" or t.get("sheet") in TODAY_SKIP_SHEETS:
+                continue
+            res = pipeline.confirm(st["upload_id"], t["index"], t["table_type"], t["mapping"], t["privacy"],
+                                   flexible=t["flexible_suggested"], ws=ws)
+            results.append({"file": t["name"], "ok": res.get("ok"), "type": res.get("table_type")})
+    plan.seed_demo_plan(ws)
+    return {"ok": all(r["ok"] for r in results), "files": results}
+
+
+def add_market_trend(ws: str = "demo") -> None:
+    """Add the market-stall sheet as the founders would: an unknown file kept as their own dataset, shown as a trend."""
+    st = pipeline.stage("mercadillo_ventas.csv", (DEMO_DIR / "mercadillo_ventas.csv").read_bytes(), ws)
+    res = pipeline.confirm(st["upload_id"], 0, None, None, st["tables"][0]["privacy"], flexible=True, ws=ws)
+    caja = next(c["column"] for c in res["config"]["columns"] if c["label"].startswith("Caja"))
+    pipeline.configure_flexible(res["dataset_id"], {"date": res["config"]["suggestion"]["date"], "value": caja,
+                                                    "label": "Market stalls", "value_label": "Caja (€)"})
+
+
 def load(ws: str = "demo") -> dict:
     ensure_files()
     clear(ws)
@@ -38,5 +73,6 @@ def load(ws: str = "demo") -> dict:
         path = DEMO_DIR / name
         for r in pipeline.auto_import(name, path.read_bytes(), ws):
             results.append({"file": r["name"], "ok": r.get("ok"), "type": r.get("table_type"), "rows": (r.get("report") or {}).get("imported")})
+    add_market_trend(ws)
     plan.seed_demo_plan(ws)
     return {"ok": True, "files": results}

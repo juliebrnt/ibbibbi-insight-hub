@@ -89,7 +89,7 @@ export function Shell({ children }: { children: ReactNode }) {
     <div className="min-h-screen md:pl-[232px]">
       {!mobile ? <Sidebar /> : null}
       <TopBar />
-      {STATIC ? <ProtoBanner /> : ws === "demo" ? <DemoBanner /> : null}
+      <ProtoBanner />
       <main id="main" className={cx("mx-auto max-w-[1240px] px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6", mobile ? "pb-32" : "pb-16")}>
         <div key={loc.pathname} className="page-in">{children}</div>
       </main>
@@ -154,8 +154,7 @@ function TopBar() {
           </div>
         ) : null}
         <div data-tour="workspace">
-          <Segmented size="sm" label="Workspace" value={ws} onChange={setWs} options={STATIC ? [{ value: "demo", label: mobile ? "Full" : "Full potential" }, { value: "mine", label: "Today" }]
-            : [{ value: "demo", label: mobile ? "Demo" : "Demo data" }, { value: "mine", label: mobile ? "Mine" : "My data" }]} />
+          <Segmented size="sm" label="Workspace" value={ws} onChange={setWs} options={[{ value: "demo", label: mobile ? "Full" : "Full potential" }, { value: "mine", label: "Today" }]} />
         </div>
         {!mobile ? (
           <label className="relative">

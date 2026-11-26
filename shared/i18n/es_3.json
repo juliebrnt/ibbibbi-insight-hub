@@ -1000,7 +1000,8 @@
   "Each customer is in one group only. Nobody's name is used, and groups are never based on health or personal circumstances.": "Cada cliente está en un solo grupo. No se usa ningún nombre, y los grupos nunca se basan en la salud ni en circunstancias personales.",
   "Each customer is in one group only.": "Cada cliente está en un solo grupo.",
   "Nobody's name is used, and groups are never based on health or personal circumstances.": "No se usa ningún nombre, y los grupos nunca se basan en la salud ni en circunstancias personales.",
-  "It sells, but rates below your average.": "Se vende, pero está por debajo de tu valoración media."
+  "It sells, but rates below your average.": "Se vende, pero está por debajo de tu valoración media.",
+  "Adding to Today. Everything stays on this computer.": "Añadiendo a Hoy. Todo se queda en este ordenador."
  },
  "patterns": {
   "Fetched the latest data: {x} new records.": "Se descargaron los datos más recientes: {x} registros nuevos.",

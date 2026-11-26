@@ -29,40 +29,10 @@ from app.ai.ask import SUGGESTED  # noqa: E402
 from app.main import app  # noqa: E402
 
 
-# 'Today': only the sources iBBIBBI has now (Shopify, Instagram, the feedback form, website reviews).
-# TikTok, Google Analytics, Klaviyo, Instagram comments, shop messages and market sales stay in 'Full potential'.
-TODAY_FILES = ["products_export.csv", "customers_export.csv", "shopify_orders_export_2025.csv", "pedidos_shopify_2026.csv",
-               "judgeme_reviews_export.csv", "instagram_posts_meta_export.csv", "instagram_resumen_meta.zip", "encuesta_nps_y_mensajes.xlsx"]
-TODAY_SKIP_SHEETS = {"Mensajes tienda"}  # shop messages are not part of the feedback form
-
-
-def load_today(c) -> None:
-    from app.ingest import pipeline
-    from app import profile
-    from app.insights import plan
-    profile.save("mine", profile.DEMO)  # same business, so wording, key dates and care rules match
-    for name in TODAY_FILES:
-        st = pipeline.stage(name, (ROOT / "demo_data" / name).read_bytes(), "mine")
-        for t in st["tables"]:
-            if t["kind"] != "table" or (t.get("sheet") in TODAY_SKIP_SHEETS):
-                continue
-            res = pipeline.confirm(st["upload_id"], t["index"], t["table_type"], t["mapping"], t["privacy"],
-                                   flexible=t["flexible_suggested"], ws="mine")
-            assert res.get("ok"), (name, res)
-    plan.seed_demo_plan("mine")
-
-
 def record() -> dict:
     c = TestClient(app)
-    assert c.post("/api/demo/load").json()["ok"]
-    # add the 'unknown' market-stall file as a trend, as the founders would
-    data = (ROOT / "demo_data" / "mercadillo_ventas.csv").read_bytes()
-    st = c.post("/api/upload", files={"files": ("mercadillo_ventas.csv", data)}, data={"ws": "demo"}).json()[0]
-    res = c.post("/api/import", json={"upload_id": st["upload_id"], "index": 0, "flexible": True, "ws": "demo"}).json()
-    caja = next(col["column"] for col in res["config"]["columns"] if col["label"].startswith("Caja"))
-    c.post(f"/api/datasets/{res['dataset_id']}/flex", json={"trend": {"date": res["config"]["suggestion"]["date"], "value": caja,
-                                                                      "label": "Market stalls", "value_label": "Caja (€)"}})
-    load_today(c)
+    assert c.post("/api/demo/load").json()["ok"]  # Full potential, including the market-stall trend
+    assert c.post("/api/demo/load_today").json()["ok"]  # Today
     snap: dict = {}
 
     def get(path: str):

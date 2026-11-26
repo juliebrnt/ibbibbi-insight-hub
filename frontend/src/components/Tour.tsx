@@ -1,11 +1,9 @@
-import { STATIC } from "@/lib/static";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
 const STEPS = [
   { title: "Welcome to your Insight Hub", body: "Home shows what is working, what is not, and the one or two things to do next. It takes five minutes a week." },
-  STATIC ? { title: "Full potential or Today", body: "Switch at the top between Full potential (everything, once more data is added) and Today (what the current data already shows)." }
-    : { title: "Demo or your own data", body: "Switch between the demo (made-up customers) and My data at the top. They are never mixed." },
+  { title: "Full potential or Today", body: "Switch at the top between Full potential (everything, once more data is added) and Today (what the current data already shows)." },
   { title: "Drop in any file", body: "Upload any export or screenshot. We recognise it, protect personal data and turn it into charts in seconds." },
   { title: "Ask and plan", body: "Ask questions in plain words, and turn any insight into a decision with one tap. We check back on whether it worked." },
 ];

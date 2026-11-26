@@ -569,6 +569,12 @@ def demo_load():
     return loader.load("demo")
 
 
+@router.post("/demo/load_today")
+def demo_load_today():
+    """Fill 'Today' (the 'mine' workspace) with example files for the sources iBBIBBI has now. Replaces what is there."""
+    return loader.load_today("mine")
+
+
 @router.get("/demo/files/{name}")
 def demo_file(name: str):
     path = DEMO_DIR / name

@@ -112,7 +112,7 @@ export function UploadFlow({ open, onOpenChange }: { open: boolean; onOpenChange
   const active = step === "pick" || step === "reading" ? 0 : step === "check" ? 1 : 2;
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange} title="Add your data" description={STATIC ? (target === "demo" ? "Adding to Full potential." : "Adding to Today.") : target === "demo" ? "Adding to the demo workspace." : "Adding to My data. Everything stays on this computer."} wide>
+    <Sheet open={open} onOpenChange={onOpenChange} title="Add your data" description={target === "demo" ? "Adding to Full potential." : STATIC ? "Adding to Today." : "Adding to Today. Everything stays on this computer."} wide>
       <ol className="mb-5 flex items-center gap-2 text-sm" aria-label="Progress">
         {steps.map((s, i) => (
           <li key={s} className="flex items-center gap-2">

@@ -18,7 +18,7 @@ export function useStatus() {
 
 export function useProfile() {
   const s = useStatus();
-  return s.data?.profile || { name: "Your business", sensitive: false, key_dates: [], attribute_label: "Material", line_label: "Product line" };
+  return s.data?.profile || { name: "iBBIBBI", sensitive: true, key_dates: [], attribute_label: "Fabric", line_label: "Product line" };
 }
 
 export function useRefreshAll() {

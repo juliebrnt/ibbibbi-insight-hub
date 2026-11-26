@@ -190,7 +190,7 @@ export const UNLOCKS = [
 
 /** Prototype only: says which version is shown and links the two. */
 function ProtoBanner() {
-  const { ws, setWs } = useApp();
+  const { ws, setWs, setUploadOpen } = useApp();
   const [open, setOpen] = useState(false);
   const today = ws === "mine";
   return (
@@ -198,9 +198,10 @@ function ProtoBanner() {
       <div className="mx-auto max-w-[1240px] px-4 sm:px-6 lg:px-8 py-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
         <span className={cx("chip bg-surface font-semibold", today ? "text-primary" : "text-accent")}>{today ? "Today" : "Full potential"}</span>
         <span className="order-last basis-full sm:order-none sm:basis-auto sm:flex-1 min-w-0">{today
-          ? "What iBBIBBI can see now, with the data it already has: Shopify, Instagram, the feedback form and website reviews."
+          ? "What iBBIBBI can see now from Shopify, Instagram, the feedback form and website reviews."
           : "Everything iBBIBBI could see once it adds TikTok, Google Analytics, email campaigns, messages and market sales."}</span>
         <span className="flex-1 sm:hidden" />
+        {today ? <button className="btn-primary !min-h-[32px] !px-3" onClick={() => setUploadOpen(true)}><Upload className="h-4 w-4" />Upload data</button> : null}
         {today ? <button className="btn-soft !min-h-[32px] !px-3" onClick={() => setOpen(true)}>What more data adds</button>
           : <button className="btn-soft !min-h-[32px] !px-3" onClick={() => setWs("mine")}>See Today</button>}
       </div>

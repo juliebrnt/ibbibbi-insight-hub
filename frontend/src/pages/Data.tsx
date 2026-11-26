@@ -122,6 +122,7 @@ const STATUS: Record<string, { icon: any; cls: string; label: string }> = {
 
 /** The exact files that make the hub work, and what to download next for each. */
 function WhatToAdd({ items, onGuide }: { items: any[]; onGuide: (g: string) => void }) {
+  const { setUploadOpen } = useApp();
   if (!items.length) return null;
   const done = items.filter((i) => i.status === "ok").length;
   return (
@@ -143,7 +144,10 @@ function WhatToAdd({ items, onGuide }: { items: any[]; onGuide: (g: string) => v
                 <div className="text-sm text-ink-2">{it.shows}</div>
                 <div className={cx("mt-0.5 text-sm", it.status === "ok" ? "text-ink-3" : "text-ink")}>{it.status === "missing" ? it.todo : <><span>{it.detail}</span> <span>{it.todo}</span></>}</div>
               </div>
-              <button className="btn-soft !min-h-[36px]" onClick={() => onGuide(it.guide)}>{it.status === "missing" ? "How to download it" : "Get the latest"}</button>
+              <div className="flex gap-2">
+                <button className="btn-ghost !min-h-[36px]" onClick={() => onGuide(it.guide)}>{it.status === "missing" ? "How to download it" : "Get the latest"}</button>
+                <button className="btn-soft !min-h-[36px]" onClick={() => setUploadOpen(true)}><Upload className="h-4 w-4" />Upload</button>
+              </div>
             </li>
           );
         })}

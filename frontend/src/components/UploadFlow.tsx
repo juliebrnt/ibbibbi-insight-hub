@@ -46,6 +46,7 @@ export function UploadFlow({ open, onOpenChange }: { open: boolean; onOpenChange
 
   async function read(files: File[]) {
     setStep("reading");
+    if (STATIC) return simulate(files.map((f) => f.name));
     try {
       const staged: Staged[] = await api.upload(files, target);
       ingest(staged);
@@ -53,9 +54,13 @@ export function UploadFlow({ open, onOpenChange }: { open: boolean; onOpenChange
       toast.error(e.message); setStep("pick");
     }
   }
+  function simulate(names: string[]) {
+    setTimeout(() => { setResults(names.map(guess)); setStep("done"); }, 1500);
+  }
   async function readPaste() {
     if (!paste.trim()) return;
     setStep("reading");
+    if (STATIC) return simulate(["Pasted messages"]);
     try { ingest([await api.post("/upload/paste", { text: paste, ws: target })]); } catch (e: any) { toast.error(e.message); setStep("pick"); }
   }
   function ingest(staged: Staged[]) {
@@ -107,7 +112,7 @@ export function UploadFlow({ open, onOpenChange }: { open: boolean; onOpenChange
   const active = step === "pick" || step === "reading" ? 0 : step === "check" ? 1 : 2;
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange} title="Add your data" description={target === "demo" ? "Adding to the demo workspace." : "Adding to My data. Everything stays on this computer."} wide>
+    <Sheet open={open} onOpenChange={onOpenChange} title="Add your data" description={STATIC ? (target === "demo" ? "Adding to Full potential." : "Adding to Today.") : target === "demo" ? "Adding to the demo workspace." : "Adding to My data. Everything stays on this computer."} wide>
       <ol className="mb-5 flex items-center gap-2 text-sm" aria-label="Progress">
         {steps.map((s, i) => (
           <li key={s} className="flex items-center gap-2">
@@ -124,7 +129,7 @@ export function UploadFlow({ open, onOpenChange }: { open: boolean; onOpenChange
       ) : null}
       {step === "pick" && !mobile ? (
         <div className="space-y-4">
-          {STATIC ? <div className="rounded-2xl bg-accent-soft p-4 text-sm"><b>This is a preview.</b> In the real app the founders drop in any export here (Shopify, Instagram, a survey, a spreadsheet, even a screenshot). It is recognised in seconds, personal data is removed, and every chart updates. The Demo workspace shows what that looks like.</div> : null}
+          {STATIC ? <div className="rounded-2xl bg-accent-soft p-4 text-sm">Drop in this week's exports: Shopify orders, Instagram, the feedback form answers or the website reviews. Each file is recognised, personal data is removed and every page updates.</div> : null}
           <button onClick={() => fileRef.current?.click()} className="w-full rounded-3xl border-2 border-dashed border-line hover:border-primary bg-sunken/50 p-8 text-center transition-colors">
             <FileUp className="mx-auto h-10 w-10 text-primary" />
             <div className="mt-3 font-display text-lg font-semibold">Drop files here or tap to choose</div>
@@ -134,7 +139,7 @@ export function UploadFlow({ open, onOpenChange }: { open: boolean; onOpenChange
           <input ref={camRef} type="file" accept="image/*" capture="environment" hidden onChange={(e) => e.target.files?.length && read(Array.from(e.target.files))} />
           <div className="grid sm:grid-cols-2 gap-3">
             <button className="btn-outline" onClick={() => camRef.current?.click()}><Camera className="h-4 w-4" />Take a photo or screenshot</button>
-            <a className="btn-outline" href="/api/demo/files/mercadillo_ventas.csv" download><Sparkles className="h-4 w-4" />Get a sample unknown file</a>
+            {!STATIC ? <a className="btn-outline" href="/api/demo/files/mercadillo_ventas.csv" download><Sparkles className="h-4 w-4" />Get a sample unknown file</a> : null}
           </div>
           <div>
             <label className="label" htmlFor="paste">Or paste customer messages or a table</label>
@@ -168,7 +173,7 @@ export function UploadFlow({ open, onOpenChange }: { open: boolean; onOpenChange
             <div className="grid h-10 w-10 place-items-center rounded-full bg-good text-white"><Check className="h-5 w-5" /></div>
             <div><div className="font-semibold">Done. Your dashboards are updated.</div><div className="text-sm text-ink-2">Here is what we did with each file.</div></div>
           </motion.div>
-          {results.map((r, i) => <Report key={i} r={r} onUndo={undo} />)}
+          {results.map((r, i) => (r.simulated ? <SimReport key={i} r={r} /> : <Report key={i} r={r} onUndo={undo} />))}
           <div className="flex justify-end gap-2 pt-2"><button className="btn-outline" onClick={reset}>Add more</button><button className="btn-primary" onClick={() => onOpenChange(false)}>Close</button></div>
         </div>
       ) : null}
@@ -342,6 +347,41 @@ function Unrecognised({ t }: { t: any }) {
       <div><div className="font-medium">Meant to add one of the usual files?</div>
         <p className="mt-0.5 text-ink-2">{`The hub reads ${KNOWN}.`}</p>
         <p className="text-ink-2">Download it again following the steps in Your data → What to add, and upload it exactly as the platform gives it, without opening and re-saving it.</p></div>
+    </div>
+  );
+}
+
+/** Prototype only: what the installed app does with each source, recognised from the file name. */
+const SOURCES: { test: RegExp; label: string; shown: { label: string; path: string }[]; note: string }[] = [
+  { test: /encuesta|form|respuest|survey|nps|cuestionario/, label: "Feedback form answers",
+    shown: [{ label: "Feedback", path: "/feedback" }], note: "NPS, reasons to recommend and how people found iBBIBBI are updated." },
+  { test: /review|resen|judge|valoraci|opinion/, label: "Website reviews (Judge.me)",
+    shown: [{ label: "Feedback", path: "/feedback" }, { label: "Home", path: "/" }], note: "Reviewer names are removed. Themes, ratings by product and fabric, and quotes are updated." },
+  { test: /alcance|visualiz|interacc|visita|seguidor|clic|reach|\bviews\b|follow|instagram|insight|post|publicac|meta/, label: "Instagram",
+    shown: [{ label: "Social", path: "/social" }, { label: "Home", path: "/" }], note: "Posts, reach, visits and new followers are compared to find what to post next." },
+  { test: /product/, label: "Shopify products", shown: [{ label: "Sales", path: "/sales" }], note: "Fabrics, lines and colours are matched to every order." },
+  { test: /customer|client/, label: "Shopify customers", shown: [{ label: "Sales: customers", path: "/sales" }], note: "Emails become anonymous ids and names are dropped, so repeat customers are counted without knowing who they are." },
+  { test: /order|pedido|venta|sale|shopify|export/, label: "Shopify orders",
+    shown: [{ label: "Home", path: "/" }, { label: "Sales", path: "/sales" }], note: "Names and addresses are dropped. Products, discount codes, gifts and repeat customers are updated." },
+];
+
+function guess(name: string) {
+  const n = name.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const src = SOURCES.find((x) => x.test.test(n));
+  return src ? { simulated: true, name, label: src.label, shown: src.shown, note: src.note }
+    : { simulated: true, name, label: "Your own file", shown: [{ label: "Sales: your own files", path: "/sales" }],
+        note: "Not a standard export, so it is kept as your own dataset and shown as a trend where it has dates and numbers." };
+}
+
+function SimReport({ r }: { r: any }) {
+  return (
+    <div className="card !p-4">
+      <div className="flex flex-wrap items-center gap-2"><b className="truncate">{r.name}</b><span className="chip bg-primary-soft text-primary">{r.label}</span></div>
+      <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
+        <span className="flex items-center gap-1 text-good"><Check className="h-4 w-4" />Shown on</span>
+        {r.shown.map((x: any) => <Link key={x.label} to={x.path} className="chip bg-good-soft text-good hover:underline">{x.label}</Link>)}
+      </div>
+      <p className="mt-2 text-sm text-ink-2 flex gap-1.5"><ShieldCheck className="h-4 w-4 shrink-0 mt-0.5 text-good" />{r.note}</p>
     </div>
   );
 }

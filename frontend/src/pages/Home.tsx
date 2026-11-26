@@ -53,9 +53,10 @@ function FirstDay() {
 export function Home() {
   const { data, isLoading } = usePage("home");
   const mobile = useIsMobile();
+  const { ws } = useApp();
   if (isLoading || !data) return <PageSkeleton />;
   if (!data.kpis.length && !data.insights.length) return <FirstDay />;
-  return mobile ? <Today d={data} /> : <CommandCentre d={data} />;
+  return <>{ws === "mine" && !mobile ? <AddData /> : null}{mobile ? <Today d={data} /> : <CommandCentre d={data} />}</>;
 }
 
 const helpKey = (k: string) => (k === "per_week" ? "posts_per_week" : DEFINITIONS[k] ? k : undefined);
@@ -217,6 +218,35 @@ function Today({ d }: { d: any }) {
         <span><span className="block font-medium">Log customer feedback</span><span className="text-sm text-ink-3">Type or paste a message in seconds</span></span>
       </button>
       <Link to="/briefing" className="mt-3 block text-center text-sm text-primary font-medium py-3">Open the weekly briefing →</Link>
+    </div>
+  );
+}
+
+/** Today: one place to drop in this week's exports from the four sources iBBIBBI has. */
+function AddData() {
+  const { setUploadOpen } = useApp();
+  const srcs = [
+    { name: "Shopify", what: "Orders, products, customers", icon: "siShopify" },
+    { name: "Instagram", what: "Posts and account figures", icon: "siInstagram" },
+    { name: "Feedback form", what: "Google Forms answers", icon: "siGoogleforms" },
+    { name: "Website reviews", what: "Judge.me export", icon: "", k: "judgeme" },
+  ];
+  return (
+    <div className="mb-5 card !p-4">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div><h2 className="h-card">Add your latest data</h2><p className="text-sm text-ink-2">Upload this week's exports and every page updates.</p></div>
+        <div className="flex gap-2"><Link to="/data" className="btn-ghost !min-h-[38px]">What to add</Link>
+          <button className="btn-primary !min-h-[38px]" onClick={() => setUploadOpen(true)}><Upload className="h-4 w-4" />Upload data</button></div>
+      </div>
+      <div className="mt-3 grid sm:grid-cols-2 lg:grid-cols-4 gap-2">
+        {srcs.map((x) => (
+          <button key={x.name} onClick={() => setUploadOpen(true)} className="flex items-center gap-3 rounded-2xl border border-line p-3 text-left hover:border-primary transition-colors">
+            <PlatformIcon icon={x.icon} name={x.name} k={(x as any).k} size={30} />
+            <span className="min-w-0"><span className="block font-medium">{x.name}</span><span className="block text-xs text-ink-3">{x.what}</span></span>
+            <Upload className="ml-auto h-4 w-4 text-ink-3 shrink-0" />
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

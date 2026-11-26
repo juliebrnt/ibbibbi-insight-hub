@@ -22,7 +22,7 @@ DEFAULT = {"name": "Your business", "industry": "", "mission": "", "sensitive": 
 
 def get(ws: str) -> dict:
     saved = db.get_setting(f"profile:{ws}", None)
-    base = DEMO if ws == "demo" else DEFAULT
+    base = DEMO  # this hub is built for iBBIBBI, so both workspaces start with its profile
     return {**base, **(saved or {})}
 
 
